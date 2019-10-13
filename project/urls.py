@@ -33,9 +33,29 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.i18n import i18n_patterns
+from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
+
+# Define routes
+urlpatterns = []
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL,
+                          document_root=settings.STATIC_ROOT)
+
+# Add i18n prefixes for sections
+urlpatterns += i18n_patterns(
+    path(settings.ADMIN_URL, admin.site.urls),
+    path('/', include('netscanner.urls')),
+    prefix_default_language=True
+)
+
+# Add standard paths
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path(settings.ADMIN_URL, admin.site.urls),
+    path('netscanner/', include('netscanner.urls')),
 ]

@@ -21,12 +21,14 @@
 from django.contrib import admin
 from django.db.utils import OperationalError
 
-from .models import AdminListDisplay, AdminListDisplayAdmin
+from .models import (AdminListDisplay, AdminListDisplayAdmin,
+                     AdminListDisplayLink, AdminListDisplayLinkAdmin)
 
 from utility.misc import get_admin_models, get_class_from_module
 
 
 admin.site.register(AdminListDisplay, AdminListDisplayAdmin)
+admin.site.register(AdminListDisplayLink, AdminListDisplayLinkAdmin)
 
 admin_models = get_admin_models()
 
@@ -43,4 +45,18 @@ try:
             admin_models[item.model].list_display.append(item.field)
 except OperationalError:
     # If the model AdminListDisplay doesn't yet exist skip the customization
+    pass
+
+# Customize list_display_links
+try:
+    # Clear or initialize the model list_display_links
+    for model_name in admin_models:
+        admin_models[model_name].list_display_links = []
+    # Add the fields to model list_display_links
+    for item in AdminListDisplayLink.objects.filter(enabled=True).order_by(
+            'model', 'order'):
+        admin_models[item.model].list_display_links.append(item.field)
+except OperationalError:
+    # If the model AdminListDisplayLink doesn't yet exist skip the
+    # customization
     pass

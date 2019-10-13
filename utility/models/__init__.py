@@ -19,3 +19,5 @@
 ##
 
 from .base_model import BaseModel, BaseModelAdmin                 # noqa: F401
+from .admin_list_display import (AdminListDisplay,                # noqa: F401
+                                 AdminListDisplayAdmin)           # noqa: F401

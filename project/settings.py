@@ -131,3 +131,6 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 ADMIN_URL = 'admin/'
+
+# Admin Models list with a field referencing other models in its choices
+ADMIN_MODELS_REFERENCING_MODELS_WITH_CHOICES = ('AdminListDisplayAdmin', )

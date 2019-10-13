@@ -39,8 +39,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'netscanner',
     'utility',
+    'netscanner',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

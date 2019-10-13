@@ -23,3 +23,5 @@ from .admin_list_display import (AdminListDisplay,                # noqa: F401
                                  AdminListDisplayAdmin)           # noqa: F401
 from .admin_list_display_link import (AdminListDisplayLink,       # noqa: F401
                                       AdminListDisplayLinkAdmin)  # noqa: F401
+from .admin_list_filter import (AdminListFilter,                  # noqa: F401
+                                AdminListFilterAdmin)             # noqa: F401

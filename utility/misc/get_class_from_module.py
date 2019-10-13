@@ -18,5 +18,10 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
-from .get_admin_models import get_admin_models                    # noqa: F401
-from .get_class_from_module import get_class_from_module          # noqa: F401
+import importlib
+
+
+def get_class_from_module(module_class):
+    """Get Class from a module"""
+    module_name, class_name = module_class.rsplit('.', 1)
+    return getattr(importlib.import_module(module_name), class_name)

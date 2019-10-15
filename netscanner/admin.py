@@ -26,6 +26,7 @@ from .models.device_type import DeviceType, DeviceTypeAdmin
 from .models.domain import Domain, DomainAdmin
 from .models.domain_main import DomainMain, DomainMainAdmin
 from .models.location import Location, LocationAdmin
+from .models.operating_system import OperatingSystem, OperatingSystemAdmin
 from .models.subnet_v4 import SubnetV4, SubnetV4Admin
 
 
@@ -35,4 +36,5 @@ admin.site.register(DeviceType, DeviceTypeAdmin)
 admin.site.register(Domain, DomainAdmin)
 admin.site.register(DomainMain, DomainMainAdmin)
 admin.site.register(Location, LocationAdmin)
+admin.site.register(OperatingSystem, OperatingSystemAdmin)
 admin.site.register(SubnetV4, SubnetV4Admin)

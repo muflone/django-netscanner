@@ -18,6 +18,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
+from .brand import Brand, BrandAdmin                              # noqa: F401
 from .company import Company, CompanyAdmin                        # noqa: F401
 from .device_type import DeviceType, DeviceTypeAdmin              # noqa: F401
 from .subnet_v4 import SubnetV4, SubnetV4Admin                    # noqa: F401

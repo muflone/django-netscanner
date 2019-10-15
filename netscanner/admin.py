@@ -20,11 +20,13 @@
 
 from django.contrib import admin
 
+from .models.brand import Brand, BrandAdmin
 from .models.company import Company, CompanyAdmin
 from .models.device_type import DeviceType, DeviceTypeAdmin
 from .models.subnet_v4 import SubnetV4, SubnetV4Admin
 
 
+admin.site.register(Brand, BrandAdmin)
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(DeviceType, DeviceTypeAdmin)
 admin.site.register(SubnetV4, SubnetV4Admin)

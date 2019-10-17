@@ -25,6 +25,7 @@ from .models.company import Company, CompanyAdmin
 from .models.custom_field import CustomField, CustomFieldAdmin
 from .models.device_model import DeviceModel, DeviceModelAdmin
 from .models.device_type import DeviceType, DeviceTypeAdmin
+from .models.discovery import Discovery, DiscoveryAdmin
 from .models.domain import Domain, DomainAdmin
 from .models.domain_main import DomainMain, DomainMainAdmin
 from .models.location import Location, LocationAdmin
@@ -38,6 +39,7 @@ admin.site.register(Company, CompanyAdmin)
 admin.site.register(CustomField, CustomFieldAdmin)
 admin.site.register(DeviceModel, DeviceModelAdmin)
 admin.site.register(DeviceType, DeviceTypeAdmin)
+admin.site.register(Discovery, DiscoveryAdmin)
 admin.site.register(Domain, DomainAdmin)
 admin.site.register(DomainMain, DomainMainAdmin)
 admin.site.register(Location, LocationAdmin)

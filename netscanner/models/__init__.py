@@ -23,6 +23,7 @@ from .company import Company, CompanyAdmin                        # noqa: F401
 from .custom_field import CustomField, CustomFieldAdmin           # noqa: F401
 from .device_model import DeviceModel, DeviceModelAdmin           # noqa: F401
 from .device_type import DeviceType, DeviceTypeAdmin              # noqa: F401
+from .discovery import Discovery, DiscoveryAdmin                  # noqa: F401
 from .domain import Domain, DomainAdmin                           # noqa: F401
 from .domain_main import DomainMain, DomainMainAdmin              # noqa: F401
 from .location import Location, LocationAdmin                     # noqa: F401

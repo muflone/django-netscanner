@@ -48,6 +48,9 @@ try:
 except OperationalError:
     # If the model AdminListDisplay doesn't yet exist skip the customization
     pass
+except KeyError:
+    # The customization contains an invalid field, skipping
+    pass
 
 # Customize list_display_links
 try:
@@ -61,6 +64,9 @@ try:
 except OperationalError:
     # If the model AdminListDisplayLink doesn't yet exist skip the
     # customization
+    pass
+except KeyError:
+    # The customization contains an invalid field, skipping
     pass
 
 # Customize list_filter
@@ -91,4 +97,7 @@ try:
             admin_models[item.model].list_filter.append(new_fields)
 except OperationalError:
     # If the model AdminListFilter doesn't yet exist skip the customization
+    pass
+except KeyError:
+    # The customizations contains an invalid field, skipping
     pass

@@ -26,6 +26,7 @@ from utility.models import BaseModel, BaseModelAdmin
 
 class Brand(BaseModel):
     name = models.CharField(max_length=255,
+                            unique=True,
                             verbose_name=pgettext_lazy('Brand',
                                                        'name'))
     description = models.TextField(blank=True,

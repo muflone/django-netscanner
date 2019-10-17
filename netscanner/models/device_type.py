@@ -41,7 +41,7 @@ class DeviceType(BaseModel):
         verbose_name_plural = pgettext_lazy('DeviceType', 'Device types')
 
     def __str__(self):
-        return '{DESCRIPTION}'.format(DESCRIPTION=self.description)
+        return '{NAME}'.format(NAME=self.name)
 
 
 class DeviceTypeAdmin(BaseModelAdmin):

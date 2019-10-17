@@ -18,6 +18,8 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
+import ipaddress
+
 from django.db import models
 from django.utils.translation import pgettext_lazy
 
@@ -58,6 +60,14 @@ class SubnetV4(BaseModel):
 
     def __str__(self):
         return '{NAME}'.format(NAME=self.name)
+
+    def get_ip_list(self) -> list:
+        """
+        Get the whole IP list for a network/CIDR
+        """
+        ip_network = ipaddress.ip_network('{}/{}'.format(self.subnet_ip,
+                                                         self.cidr))
+        return list(map(str, ip_network.hosts()))
 
 
 class SubnetV4Admin(BaseModelAdmin):

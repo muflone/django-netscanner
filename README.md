@@ -18,3 +18,4 @@ Django Snippets is a Django application to make network scans
 
 * Python 3.x
 * Django 2.2.5 (https://pypi.org/project/Django/)
+* scapy (https://pypi.org/project/scapy/)

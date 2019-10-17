@@ -34,6 +34,9 @@ class Scanner(BaseModel):
     tool = models.CharField(max_length=255,
                             verbose_name=pgettext_lazy('Scanner',
                                                        'tool'))
+    options = models.TextField(blank=True,
+                               verbose_name=pgettext_lazy('Scanner',
+                                                          'options'))
 
     class Meta:
         # Define the database table

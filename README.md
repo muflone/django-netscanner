@@ -17,4 +17,4 @@ Django Snippets is a Django application to make network scans
 # System Requirements
 
 * Python 3.x
-* Django 2.2.5
+* Django 2.2.5 (https://pypi.org/project/Django/)

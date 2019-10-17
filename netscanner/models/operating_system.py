@@ -50,7 +50,7 @@ class OperatingSystem(BaseModel):
                                             'Operating Systems')
 
     def __str__(self):
-        return '{BRAND} {NAME} {VERSION}'.format(BRAND=self.description,
+        return '{BRAND} {NAME} {VERSION}'.format(BRAND=self.brand.description,
                                                  NAME=self.name,
                                                  VERSION=self.version)
 

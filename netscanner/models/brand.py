@@ -41,7 +41,7 @@ class Brand(BaseModel):
         verbose_name_plural = pgettext_lazy('Brand', 'Brands')
 
     def __str__(self):
-        return '{DESCRIPTION}'.format(DESCRIPTION=self.description)
+        return '{NAME}'.format(NAME=self.name)
 
 
 class BrandAdmin(BaseModelAdmin):

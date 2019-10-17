@@ -26,6 +26,7 @@ from .device_type import DeviceType, DeviceTypeAdmin              # noqa: F401
 from .discovery import Discovery, DiscoveryAdmin                  # noqa: F401
 from .domain import Domain, DomainAdmin                           # noqa: F401
 from .domain_main import DomainMain, DomainMainAdmin              # noqa: F401
+from .host import Host, HostAdmin                                 # noqa: F401
 from .location import Location, LocationAdmin                     # noqa: F401
 from .operating_system import (OperatingSystem,                   # noqa: F401
                                OperatingSystemAdmin)              # noqa: F401

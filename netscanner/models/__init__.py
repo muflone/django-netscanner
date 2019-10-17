@@ -27,7 +27,7 @@ from .discovery import Discovery, DiscoveryAdmin                  # noqa: F401
 from .domain import Domain, DomainAdmin                           # noqa: F401
 from .domain_main import DomainMain, DomainMainAdmin              # noqa: F401
 from .location import Location, LocationAdmin                     # noqa: F401
-from .operating_system import (OperatingSystem,
+from .operating_system import (OperatingSystem,                   # noqa: F401
                                OperatingSystemAdmin)              # noqa: F401
 from .scanner import Scanner, ScannerAdmin                        # noqa: F401
 from .subnet_v4 import SubnetV4, SubnetV4Admin                    # noqa: F401

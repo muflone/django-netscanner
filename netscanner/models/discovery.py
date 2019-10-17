@@ -41,9 +41,9 @@ class Discovery(BaseModel):
                                 on_delete=models.PROTECT,
                                 verbose_name=pgettext_lazy('Discover',
                                                            'scanner'))
-    arguments = models.TextField(blank=True,
-                                 verbose_name=pgettext_lazy('Discover',
-                                                            'arguments'))
+    options = models.TextField(blank=True,
+                               verbose_name=pgettext_lazy('Discover',
+                                                          'options'))
     interval = models.PositiveIntegerField(
         verbose_name=pgettext_lazy('Discovery',
                                    'scan interval'))

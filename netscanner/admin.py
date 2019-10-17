@@ -22,6 +22,7 @@ from django.contrib import admin
 
 from .models.brand import Brand, BrandAdmin
 from .models.company import Company, CompanyAdmin
+from .models.custom_field import CustomField, CustomFieldAdmin
 from .models.device_model import DeviceModel, DeviceModelAdmin
 from .models.device_type import DeviceType, DeviceTypeAdmin
 from .models.domain import Domain, DomainAdmin
@@ -33,6 +34,7 @@ from .models.subnet_v4 import SubnetV4, SubnetV4Admin
 
 admin.site.register(Brand, BrandAdmin)
 admin.site.register(Company, CompanyAdmin)
+admin.site.register(CustomField, CustomFieldAdmin)
 admin.site.register(DeviceModel, DeviceModelAdmin)
 admin.site.register(DeviceType, DeviceTypeAdmin)
 admin.site.register(Domain, DomainAdmin)

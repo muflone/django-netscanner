@@ -43,7 +43,7 @@ class DeviceModel(BaseModel):
     class Meta:
         # Define the database table
         db_table = 'netscanner_device_model'
-        ordering = ['device_type', 'brand', 'name']
+        ordering = ['brand', 'name']
         unique_together = ('brand', 'name')
         verbose_name = pgettext_lazy('DeviceModel', 'Device model')
         verbose_name_plural = pgettext_lazy('DeviceModel', 'Device models')

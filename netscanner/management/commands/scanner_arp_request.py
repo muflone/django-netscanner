@@ -44,7 +44,8 @@ class Command(BaseCommand):
                             default=1)
 
     def handle(self, *args, **options):
-        discoveries = Discovery.objects.filter(scanner__tool='arp_request')
+        discoveries = Discovery.objects.filter(scanner__tool='arp_request',
+                                               enabled=True)
 
         for discovery in discoveries:
             # Define options (Command line + Scanner + Discovery)

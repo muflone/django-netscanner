@@ -40,7 +40,8 @@ class Command(BaseCommand):
                             default=10)
 
     def handle(self, *args, **options):
-        discoveries = Discovery.objects.filter(scanner__tool='hostname')
+        discoveries = Discovery.objects.filter(scanner__tool='hostname',
+                                               enabled=True)
 
         for discovery in discoveries:
             # Define options (Command line + Scanner + Discovery)

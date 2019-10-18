@@ -46,7 +46,9 @@ class Domain(BaseModel):
         verbose_name_plural = pgettext_lazy('Domain', 'Domains')
 
     def __str__(self):
-        return '{DOMAIN}.{NAME}'.format(DOMAIN=self.domain, NAME=self.name)
+        return '{NAME}{SEP}{DOMAIN}'.format(NAME=self.name,
+                                            SEP='.' if self.name else '',
+                                            DOMAIN=self.domain)
 
 
 class DomainAdmin(BaseModelAdmin):

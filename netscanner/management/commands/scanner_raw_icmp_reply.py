@@ -63,10 +63,11 @@ class Command(ManagementBaseCommand):
         :return: None
         """
         for item in results:
-            if item and item[1] and item[1]['reply']:
+            (address, values) = item
+            reply = values['reply']
+            if reply:
+                self.print('%-18s %s' % (address, values))
                 # Update last seen time
-                address = item[0]
-                self.print('%s %s' % (item[0], item[1]))
                 hosts = Host.objects.filter(address=address)
                 if hosts:
                     # Update existing hosts

@@ -61,5 +61,8 @@ class Consumers(object):
         """
         results = []
         while not self.results.empty():
-            results.append(self.results.get())
+            result = self.results.get()
+            # Skip any empty value
+            if result:
+                results.append(result)
         return results

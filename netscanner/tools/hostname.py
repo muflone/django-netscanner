@@ -31,5 +31,5 @@ class Hostname(object):
         Resolve the address hostname
         """
         return {
-            'hostname': socket.getfqdn(destination)
+            'fqdn': socket.getfqdn(destination)
         }

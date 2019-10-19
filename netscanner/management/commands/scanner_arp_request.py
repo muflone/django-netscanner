@@ -63,18 +63,18 @@ class Command(ManagementBaseCommand):
         :return: None
         """
         for item in results:
-            if item and item[1] and item[1]['mac_address']:
-                # Update MAC Address
-                address = item[0]
-                self.print('%s %s' % (item[0], item[1]))
+            (address, values) = item
+            mac_address = values['mac_address']
+            if mac_address:
+                self.print('%-18s %s' % (address, values))
+                # Update last seen time and MAC Address
                 hosts = Host.objects.filter(address=address)
                 if hosts:
                     # Update existing hosts
                     for host in hosts:
                         # Update only if not excluded from discovery
                         if not host.no_discovery:
-                            host.mac_address = item[1]['mac_address'].replace(
-                                ':', '')
+                            host.mac_address = mac_address.replace(':', '')
                             host.last_seen = timezone.now()
                             host.save()
                 else:
@@ -83,6 +83,6 @@ class Command(ManagementBaseCommand):
                     host.name = address
                     host.address = address
                     host.subnetv4 = discovery.subnetv4
-                    host.mac_address = item[1]['mac_address'].replace(':', '')
+                    host.mac_address = mac_address.replace(':', '')
                     host.last_seen = timezone.now()
                     host.save()

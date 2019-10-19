@@ -59,14 +59,14 @@ class Command(ManagementBaseCommand):
         :return: None
         """
         for item in results:
-            if (item and item[1] and
-                    item[1]['hostname'] and
-                    item[1]['hostname'] != item[0]):
-                # Update hostname and domain name
-                address = item[0]
-                if '.' in item[1]['hostname']:
+            (address, values) = item
+            fqdn = values['fqdn']
+            if fqdn and fqdn != address:
+                self.print('%-18s %s' % (address, values))
+                # Update last seen time, hostname and domain name
+                if '.' in fqdn:
                     # Hostname + domain name
-                    hostname, domain_name = item[1]['hostname'].split('.', 1)
+                    hostname, domain_name = fqdn.split('.', 1)
                     # Search for domain
                     domains = Domain.objects.filter(
                         domain__name=domain_name,
@@ -81,9 +81,8 @@ class Command(ManagementBaseCommand):
                         domain = domains[0] if domains else None
                 else:
                     # No domain, only hostname
-                    hostname = item[1]['hostname']
+                    hostname = fqdn
                     domain = None
-                self.print('%s %s' % (item[0], item[1]))
                 hosts = Host.objects.filter(address=address)
                 if hosts:
                     # Update existing hosts

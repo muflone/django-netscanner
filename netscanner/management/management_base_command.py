@@ -23,6 +23,7 @@ import json
 import multiprocessing
 
 from django.core.management.base import BaseCommand
+from django.db import transaction
 from django.utils import timezone
 
 from netscanner.models import Discovery
@@ -69,12 +70,13 @@ class ManagementBaseCommand(BaseCommand):
             if tool:
                 consumers.execute(runners=discovery_options['workers'],
                                   action=tool.execute)
-                # Process results
-                self.process_results(discovery=discovery,
-                                     results=consumers.results_as_list())
-                # Update last scan discovery
-                discovery.last_scan = timezone.now()
-                discovery.save()
+                # Process the results in a single operation on the DB side
+                with transaction.atomic():
+                    self.process_results(discovery=discovery,
+                                         results=consumers.results_as_list())
+                    # Update last scan discovery
+                    discovery.last_scan = timezone.now()
+                    discovery.save()
 
     def instance_scanner_tool(self,
                               options: dict):

@@ -19,99 +19,89 @@
 ##
 
 import argparse
-import json
-import multiprocessing
 
-from django.core.management.base import BaseCommand
 from django.utils import timezone
 
+from netscanner.management.management_base_command import ManagementBaseCommand
 from netscanner.models import Discovery, Domain, Host
 from netscanner.tools.hostname import Hostname
-from netscanner.utils.consumers import Consumers
 
 
-class Command(BaseCommand):
+class Command(ManagementBaseCommand):
     help = 'Discover network hostnames'
 
+    def __init__(self):
+        super().__init__()
+        self.scanner_tool = 'hostname'
+
     def add_arguments(self, parser: argparse.ArgumentParser):
+        super().add_arguments(parser)
         parser.add_argument('--workers',
                             action='store',
                             type=int,
                             default=10)
 
-    def handle(self, *args, **options):
-        discoveries = Discovery.objects.filter(scanner__tool='hostname',
-                                               enabled=True)
+    def instance_scanner_tool(self,
+                              options: dict):
+        """
+        Instance the scanner tool using the discovery options
+        :param options: dictionary containing the options
+        :return:
+        """
+        return Hostname()
 
-        for discovery in discoveries:
-            # Define options (Command line + Scanner + Discovery)
-            discovery_options = {**options}
-            # Add Scanner options
-            if discovery.scanner.options:
-                discovery_options.update(json.loads(discovery.scanner.options))
-            # Add Discovery options
-            if discovery.options:
-                discovery_options.update(json.loads(discovery.options))
-            # Exlude Django reserved options
-            for reserved_options in ('verbosity', 'settings', 'pythonpath',
-                                     'traceback', 'no_color', 'force_color'):
-                if reserved_options in discovery_options:
-                    del discovery_options[reserved_options]
-            # Prepare addresses to discover
-            tasks = multiprocessing.JoinableQueue()
-            for address in discovery.subnetv4.get_ip_list():
-                tasks.put(address)
-            # Prepare consumers to execute the network discovery
-            consumers = Consumers(tasks_queue=tasks)
-            tool = Hostname()
-            consumers.execute(runners=discovery_options['workers'],
-                              action=tool.execute)
-            # Process results
-            for item in consumers.results_as_list():
-                if item and item[1]:
-                    # Update hostname and domain name
-                    address = item[0]
-                    if '.' in item[1]:
-                        # Hostname + domain name
-                        hostname, domain_name = item[1].split('.', 1)
-                        # Search for domain
+    def process_results(self,
+                        discovery: Discovery,
+                        results: list) -> None:
+        """
+        Process the results list
+        :param results: list of results to process
+        :return: None
+        """
+        for item in results:
+            if (item and item[1] and
+                    item[1]['hostname'] and
+                    item[1]['hostname'] != item[0]):
+                # Update hostname and domain name
+                address = item[0]
+                if '.' in item[1]['hostname']:
+                    # Hostname + domain name
+                    hostname, domain_name = item[1]['hostname'].split('.', 1)
+                    # Search for domain
+                    domains = Domain.objects.filter(
+                        domain__name=domain_name,
+                        name='')
+                    domain = domains[0] if domains else None
+                    # If no domain is found, search for sub-domain
+                    if not domain and '.' in domain_name:
+                        domain_name, parent = domain_name.split('.', 1)
                         domains = Domain.objects.filter(
-                            domain__name=domain_name,
-                            name='')
+                            domain__name=parent,
+                            name=domain_name)
                         domain = domains[0] if domains else None
-                        # If no domain is found, search for sub-domain
-                        if not domain and '.' in domain_name:
-                            domain_name, parent = domain_name.split('.', 1)
-                            domains = Domain.objects.filter(
-                                domain__name=parent,
-                                name=domain_name)
-                            domain = domains[0] if domains else None
-                    else:
-                        # No domain, only hostname
-                        hostname = item[1]
-                        domain = None
-                    self.stdout.write(item[0])
-                    hosts = Host.objects.filter(address=address)
-                    if hosts:
-                        # Update existing hosts
-                        for host in hosts:
-                            # Update only if not excluded from discovery
-                            if not host.no_discovery:
-                                host.hostname = hostname
-                                if domain:
-                                    host.domain = domain
-                                host.last_seen = timezone.now()
-                                host.save()
-                    else:
-                        # Insert new host
-                        host = Host.objects.create()
-                        host.name = address
-                        host.subnetv4 = discovery.subnetv4
-                        host.hostname = hostname
-                        if domain:
-                            host.domain = domain
-                        host.last_seen = timezone.now()
-                        host.save()
-            # Update last scan discovery
-            discovery.last_scan = timezone.now()
-            discovery.save()
+                else:
+                    # No domain, only hostname
+                    hostname = item[1]['hostname']
+                    domain = None
+                self.print('%s %s' % (item[0], item[1]))
+                hosts = Host.objects.filter(address=address)
+                if hosts:
+                    # Update existing hosts
+                    for host in hosts:
+                        # Update only if not excluded from discovery
+                        if not host.no_discovery:
+                            host.hostname = hostname
+                            if domain:
+                                host.domain = domain
+                            host.last_seen = timezone.now()
+                            host.save()
+                else:
+                    # Insert new host
+                    host = Host.objects.create()
+                    host.name = address
+                    host.subnetv4 = discovery.subnetv4
+                    host.hostname = hostname
+                    if domain:
+                        host.domain = domain
+                    host.last_seen = timezone.now()
+                    host.save()

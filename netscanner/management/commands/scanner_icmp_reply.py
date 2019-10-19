@@ -19,21 +19,23 @@
 ##
 
 import argparse
-import json
-import multiprocessing
 
-from django.core.management.base import BaseCommand
 from django.utils import timezone
 
+from netscanner.management.management_base_command import ManagementBaseCommand
 from netscanner.models import Discovery, Host
 from netscanner.tools.icmp_reply import ICMPReply
-from netscanner.utils.consumers import Consumers
 
 
-class Command(BaseCommand):
+class Command(ManagementBaseCommand):
     help = 'Discover network hosts using ICMP reply requests'
 
+    def __init__(self):
+        super().__init__()
+        self.scanner_tool = 'icmp_reply'
+
     def add_arguments(self, parser: argparse.ArgumentParser):
+        super().add_arguments(parser)
         parser.add_argument('--workers',
                             action='store',
                             type=int,
@@ -43,55 +45,41 @@ class Command(BaseCommand):
                             type=int,
                             default=1)
 
-    def handle(self, *args, **options):
-        discoveries = Discovery.objects.filter(scanner__tool='icmp_reply',
-                                               enabled=True)
+    def instance_scanner_tool(self,
+                              options: dict):
+        """
+        Instance the scanner tool using the discovery options
+        :param options: dictionary containing the options
+        :return:
+        """
+        return ICMPReply(timeout=options['timeout'])
 
-        for discovery in discoveries:
-            # Define options (Command line + Scanner + Discovery)
-            discovery_options = {**options}
-            # Add Scanner options
-            if discovery.scanner.options:
-                discovery_options.update(json.loads(discovery.scanner.options))
-            # Add Discovery options
-            if discovery.options:
-                discovery_options.update(json.loads(discovery.options))
-            # Exlude Django reserved options
-            for reserved_options in ('verbosity', 'settings', 'pythonpath',
-                                     'traceback', 'no_color', 'force_color'):
-                if reserved_options in discovery_options:
-                    del discovery_options[reserved_options]
-            # Prepare addresses to discover
-            tasks = multiprocessing.JoinableQueue()
-            for address in discovery.subnetv4.get_ip_list():
-                tasks.put(address)
-            # Prepare consumers to execute the network discovery
-            consumers = Consumers(tasks_queue=tasks)
-            tool = ICMPReply(discovery_options['timeout'])
-            consumers.execute(runners=discovery_options['workers'],
-                              action=tool.execute)
-            # Process results
-            for item in consumers.results_as_list():
-                if item and item[1]:
-                    # Update last seen time
-                    address = item[0]
-                    self.stdout.write(item[0])
-                    hosts = Host.objects.filter(address=address)
-                    if hosts:
-                        # Update existing hosts
-                        for host in hosts:
-                            # Update only if not excluded from discovery
-                            if not host.no_discovery:
-                                host.last_seen = timezone.now()
-                                host.save()
-                    else:
-                        # Insert new host
-                        host = Host.objects.create()
-                        host.name = address
-                        host.address = address
-                        host.subnetv4 = discovery.subnetv4
-                        host.last_seen = timezone.now()
-                        host.save()
-            # Update last scan discovery
-            discovery.last_scan = timezone.now()
-            discovery.save()
+    def process_results(self,
+                        discovery: Discovery,
+                        results: list) -> None:
+        """
+        Process the results list
+        :param results: list of results to process
+        :return: None
+        """
+        for item in results:
+            if item and item[1] and item[1]['reply']:
+                # Update last seen time
+                address = item[0]
+                self.print('%s %s' % (item[0], item[1]))
+                hosts = Host.objects.filter(address=address)
+                if hosts:
+                    # Update existing hosts
+                    for host in hosts:
+                        # Update only if not excluded from discovery
+                        if not host.no_discovery:
+                            host.last_seen = timezone.now()
+                            host.save()
+                else:
+                    # Insert new host
+                    host = Host.objects.create()
+                    host.name = address
+                    host.address = address
+                    host.subnetv4 = discovery.subnetv4
+                    host.last_seen = timezone.now()
+                    host.save()

@@ -27,7 +27,7 @@ class ARPRequest(object):
         self.timeout = timeout
 
     def execute(self,
-                destination: str):
+                destination: str) -> dict:
         """
         Send an ARP request to the address (requires root access)
         """
@@ -36,4 +36,6 @@ class ARPRequest(object):
         reply = scapy.all.srp(broadcast / arp,
                               timeout=self.timeout,
                               verbose=False)[0]
-        return reply[0][1].hwsrc.upper() if reply else None
+        return {
+            'mac_address': reply[0][1].hwsrc.upper() if reply else None
+        }

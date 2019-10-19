@@ -27,7 +27,7 @@ class ICMPReply(object):
         self.timeout = timeout
 
     def execute(self,
-                destination: str):
+                destination: str) -> dict:
         """
         Ping an IP address (requires root access)
         """
@@ -36,4 +36,6 @@ class ICMPReply(object):
         reply = scapy.all.sr1(ip_request / ping,
                               timeout=self.timeout,
                               verbose=False)
-        return reply[0][1].code == 0 if reply else False
+        return {
+            'reply': reply[0][1].code == 0 if reply else False
+        }

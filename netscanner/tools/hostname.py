@@ -26,9 +26,10 @@ class Hostname(object):
         pass
 
     def execute(self,
-                destination: str):
+                destination: str) -> dict:
         """
         Resolve the address hostname
         """
-        results = socket.getfqdn(destination)
-        return results if results != destination else None
+        return {
+            'hostname': socket.getfqdn(destination)
+        }

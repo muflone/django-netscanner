@@ -19,6 +19,7 @@
 ##
 
 import argparse
+import datetime
 import json
 import multiprocessing
 
@@ -26,7 +27,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
-from netscanner.models import Discovery
+from netscanner.models import Discovery, DiscoveryResult
 from netscanner.utils.consumers import Consumers
 
 
@@ -103,7 +104,34 @@ class ManagementBaseCommand(BaseCommand):
         :param results: list of results to process
         :return: None
         """
-        pass
+        serialized_options = json.dumps(options)
+        for item in results:
+            serializable_values = {}
+            address, values = item
+            # Save only valid values
+            if values:
+                # Serialize values and skip invalid values in JSON
+                for (key, value) in values.items():
+                    if isinstance(value, datetime.datetime):
+                        # Convert datetime to timestamps
+                        serializable_values[key] = (
+                            int(value.timestamp()))
+                    elif isinstance(value, list):
+                        # Convert lists to strings
+                        serializable_values[key] = ', '.join(value)
+                    else:
+                        # Raw value
+                        serializable_values[key] = value
+                # Save the discovery result
+                DiscoveryResult.objects.create(
+                    discovery=discovery,
+                    address=address,
+                    options=serialized_options,
+                    scan_datetime=timezone.now(),
+                    results=(json.dumps(serializable_values)
+                             if serializable_values
+                             else '')
+                )
 
     def print(self,
               message: str) -> None:

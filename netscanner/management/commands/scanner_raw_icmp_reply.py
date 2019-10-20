@@ -68,23 +68,21 @@ class Command(ManagementBaseCommand):
         super().process_results(discovery, options, results)
         for item in results:
             (address, values) = item
-            reply = values['reply']
-            if reply:
-                self.print('%-18s %s' % (address, values))
-                # Update last seen time
-                hosts = Host.objects.filter(address=address)
-                if hosts:
-                    # Update existing hosts
-                    for host in hosts:
-                        # Update only if not excluded from discovery
-                        if not host.no_discovery:
-                            host.last_seen = timezone.now()
-                            host.save()
-                else:
-                    # Insert new host
-                    host = Host.objects.create()
-                    host.name = address
-                    host.address = address
-                    host.subnetv4 = discovery.subnetv4
-                    host.last_seen = timezone.now()
-                    host.save()
+            self.print('%-18s %s' % (address, values))
+            # Update last seen time
+            hosts = Host.objects.filter(address=address)
+            if hosts:
+                # Update existing hosts
+                for host in hosts:
+                    # Update only if not excluded from discovery
+                    if not host.no_discovery:
+                        host.last_seen = timezone.now()
+                        host.save()
+            else:
+                # Insert new host
+                host = Host.objects.create()
+                host.name = address
+                host.address = address
+                host.subnetv4 = discovery.subnetv4
+                host.last_seen = timezone.now()
+                host.save()

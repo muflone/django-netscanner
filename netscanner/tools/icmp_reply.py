@@ -36,6 +36,8 @@ class ICMPReply(object):
         reply = scapy.all.sr1(ip_request / ping,
                               timeout=self.timeout,
                               verbose=False)
+        result = reply[0][1].code == 0 if reply else False
         return {
-            'reply': reply[0][1].code == 0 if reply else False
+            'reply': result,
+            'status': bool(result)
         }

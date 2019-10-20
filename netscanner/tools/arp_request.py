@@ -36,6 +36,8 @@ class ARPRequest(object):
         reply = scapy.all.srp(broadcast / arp,
                               timeout=self.timeout,
                               verbose=False)[0]
+        result = reply[0][1].hwsrc.upper() if reply else None
         return {
-            'mac_address': reply[0][1].hwsrc.upper() if reply else None
+            'mac_address': result,
+            'status': bool(result)
         }

@@ -30,6 +30,8 @@ class Hostname(object):
         """
         Resolve the address hostname
         """
+        result = socket.getfqdn(destination)
         return {
-            'fqdn': socket.getfqdn(destination)
+            'fqdn': result,
+            'status': bool(result) and result != destination
         }

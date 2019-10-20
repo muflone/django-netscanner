@@ -46,5 +46,6 @@ class TCPConnect(object):
                 socket.timeout):
             result = False
         return {
-            'connected': result
+            'connected': result,
+            'status': result
         }

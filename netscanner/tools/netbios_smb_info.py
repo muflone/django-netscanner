@@ -57,7 +57,7 @@ class NetBIOSSMBInfo(object):
         if self.protocol == PROTOCOL_NETBIOS:
             nbns_result = self._get_netbios_names(destination)
             if not nbns_result or not nbns_result['unique_names']:
-                return
+                return {'status': False}
             results['names'] = nbns_result['unique_names']
             results['group'] = nbns_result['group']
 
@@ -156,6 +156,8 @@ class NetBIOSSMBInfo(object):
         except socket.error:
             # Skip exceptions
             pass
+        # Add status
+        results['status'] = bool(results)
         return results
 
     def _get_netbios_names(self,

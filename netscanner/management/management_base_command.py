@@ -72,9 +72,13 @@ class ManagementBaseCommand(BaseCommand):
                                   action=tool.execute)
                 # Process the results in a single operation on the DB side
                 with transaction.atomic():
+                    # Exclude invalid items from their status
+                    results = list(filter(lambda item: item[1]['status'],
+                                          consumers.results_as_list()))
+                    # Process the results to update the models, if needed
                     self.process_results(discovery=discovery,
                                          options=options,
-                                         results=consumers.results_as_list())
+                                         results=results)
                     # Update last scan discovery
                     discovery.last_scan = timezone.now()
                     discovery.save()

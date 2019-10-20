@@ -65,46 +65,45 @@ class Command(ManagementBaseCommand):
         for item in results:
             (address, values) = item
             fqdn = values['fqdn']
-            if fqdn and fqdn != address:
-                self.print('%-18s %s' % (address, values))
-                # Update last seen time, hostname and domain name
-                if '.' in fqdn:
-                    # Hostname + domain name
-                    hostname, domain_name = fqdn.split('.', 1)
-                    # Search for domain
+            self.print('%-18s %s' % (address, values))
+            # Update last seen time, hostname and domain name
+            if '.' in fqdn:
+                # Hostname + domain name
+                hostname, domain_name = fqdn.split('.', 1)
+                # Search for domain
+                domains = Domain.objects.filter(
+                    domain__name=domain_name,
+                    name='')
+                domain = domains[0] if domains else None
+                # If no domain is found, search for sub-domain
+                if not domain and '.' in domain_name:
+                    domain_name, parent = domain_name.split('.', 1)
                     domains = Domain.objects.filter(
-                        domain__name=domain_name,
-                        name='')
+                        domain__name=parent,
+                        name=domain_name)
                     domain = domains[0] if domains else None
-                    # If no domain is found, search for sub-domain
-                    if not domain and '.' in domain_name:
-                        domain_name, parent = domain_name.split('.', 1)
-                        domains = Domain.objects.filter(
-                            domain__name=parent,
-                            name=domain_name)
-                        domain = domains[0] if domains else None
-                else:
-                    # No domain, only hostname
-                    hostname = fqdn
-                    domain = None
-                hosts = Host.objects.filter(address=address)
-                if hosts:
-                    # Update existing hosts
-                    for host in hosts:
-                        # Update only if not excluded from discovery
-                        if not host.no_discovery:
-                            host.hostname = hostname
-                            if domain:
-                                host.domain = domain
-                            host.last_seen = timezone.now()
-                            host.save()
-                else:
-                    # Insert new host
-                    host = Host.objects.create()
-                    host.name = address
-                    host.subnetv4 = discovery.subnetv4
-                    host.hostname = hostname
-                    if domain:
-                        host.domain = domain
-                    host.last_seen = timezone.now()
-                    host.save()
+            else:
+                # No domain, only hostname
+                hostname = fqdn
+                domain = None
+            hosts = Host.objects.filter(address=address)
+            if hosts:
+                # Update existing hosts
+                for host in hosts:
+                    # Update only if not excluded from discovery
+                    if not host.no_discovery:
+                        host.hostname = hostname
+                        if domain:
+                            host.domain = domain
+                        host.last_seen = timezone.now()
+                        host.save()
+            else:
+                # Insert new host
+                host = Host.objects.create()
+                host.name = address
+                host.subnetv4 = discovery.subnetv4
+                host.hostname = hostname
+                if domain:
+                    host.domain = domain
+                host.last_seen = timezone.now()
+                host.save()

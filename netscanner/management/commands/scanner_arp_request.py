@@ -69,24 +69,23 @@ class Command(ManagementBaseCommand):
         for item in results:
             (address, values) = item
             mac_address = values['mac_address']
-            if mac_address:
-                self.print('%-18s %s' % (address, values))
-                # Update last seen time and MAC Address
-                hosts = Host.objects.filter(address=address)
-                if hosts:
-                    # Update existing hosts
-                    for host in hosts:
-                        # Update only if not excluded from discovery
-                        if not host.no_discovery:
-                            host.mac_address = mac_address.replace(':', '')
-                            host.last_seen = timezone.now()
-                            host.save()
-                else:
-                    # Insert new host
-                    host = Host.objects.create()
-                    host.name = address
-                    host.address = address
-                    host.subnetv4 = discovery.subnetv4
-                    host.mac_address = mac_address.replace(':', '')
-                    host.last_seen = timezone.now()
-                    host.save()
+            self.print('%-18s %s' % (address, values))
+            # Update last seen time and MAC Address
+            hosts = Host.objects.filter(address=address)
+            if hosts:
+                # Update existing hosts
+                for host in hosts:
+                    # Update only if not excluded from discovery
+                    if not host.no_discovery:
+                        host.mac_address = mac_address.replace(':', '')
+                        host.last_seen = timezone.now()
+                        host.save()
+            else:
+                # Insert new host
+                host = Host.objects.create()
+                host.name = address
+                host.address = address
+                host.subnetv4 = discovery.subnetv4
+                host.mac_address = mac_address.replace(':', '')
+                host.last_seen = timezone.now()
+                host.save()

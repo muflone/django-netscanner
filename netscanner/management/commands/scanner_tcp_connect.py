@@ -57,12 +57,16 @@ class Command(ManagementBaseCommand):
 
     def process_results(self,
                         discovery: Discovery,
+                        options: dict,
                         results: list) -> None:
         """
         Process the results list
+        :param discovery: the Discovery object that launched the scanner
+        :param options: dictionary containing the options
         :param results: list of results to process
         :return: None
         """
+        super().process_results(discovery, options, results)
         for item in results:
             (address, values) = item
             connected = values['connected']

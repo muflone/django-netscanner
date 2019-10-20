@@ -73,6 +73,7 @@ class ManagementBaseCommand(BaseCommand):
                 # Process the results in a single operation on the DB side
                 with transaction.atomic():
                     self.process_results(discovery=discovery,
+                                         options=options,
                                          results=consumers.results_as_list())
                     # Update last scan discovery
                     discovery.last_scan = timezone.now()
@@ -89,9 +90,12 @@ class ManagementBaseCommand(BaseCommand):
 
     def process_results(self,
                         discovery: Discovery,
+                        options: dict,
                         results: list) -> None:
         """
         Process the results list
+        :param discovery: the Discovery object that launched the scanner
+        :param options: dictionary containing the options
         :param results: list of results to process
         :return: None
         """

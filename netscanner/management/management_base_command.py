@@ -38,6 +38,9 @@ class ManagementBaseCommand(BaseCommand):
         Use scanner_tool string to choose the desider scanner to use
         """
         BaseCommand.__init__(self)
+        # Automatically save a DiscoveryResult record for each successful
+        # discovery result
+        self.save_results = True
 
     def add_arguments(self, parser: argparse.ArgumentParser) -> None:
         BaseCommand.add_arguments(self, parser)
@@ -108,8 +111,8 @@ class ManagementBaseCommand(BaseCommand):
         for item in results:
             serializable_values = {}
             address, values = item
-            # Save only valid values
-            if values:
+            # Save only valid values (if results saving is disabled)
+            if values and self.save_results:
                 # Serialize values and skip invalid values in JSON
                 for (key, value) in values.items():
                     if isinstance(value, datetime.datetime):

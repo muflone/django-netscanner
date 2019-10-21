@@ -19,7 +19,11 @@
 ##
 
 from django.db import models
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.utils.translation import pgettext_lazy
+
+from ..forms import ConfirmActionForm
 
 from utility.models import BaseModel, BaseModelAdmin
 
@@ -149,4 +153,72 @@ class Host(BaseModel):
 
 
 class HostAdmin(BaseModelAdmin):
-    pass
+    actions = ('action_enable', 'action_disable')
+
+    def action_enable(self, request, queryset):
+        form = ConfirmActionForm(request.POST)
+        if 'action_enable' in request.POST:
+            if form.is_valid():
+                # Enable every selected row
+                queryset.update(enabled=True)
+                # Operation successful
+                self.message_user(request,
+                                  pgettext_lazy(
+                                      'Host',
+                                      'Enabled {COUNT} hosts'.format(
+                                          COUNT=queryset.count())))
+                return HttpResponseRedirect(request.get_full_path())
+        # Render form to confirm changes
+        return render(request,
+                      'utility/change_attribute/form.html',
+                      context={'queryset': queryset,
+                               'form': form,
+                               'title': pgettext_lazy(
+                                   'Host',
+                                   'Enable hosts'),
+                               'question': pgettext_lazy(
+                                   'Host',
+                                   'Confirm you want to enable the selected '
+                                   'hosts?'),
+                               'items_name': 'Host',
+                               'action': 'action_enable',
+                               'action_description': pgettext_lazy(
+                                   'Host',
+                                   'Enable'),
+                               })
+    action_enable.short_description = pgettext_lazy('Host',
+                                                    'Enable')
+
+    def action_disable(self, request, queryset):
+        form = ConfirmActionForm(request.POST)
+        if 'action_disable' in request.POST:
+            if form.is_valid():
+                # Disable every selected row
+                queryset.update(enabled=False)
+                # Operation successful
+                self.message_user(request,
+                                  pgettext_lazy(
+                                      'Host',
+                                      'Disabled {COUNT} hosts'.format(
+                                          COUNT=queryset.count())))
+                return HttpResponseRedirect(request.get_full_path())
+        # Render form to confirm changes
+        return render(request,
+                      'utility/change_attribute/form.html',
+                      context={'queryset': queryset,
+                               'form': form,
+                               'title': pgettext_lazy(
+                                   'Host',
+                                   'Disable hosts'),
+                               'question': pgettext_lazy(
+                                   'Host',
+                                   'Confirm you want to disable the selected '
+                                   'hosts?'),
+                               'items_name': 'Host',
+                               'action': 'action_disable',
+                               'action_description': pgettext_lazy(
+                                   'Host',
+                                   'Disable'),
+                               })
+    action_disable.short_description = pgettext_lazy('Host',
+                                                     'Disable')

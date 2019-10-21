@@ -102,7 +102,7 @@ class DiscoveryResultAdmin(BaseModelAdmin):
                         self.message_user(
                             request,
                             pgettext_lazy(
-                                'Room',
+                                'DiscoveryResult',
                                 'Applied results to {COUNT} hosts'.format(
                                     COUNT=queryset.count())))
                 return HttpResponseRedirect(request.get_full_path())
@@ -115,7 +115,7 @@ class DiscoveryResultAdmin(BaseModelAdmin):
                                    'DiscoveryResult',
                                    'Apply the results to the hosts'),
                                'question': pgettext_lazy(
-                                   'Room',
+                                   'DiscoveryResult',
                                    'Confirm you want to apply the results '
                                    'to the hosts?'),
                                'items_name': 'DiscoveryResult',

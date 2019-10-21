@@ -43,6 +43,10 @@ class Discovery(BaseModel):
                                 on_delete=models.PROTECT,
                                 verbose_name=pgettext_lazy('Discover',
                                                            'scanner'))
+    timeout = models.PositiveIntegerField(default=0,
+                                          verbose_name=pgettext_lazy(
+                                              'Discover',
+                                              'timeout'))
     options = models.TextField(blank=True,
                                verbose_name=pgettext_lazy('Discover',
                                                           'options'))

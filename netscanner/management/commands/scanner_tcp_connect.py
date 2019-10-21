@@ -40,10 +40,6 @@ class Command(ManagementBaseCommand):
                             action='store',
                             type=int,
                             default=10)
-        parser.add_argument('--timeout',
-                            action='store',
-                            type=int,
-                            default=1)
 
     def instance_scanner_tool(self,
                               discovery: Discovery,
@@ -54,7 +50,7 @@ class Command(ManagementBaseCommand):
         :param options: dictionary containing the options
         :return:
         """
-        return TCPConnect(timeout=options['timeout'],
+        return TCPConnect(timeout=discovery.timeout,
                           portnr=options.get('port', 80))
 
     def process_results(self,

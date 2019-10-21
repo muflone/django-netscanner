@@ -72,8 +72,8 @@ class ManagementBaseCommand(BaseCommand):
             tool = self.instance_scanner_tool(discovery=discovery,
                                               options=discovery_options)
             if tool:
-                self.print('Discovery "%s" with options: %s' % (
-                    discovery.name, discovery_options))
+                self.print('Discovery "%s" - timeout: %d, options: %s' % (
+                    discovery.name, discovery.timeout, discovery_options))
                 consumers.execute(runners=discovery_options['workers'],
                                   action=tool.execute)
                 # Process the results in a single operation on the DB side

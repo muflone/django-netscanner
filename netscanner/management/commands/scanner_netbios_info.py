@@ -50,7 +50,7 @@ class Command(ManagementBaseCommand):
         :param options: dictionary containing the options
         :return:
         """
-        return NetBIOSSMBInfo(timeout=options['timeout'],
+        return NetBIOSSMBInfo(timeout=discovery.timeout,
                               protocol=PROTOCOL_NETBIOS,
                               port=options.get('port', 139),
                               port_names=options.get('port_names', 137))

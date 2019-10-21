@@ -26,7 +26,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import pgettext_lazy
 
-from ..forms import DiscoveryResultApplyForm
+from ..forms import ConfirmActionForm
 
 from utility.models import BaseModel, BaseModelAdmin
 
@@ -67,7 +67,7 @@ class DiscoveryResultAdmin(BaseModelAdmin):
     def action_apply_to_hosts(self, request, queryset):
         from ..management.commands import discovery_tool_commands
 
-        form = DiscoveryResultApplyForm(request.POST)
+        form = ConfirmActionForm(request.POST)
         if 'action_apply_to_hosts' in request.POST:
             if form.is_valid():
                 # Prepare every available tool

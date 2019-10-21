@@ -18,8 +18,15 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
-from django.db import models
+import json
+
+from django.contrib import messages
+from django.db import models, transaction
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.utils.translation import pgettext_lazy
+
+from ..forms import DiscoveryResultApplyForm
 
 from utility.models import BaseModel, BaseModelAdmin
 
@@ -55,4 +62,67 @@ class DiscoveryResult(BaseModel):
 
 
 class DiscoveryResultAdmin(BaseModelAdmin):
-    pass
+    actions = ('action_apply_to_hosts', )
+
+    def action_apply_to_hosts(self, request, queryset):
+        from ..management.commands import discovery_tool_commands
+
+        form = DiscoveryResultApplyForm(request.POST)
+        if 'action_apply_to_hosts' in request.POST:
+            if form.is_valid():
+                # Prepare every available tool
+                tools = {}
+                for command in discovery_tool_commands:
+                    tools[command.tool_name] = command()
+                    # Disable the DiscoveryResults automatic generation
+                    tools[command.tool_name].no_log_results = True
+                # Process the results in a single operation on the DB side
+                with transaction.atomic():
+                    # Process each row in the results set
+                    for result in queryset:
+                        if result.discovery.scanner.tool in tools:
+                            # Process each result using the tool
+                            command = tools[result.discovery.scanner.tool]
+                            command.process_results(
+                                discovery=result.discovery,
+                                options=None,
+                                results=[(result.address,
+                                         json.loads(result.results))])
+                        else:
+                            # Unknown tool
+                            self.message_user(
+                                request=request,
+                                message=pgettext_lazy(
+                                    'DiscoveryResultAdmin',
+                                    'Unrecognized Scanner tool'),
+                                level=messages.ERROR)
+                            break
+                    else:
+                        # Operation successful
+                        self.message_user(
+                            request,
+                            pgettext_lazy(
+                                'Room',
+                                'Applied results to {COUNT} hosts'.format(
+                                    COUNT=queryset.count())))
+                return HttpResponseRedirect(request.get_full_path())
+        # Render form to confirm changes
+        return render(request,
+                      'utility/change_attribute/form.html',
+                      context={'queryset': queryset,
+                               'form': form,
+                               'title': pgettext_lazy(
+                                   'DiscoveryResult',
+                                   'Apply the results to the hosts'),
+                               'question': pgettext_lazy(
+                                   'Room',
+                                   'Confirm you want to apply the results '
+                                   'to the hosts?'),
+                               'items_name': 'DiscoveryResult',
+                               'action': 'action_apply_to_hosts',
+                               'action_description': pgettext_lazy(
+                                   'DiscoveryResult',
+                                   'Apply to hosts'),
+                               })
+    action_apply_to_hosts.short_description = pgettext_lazy('DiscoveryResult',
+                                                            'Apply to hosts')

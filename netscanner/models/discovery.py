@@ -19,7 +19,11 @@
 ##
 
 from django.db import models
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.utils.translation import pgettext_lazy
+
+from ..forms import ConfirmActionForm
 
 from utility.models import BaseModel, BaseModelAdmin
 
@@ -76,4 +80,72 @@ class Discovery(BaseModel):
 
 
 class DiscoveryAdmin(BaseModelAdmin):
-    pass
+    actions = ('action_enable', 'action_disable')
+
+    def action_enable(self, request, queryset):
+        form = ConfirmActionForm(request.POST)
+        if 'action_enable' in request.POST:
+            if form.is_valid():
+                # Enable every selected row
+                queryset.update(enabled=True)
+                # Operation successful
+                self.message_user(request,
+                                  pgettext_lazy(
+                                      'Discovery',
+                                      'Enabled {COUNT} discoveries'.format(
+                                          COUNT=queryset.count())))
+                return HttpResponseRedirect(request.get_full_path())
+        # Render form to confirm changes
+        return render(request,
+                      'utility/change_attribute/form.html',
+                      context={'queryset': queryset,
+                               'form': form,
+                               'title': pgettext_lazy(
+                                   'Discovery',
+                                   'Enable discoveries'),
+                               'question': pgettext_lazy(
+                                   'Discovery',
+                                   'Confirm you want to enable the selected '
+                                   'discoveries?'),
+                               'items_name': 'Discovery',
+                               'action': 'action_enable',
+                               'action_description': pgettext_lazy(
+                                   'Discovery',
+                                   'Enable'),
+                               })
+    action_enable.short_description = pgettext_lazy('Discovery',
+                                                    'Enable')
+
+    def action_disable(self, request, queryset):
+        form = ConfirmActionForm(request.POST)
+        if 'action_disable' in request.POST:
+            if form.is_valid():
+                # Disable every selected row
+                queryset.update(enabled=False)
+                # Operation successful
+                self.message_user(request,
+                                  pgettext_lazy(
+                                      'Discovery',
+                                      'Disabled {COUNT} discoveries'.format(
+                                          COUNT=queryset.count())))
+                return HttpResponseRedirect(request.get_full_path())
+        # Render form to confirm changes
+        return render(request,
+                      'utility/change_attribute/form.html',
+                      context={'queryset': queryset,
+                               'form': form,
+                               'title': pgettext_lazy(
+                                   'Discovery',
+                                   'Disable discoveries'),
+                               'question': pgettext_lazy(
+                                   'Discovery',
+                                   'Confirm you want to disable the selected '
+                                   'discoveries?'),
+                               'items_name': 'Discovery',
+                               'action': 'action_disable',
+                               'action_description': pgettext_lazy(
+                                   'Discovery',
+                                   'Disable'),
+                               })
+    action_disable.short_description = pgettext_lazy('Discovery',
+                                                     'Disable')

@@ -36,10 +36,6 @@ class Command(ManagementBaseCommand):
 
     def add_arguments(self, parser: argparse.ArgumentParser):
         super().add_arguments(parser)
-        parser.add_argument('--workers',
-                            action='store',
-                            type=int,
-                            default=10)
 
     def instance_scanner_tool(self,
                               discovery: Discovery,

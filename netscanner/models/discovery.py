@@ -47,6 +47,10 @@ class Discovery(BaseModel):
                                           verbose_name=pgettext_lazy(
                                               'Discover',
                                               'timeout'))
+    workers = models.PositiveSmallIntegerField(default=1,
+                                               verbose_name=pgettext_lazy(
+                                                   'Discover',
+                                                   'workers'))
     options = models.TextField(blank=True,
                                verbose_name=pgettext_lazy('Discover',
                                                           'options'))

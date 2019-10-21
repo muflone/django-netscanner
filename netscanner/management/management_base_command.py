@@ -72,9 +72,15 @@ class ManagementBaseCommand(BaseCommand):
             tool = self.instance_scanner_tool(discovery=discovery,
                                               options=discovery_options)
             if tool:
-                self.print('Discovery "%s" - timeout: %d, options: %s' % (
-                    discovery.name, discovery.timeout, discovery_options))
-                consumers.execute(runners=discovery_options['workers'],
+                self.print('Discovery "{DISCOVERY}" - '
+                           'workers: {WORKERS}, '
+                           'timeout: {TIMEOUT}, '
+                           'options: {OPTIONS}'.format(
+                               DISCOVERY=discovery.name,
+                               WORKERS=discovery.workers,
+                               TIMEOUT=discovery.timeout,
+                               OPTIONS=discovery_options))
+                consumers.execute(runners=discovery.workers,
                                   action=tool.execute)
                 # Process the results in a single operation on the DB side
                 with transaction.atomic():

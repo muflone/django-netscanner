@@ -71,7 +71,8 @@ class ManagementBaseCommand(BaseCommand):
             # Instance the scanner tool using the discovery options
             tool = self.instance_scanner_tool(discovery_options)
             if tool:
-                self.print('Discovery "%s" with options: %s' % (discovery.name, discovery_options))
+                self.print('Discovery "%s" with options: %s' % (
+                    discovery.name, discovery_options))
                 consumers.execute(runners=discovery_options['workers'],
                                   action=tool.execute)
                 # Process the results in a single operation on the DB side

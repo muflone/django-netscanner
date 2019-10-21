@@ -54,10 +54,10 @@ class Discovery(BaseModel):
     options = models.TextField(blank=True,
                                verbose_name=pgettext_lazy('Discover',
                                                           'options'))
-    interval = models.PositiveIntegerField(
-        default=60,
-        verbose_name=pgettext_lazy('Discovery',
-                                   'scan interval'))
+    interval = models.PositiveIntegerField(default=60,
+                                           verbose_name=pgettext_lazy(
+                                               'Discovery',
+                                               'scan interval'))
     last_scan = models.DateTimeField(blank=True,
                                      null=True,
                                      default=None,

@@ -69,7 +69,8 @@ class ManagementBaseCommand(BaseCommand):
             # Prepare consumers to execute the network discovery
             consumers = Consumers(tasks_queue=tasks)
             # Instance the scanner tool using the discovery options
-            tool = self.instance_scanner_tool(discovery_options)
+            tool = self.instance_scanner_tool(discovery=discovery,
+                                              options=discovery_options)
             if tool:
                 self.print('Discovery "%s" with options: %s' % (
                     discovery.name, discovery_options))
@@ -89,9 +90,11 @@ class ManagementBaseCommand(BaseCommand):
                     discovery.save()
 
     def instance_scanner_tool(self,
+                              discovery: Discovery,
                               options: dict):
         """
         Instance the scanner tool using the discovery options
+        :param discovery: Discovery object that launches the tool
         :param options: dictionary containing the options
         :return:
         """

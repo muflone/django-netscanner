@@ -42,9 +42,11 @@ class Command(ManagementBaseCommand):
                             default=10)
 
     def instance_scanner_tool(self,
+                              discovery: Discovery,
                               options: dict):
         """
         Instance the scanner tool using the discovery options
+        :param discovery: Discovery object that launches the tool
         :param options: dictionary containing the options
         :return:
         """

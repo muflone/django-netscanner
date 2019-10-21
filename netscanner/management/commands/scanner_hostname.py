@@ -29,10 +29,10 @@ from netscanner.tools.hostname import Hostname
 
 class Command(ManagementBaseCommand):
     help = 'Discover network hostnames'
+    tool_name = 'hostname'
 
     def __init__(self):
         super().__init__()
-        self.scanner_tool = 'hostname'
 
     def add_arguments(self, parser: argparse.ArgumentParser):
         super().add_arguments(parser)

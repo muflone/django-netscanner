@@ -38,13 +38,12 @@ class ManagementBaseCommand(BaseCommand):
         Use scanner_tool string to choose the desider scanner to use
         """
         BaseCommand.__init__(self)
-        self.scanner_tool = None
 
     def add_arguments(self, parser: argparse.ArgumentParser) -> None:
         BaseCommand.add_arguments(self, parser)
 
     def handle(self, *args, **options) -> None:
-        discoveries = Discovery.objects.filter(scanner__tool=self.scanner_tool,
+        discoveries = Discovery.objects.filter(scanner__tool=self.tool_name,
                                                enabled=True)
         for discovery in discoveries:
             # Define options (Command line + Scanner + Discovery)

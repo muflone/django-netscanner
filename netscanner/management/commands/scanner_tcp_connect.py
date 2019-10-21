@@ -29,10 +29,10 @@ from netscanner.tools.tcp_connect import TCPConnect
 
 class Command(ManagementBaseCommand):
     help = 'Discover network hosts using TCP connections'
+    tool_name = 'tcp_connect'
 
     def __init__(self):
         super().__init__()
-        self.scanner_tool = 'tcp_connect'
 
     def add_arguments(self, parser: argparse.ArgumentParser):
         super().add_arguments(parser)

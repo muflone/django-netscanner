@@ -29,10 +29,10 @@ from netscanner.tools.icmp_reply import ICMPReply
 
 class Command(ManagementBaseCommand):
     help = 'Discover network hosts using ICMP reply requests'
+    tool_name = 'icmp_reply'
 
     def __init__(self):
         super().__init__()
-        self.scanner_tool = 'icmp_reply'
 
     def add_arguments(self, parser: argparse.ArgumentParser):
         super().add_arguments(parser)

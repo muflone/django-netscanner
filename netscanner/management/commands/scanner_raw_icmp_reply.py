@@ -29,10 +29,10 @@ from netscanner.tools.raw_icmp_reply import RawICMPReply
 
 class Command(ManagementBaseCommand):
     help = 'Discover network hosts using raw Raw socket ICMP reply requests'
+    tool_name = 'raw_icmp_reply'
 
     def __init__(self):
         super().__init__()
-        self.scanner_tool = 'raw_icmp_reply'
 
     def add_arguments(self, parser: argparse.ArgumentParser):
         super().add_arguments(parser)

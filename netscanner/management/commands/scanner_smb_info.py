@@ -29,10 +29,10 @@ from netscanner.tools.netbios_smb_info import NetBIOSSMBInfo, PROTOCOL_SMB
 
 class Command(ManagementBaseCommand):
     help = 'Discover NetBIOS information'
+    tool_name = 'smb_info'
 
     def __init__(self):
         super().__init__()
-        self.scanner_tool = 'smb_info'
 
     def add_arguments(self, parser: argparse.ArgumentParser):
         super().add_arguments(parser)

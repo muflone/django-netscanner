@@ -29,10 +29,10 @@ from netscanner.tools.arp_request import ARPRequest
 
 class Command(ManagementBaseCommand):
     help = 'Discover network hosts using ARP requests'
+    tool_name = 'arp_request'
 
     def __init__(self):
         super().__init__()
-        self.scanner_tool = 'arp_request'
 
     def add_arguments(self, parser: argparse.ArgumentParser):
         super().add_arguments(parser)

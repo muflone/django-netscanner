@@ -36,7 +36,8 @@ class Discovery(BaseModel):
                                  on_delete=models.PROTECT,
                                  verbose_name=pgettext_lazy('Discovery',
                                                             'subnet v4'))
-    enabled = models.BooleanField(verbose_name=pgettext_lazy('Discovery',
+    enabled = models.BooleanField(default=True,
+                                  verbose_name=pgettext_lazy('Discovery',
                                                              'enabled'))
     scanner = models.ForeignKey('Scanner',
                                 on_delete=models.PROTECT,
@@ -46,6 +47,7 @@ class Discovery(BaseModel):
                                verbose_name=pgettext_lazy('Discover',
                                                           'options'))
     interval = models.PositiveIntegerField(
+        default=60,
         verbose_name=pgettext_lazy('Discovery',
                                    'scan interval'))
     last_scan = models.DateTimeField(blank=True,

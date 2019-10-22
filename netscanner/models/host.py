@@ -123,7 +123,9 @@ class Host(BaseModel):
                                                                'verification'))
     snmp_version = models.CharField(max_length=5,
                                     blank=True,
-                                    choices=(('v1', '1'),
+                                    choices=(('off', pgettext_lazy('Host',
+                                                                   'Off')),
+                                             ('v1', '1'),
                                              ('v2c', '2C')),
                                     verbose_name=pgettext_lazy('Host',
                                                                'SNMP version'))

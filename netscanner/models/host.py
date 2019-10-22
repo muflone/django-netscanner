@@ -25,7 +25,8 @@ from django.utils.translation import pgettext_lazy
 
 from ..forms import (ConfirmActionForm,
                      ChangeLocationForm,
-                     ChangeSNMPConfigurationForm)
+                     ChangeSNMPConfigurationForm,
+                     ChangeSubnetV4Form)
 
 from utility.models import BaseModel, BaseModelAdmin
 
@@ -168,7 +169,8 @@ class HostAdmin(BaseModelAdmin):
     actions = ('action_enable',
                'action_disable',
                'action_change_location',
-               'action_change_snmp_configuration')
+               'action_change_snmp_configuration',
+               'action_change_subnetv4')
 
     def action_enable(self, request, queryset):
         form = ConfirmActionForm(request.POST)
@@ -309,3 +311,39 @@ class HostAdmin(BaseModelAdmin):
     action_change_snmp_configuration.short_description = pgettext_lazy(
         'Host',
         'Change SNMP configuration')
+
+    def action_change_subnetv4(self, request, queryset):
+        form = ChangeSubnetV4Form(request.POST)
+        if 'action_change_subnetv4' in request.POST:
+            if form.is_valid():
+                # Change SNMP configuration for every selected row
+                subnetv4 = form.cleaned_data['subnetv4']
+                queryset.update(subnetv4=subnetv4)
+                # Operation successful
+                self.message_user(request,
+                                  pgettext_lazy(
+                                      'Host',
+                                      'Changed {COUNT} hosts'.format(
+                                          COUNT=queryset.count())))
+                return HttpResponseRedirect(request.get_full_path())
+        # Render form to confirm changes
+        return render(request,
+                      'utility/change_attribute/form.html',
+                      context={'queryset': queryset,
+                               'form': form,
+                               'title': pgettext_lazy(
+                                   'Host',
+                                   'Change Subnet V4'),
+                               'question': pgettext_lazy(
+                                   'Host',
+                                   'Confirm you want to change the '
+                                   'Subnet V4 for the selected hosts?'),
+                               'items_name': 'SNMP Configuration',
+                               'action': 'action_change_subnetv4',
+                               'action_description': pgettext_lazy(
+                                   'Host',
+                                   'Change Subnet V4'),
+                               })
+    action_change_subnetv4.short_description = pgettext_lazy(
+        'Host',
+        'Change Subnet V4')

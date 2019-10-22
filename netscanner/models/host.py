@@ -23,7 +23,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import pgettext_lazy
 
-from ..forms import ConfirmActionForm
+from ..forms import ConfirmActionForm, ChangeSNMPConfigurationForm
 
 from utility.models import BaseModel, BaseModelAdmin
 
@@ -163,7 +163,9 @@ class Host(BaseModel):
 
 
 class HostAdmin(BaseModelAdmin):
-    actions = ('action_enable', 'action_disable')
+    actions = ('action_enable',
+               'action_disable',
+               'action_change_snmp_configuration')
 
     def action_enable(self, request, queryset):
         form = ConfirmActionForm(request.POST)
@@ -232,3 +234,40 @@ class HostAdmin(BaseModelAdmin):
                                })
     action_disable.short_description = pgettext_lazy('Host',
                                                      'Disable')
+
+    def action_change_snmp_configuration(self, request, queryset):
+        form = ChangeSNMPConfigurationForm(request.POST)
+        if 'action_change_snmp_configuration' in request.POST:
+            if form.is_valid():
+                # Change SNMP configuration for every selected row
+                snmp_configuration = form.cleaned_data['snmp_configuration']
+                queryset.update(snmp_configuration=snmp_configuration)
+                # Operation successful
+                self.message_user(request,
+                                  pgettext_lazy(
+                                      'Host',
+                                      'Changed {COUNT} hosts'.format(
+                                          COUNT=queryset.count())))
+                return HttpResponseRedirect(request.get_full_path())
+        # Render form to confirm changes
+        return render(request,
+                      'utility/change_attribute/form.html',
+                      context={'queryset': queryset,
+                               'form': form,
+                               'title': pgettext_lazy(
+                                   'Host',
+                                   'Change SNMP configuration'),
+                               'question': pgettext_lazy(
+                                   'Host',
+                                   'Confirm you want to change the '
+                                   'SNMP configuration for the selected '
+                                   'hosts?'),
+                               'items_name': 'SNMP Configuration',
+                               'action': 'action_change_snmp_configuration',
+                               'action_description': pgettext_lazy(
+                                   'Host',
+                                   'Change SNMP configuration'),
+                               })
+    action_change_snmp_configuration.short_description = pgettext_lazy(
+        'Host',
+        'Change SNMP configuration')

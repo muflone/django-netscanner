@@ -19,7 +19,18 @@
 ##
 
 from django import forms
+from django.utils.translation import pgettext_lazy
+
+from .models.snmp_configuration import SNMPConfiguration
 
 
 class ConfirmActionForm(forms.Form):
     _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
+
+class ChangeSNMPConfigurationForm(forms.Form):
+    _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
+    snmp_configuration = forms.ModelChoiceField(
+        queryset=SNMPConfiguration.objects,
+        required=False,
+        label=pgettext_lazy('Host',
+                            'SNMP configuration'))

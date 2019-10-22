@@ -23,7 +23,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import pgettext_lazy
 
-from ..forms import ConfirmActionForm
+from ..forms.confirm_action import ConfirmActionForm
 
 from utility.models import BaseModel, BaseModelAdmin
 

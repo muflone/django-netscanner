@@ -23,10 +23,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import pgettext_lazy
 
-from ..forms import (ConfirmActionForm,
-                     ChangeLocationForm,
-                     ChangeSNMPConfigurationForm,
-                     ChangeSubnetV4Form)
+from ..forms.confirm_action import ConfirmActionForm
+from ..forms.change_location import ChangeLocationForm
+from ..forms.change_snmp_configuration import ChangeSNMPConfigurationForm
+from ..forms.change_subnetv4 import ChangeSubnetV4Form
 
 from utility.models import BaseModel, BaseModelAdmin
 

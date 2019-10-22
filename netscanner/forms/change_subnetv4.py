@@ -21,31 +21,7 @@
 from django import forms
 from django.utils.translation import pgettext_lazy
 
-from .models.location import Location
-from .models.snmp_configuration import SNMPConfiguration
-from .models.subnet_v4 import SubnetV4
-
-
-class ConfirmActionForm(forms.Form):
-    _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
-
-
-class ChangeLocationForm(forms.Form):
-    _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
-    location = forms.ModelChoiceField(
-        queryset=Location.objects,
-        required=False,
-        label=pgettext_lazy('Host',
-                            'Location'))
-
-
-class ChangeSNMPConfigurationForm(forms.Form):
-    _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
-    snmp_configuration = forms.ModelChoiceField(
-        queryset=SNMPConfiguration.objects,
-        required=False,
-        label=pgettext_lazy('Host',
-                            'SNMP configuration'))
+from ..models.subnet_v4 import SubnetV4
 
 
 class ChangeSubnetV4Form(forms.Form):

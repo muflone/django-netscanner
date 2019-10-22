@@ -25,6 +25,7 @@ from django.utils.translation import pgettext_lazy
 
 from ..forms.confirm_action import ConfirmActionForm
 from ..forms.change_device_model import ChangeDeviceModelForm
+from ..forms.change_domain import ChangeDomainForm
 from ..forms.change_location import ChangeLocationForm
 from ..forms.change_snmp_configuration import ChangeSNMPConfigurationForm
 from ..forms.change_subnetv4 import ChangeSubnetV4Form
@@ -170,6 +171,7 @@ class HostAdmin(BaseModelAdmin):
     actions = ('action_enable',
                'action_disable',
                'action_change_device_model',
+               'action_change_domain',
                'action_change_location',
                'action_change_snmp_configuration',
                'action_change_subnetv4')
@@ -277,6 +279,42 @@ class HostAdmin(BaseModelAdmin):
     action_change_device_model.short_description = pgettext_lazy(
         'Host',
         'Change Device model')
+
+    def action_change_domain(self, request, queryset):
+        form = ChangeDomainForm(request.POST)
+        if 'action_change_domain' in request.POST:
+            if form.is_valid():
+                # Change Domain for every selected row
+                domain = form.cleaned_data['domain']
+                queryset.update(domain=domain)
+                # Operation successful
+                self.message_user(request,
+                                  pgettext_lazy(
+                                      'Host',
+                                      'Changed {COUNT} hosts'.format(
+                                          COUNT=queryset.count())))
+                return HttpResponseRedirect(request.get_full_path())
+        # Render form to confirm changes
+        return render(request,
+                      'utility/change_attribute/form.html',
+                      context={'queryset': queryset,
+                               'form': form,
+                               'title': pgettext_lazy(
+                                   'Host',
+                                   'Change Domain'),
+                               'question': pgettext_lazy(
+                                   'Host',
+                                   'Confirm you want to change the '
+                                   'domain for the selected hosts?'),
+                               'items_name': 'Domain',
+                               'action': 'action_change_domain',
+                               'action_description': pgettext_lazy(
+                                   'Host',
+                                   'Change Domain'),
+                               })
+    action_change_domain.short_description = pgettext_lazy(
+        'Host',
+        'Change Domain')
 
     def action_change_location(self, request, queryset):
         form = ChangeLocationForm(request.POST)

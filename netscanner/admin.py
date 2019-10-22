@@ -33,6 +33,8 @@ from .models.host import Host, HostAdmin
 from .models.location import Location, LocationAdmin
 from .models.operating_system import OperatingSystem, OperatingSystemAdmin
 from .models.scanner import Scanner, ScannerAdmin
+from .models.snmp_configuration import (SNMPConfiguration,
+                                        SNMPConfigurationAdmin)
 from .models.snmp_section import SNMPSection, SNMPSectionAdmin
 from .models.snmp_value import SNMPValue, SNMPValueAdmin
 from .models.subnet_v4 import SubnetV4, SubnetV4Admin
@@ -51,6 +53,7 @@ admin.site.register(Host, HostAdmin)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(OperatingSystem, OperatingSystemAdmin)
 admin.site.register(Scanner, ScannerAdmin)
+admin.site.register(SNMPConfiguration, SNMPConfigurationAdmin)
 admin.site.register(SNMPSection, SNMPSectionAdmin)
 admin.site.register(SNMPValue, SNMPValueAdmin)
 admin.site.register(SubnetV4, SubnetV4Admin)

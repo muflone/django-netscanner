@@ -132,6 +132,14 @@ class Host(BaseModel):
                                       verbose_name=pgettext_lazy(
                                           'Host',
                                           'SNMP community string'))
+    snmp_configuration = models.ForeignKey('SNMPConfiguration',
+                                           blank=True,
+                                           null=True,
+                                           default=None,
+                                           on_delete=models.PROTECT,
+                                           verbose_name=pgettext_lazy(
+                                               'Host',
+                                               'SNMP configuration'))
     custom_fields = models.ManyToManyField('CustomField',
                                            db_table='netscanner_host_custom',
                                            blank=True,

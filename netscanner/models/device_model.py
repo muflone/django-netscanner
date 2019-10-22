@@ -39,6 +39,14 @@ class DeviceModel(BaseModel):
     description = models.TextField(blank=True,
                                    verbose_name=pgettext_lazy('DeviceModel',
                                                               'description'))
+    snmp_configuration = models.ForeignKey('SNMPConfiguration',
+                                           blank=True,
+                                           null=True,
+                                           default=None,
+                                           on_delete=models.PROTECT,
+                                           verbose_name=pgettext_lazy(
+                                               'DeviceModel',
+                                               'SNMP configuration'))
 
     class Meta:
         # Define the database table

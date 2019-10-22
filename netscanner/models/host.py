@@ -23,7 +23,9 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import pgettext_lazy
 
-from ..forms import ConfirmActionForm, ChangeSNMPConfigurationForm
+from ..forms import (ConfirmActionForm,
+                     ChangeLocationForm,
+                     ChangeSNMPConfigurationForm)
 
 from utility.models import BaseModel, BaseModelAdmin
 
@@ -165,6 +167,7 @@ class Host(BaseModel):
 class HostAdmin(BaseModelAdmin):
     actions = ('action_enable',
                'action_disable',
+               'action_change_location',
                'action_change_snmp_configuration')
 
     def action_enable(self, request, queryset):
@@ -234,6 +237,41 @@ class HostAdmin(BaseModelAdmin):
                                })
     action_disable.short_description = pgettext_lazy('Host',
                                                      'Disable')
+
+    def action_change_location(self, request, queryset):
+        form = ChangeLocationForm(request.POST)
+        if 'action_change_location' in request.POST:
+            if form.is_valid():
+                # Change Location for every selected row
+                location = form.cleaned_data['location']
+                queryset.update(location=location)
+                # Operation successful
+                self.message_user(request,
+                                  pgettext_lazy(
+                                      'Host',
+                                      'Changed {COUNT} hosts'.format(
+                                          COUNT=queryset.count())))
+                return HttpResponseRedirect(request.get_full_path())
+        # Render form to confirm changes
+        return render(request,
+                      'utility/change_attribute/form.html',
+                      context={'queryset': queryset,
+                               'form': form,
+                               'title': pgettext_lazy(
+                                   'Host',
+                                   'Change Location'),
+                               'question': pgettext_lazy(
+                                   'Host',
+                                   'Confirm you want to change the '
+                                   'location for the selected hosts?'),
+                               'items_name': 'Location',
+                               'action': 'action_change_location',
+                               'action_description': pgettext_lazy(
+                                   'Host',
+                                   'Change Location'),
+                               })
+    action_change_location.short_description = pgettext_lazy('Host',
+                                                             'Change Location')
 
     def action_change_snmp_configuration(self, request, queryset):
         form = ChangeSNMPConfigurationForm(request.POST)

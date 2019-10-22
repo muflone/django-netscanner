@@ -28,6 +28,7 @@ from ..forms.change_company import ChangeCompanyForm
 from ..forms.change_device_model import ChangeDeviceModelForm
 from ..forms.change_domain import ChangeDomainForm
 from ..forms.change_location import ChangeLocationForm
+from ..forms.change_operating_system import ChangeOperatingSystemForm
 from ..forms.change_snmp_configuration import ChangeSNMPConfigurationForm
 from ..forms.change_subnetv4 import ChangeSubnetV4Form
 
@@ -175,6 +176,7 @@ class HostAdmin(BaseModelAdmin):
                'action_change_device_model',
                'action_change_domain',
                'action_change_location',
+               'action_change_operating_system',
                'action_change_snmp_configuration',
                'action_change_subnetv4')
 
@@ -388,6 +390,42 @@ class HostAdmin(BaseModelAdmin):
                                })
     action_change_location.short_description = pgettext_lazy('Host',
                                                              'Change Location')
+
+    def action_change_operating_system(self, request, queryset):
+        form = ChangeOperatingSystemForm(request.POST)
+        if 'action_change_operating_system' in request.POST:
+            if form.is_valid():
+                # Change Operating system for every selected row
+                operating_system = form.cleaned_data['operating_system']
+                queryset.update(os=operating_system)
+                # Operation successful
+                self.message_user(request,
+                                  pgettext_lazy(
+                                      'Host',
+                                      'Changed {COUNT} hosts'.format(
+                                          COUNT=queryset.count())))
+                return HttpResponseRedirect(request.get_full_path())
+        # Render form to confirm changes
+        return render(request,
+                      'utility/change_attribute/form.html',
+                      context={'queryset': queryset,
+                               'form': form,
+                               'title': pgettext_lazy(
+                                   'Host',
+                                   'Change Operating system'),
+                               'question': pgettext_lazy(
+                                   'Host',
+                                   'Confirm you want to change the '
+                                   'operating system for the selected hosts?'),
+                               'items_name': 'Operating system',
+                               'action': 'action_change_operating_system',
+                               'action_description': pgettext_lazy(
+                                   'Host',
+                                   'Change Operating system'),
+                               })
+    action_change_operating_system.short_description = pgettext_lazy(
+        'Host',
+        'Change Operating system')
 
     def action_change_snmp_configuration(self, request, queryset):
         form = ChangeSNMPConfigurationForm(request.POST)

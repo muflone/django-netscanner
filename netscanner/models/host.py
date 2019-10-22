@@ -111,7 +111,7 @@ class Host(BaseModel):
     last_seen = models.DateTimeField(blank=True,
                                      null=True,
                                      default=None,
-                                     verbose_name=pgettext_lazy('Discovery',
+                                     verbose_name=pgettext_lazy('Host',
                                                                 'last seen'))
     verified = models.BooleanField(default=False,
                                    verbose_name=pgettext_lazy('Host',
@@ -119,7 +119,7 @@ class Host(BaseModel):
     verification = models.DateField(blank=True,
                                     null=True,
                                     default=None,
-                                    verbose_name=pgettext_lazy('Discovery',
+                                    verbose_name=pgettext_lazy('Host',
                                                                'verification'))
     snmp_version = models.CharField(max_length=5,
                                     blank=True,

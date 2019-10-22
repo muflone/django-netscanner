@@ -22,12 +22,12 @@ import argparse
 
 from django.utils import timezone
 
-from netscanner.management.management_base_command import ManagementBaseCommand
+from netscanner.management.discovery_base_command import DiscoveryBaseCommand
 from netscanner.models import Discovery, Host
 from netscanner.tools.arp_request import ARPRequest
 
 
-class Command(ManagementBaseCommand):
+class Command(DiscoveryBaseCommand):
     help = 'Discover network hosts using ARP requests'
     tool_name = 'arp_request'
 

@@ -22,12 +22,12 @@ import argparse
 
 from django.utils import timezone
 
-from netscanner.management.management_base_command import ManagementBaseCommand
+from netscanner.management.discovery_base_command import DiscoveryBaseCommand
 from netscanner.models import Discovery, Domain, Host
 from netscanner.tools.hostname import Hostname
 
 
-class Command(ManagementBaseCommand):
+class Command(DiscoveryBaseCommand):
     help = 'Discover network hostnames'
     tool_name = 'hostname'
 

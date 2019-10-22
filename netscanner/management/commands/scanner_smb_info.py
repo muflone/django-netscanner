@@ -22,12 +22,12 @@ import argparse
 
 from django.utils import timezone
 
-from netscanner.management.management_base_command import ManagementBaseCommand
+from netscanner.management.discovery_base_command import DiscoveryBaseCommand
 from netscanner.models import Discovery, Host
 from netscanner.tools.netbios_smb_info import NetBIOSSMBInfo, PROTOCOL_SMB
 
 
-class Command(ManagementBaseCommand):
+class Command(DiscoveryBaseCommand):
     help = 'Discover NetBIOS information'
     tool_name = 'smb_info'
 

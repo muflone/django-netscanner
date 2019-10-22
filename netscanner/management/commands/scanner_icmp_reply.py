@@ -22,12 +22,12 @@ import argparse
 
 from django.utils import timezone
 
-from netscanner.management.management_base_command import ManagementBaseCommand
+from netscanner.management.discovery_base_command import DiscoveryBaseCommand
 from netscanner.models import Discovery, Host
 from netscanner.tools.icmp_reply import ICMPReply
 
 
-class Command(ManagementBaseCommand):
+class Command(DiscoveryBaseCommand):
     help = 'Discover network hosts using ICMP reply requests'
     tool_name = 'icmp_reply'
 

@@ -22,12 +22,12 @@ import argparse
 
 from django.utils import timezone
 
-from netscanner.management.management_base_command import ManagementBaseCommand
+from netscanner.management.discovery_base_command import DiscoveryBaseCommand
 from netscanner.models import Discovery, Host
 from netscanner.tools.tcp_connect import TCPConnect
 
 
-class Command(ManagementBaseCommand):
+class Command(DiscoveryBaseCommand):
     help = 'Discover network hosts using TCP connections'
     tool_name = 'tcp_connect'
 

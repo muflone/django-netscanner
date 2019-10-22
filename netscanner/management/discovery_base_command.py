@@ -31,10 +31,10 @@ from netscanner.models import Discovery, DiscoveryResult
 from netscanner.utils.consumers import Consumers
 
 
-class ManagementBaseCommand(BaseCommand):
+class DiscoveryBaseCommand(BaseCommand):
     def __init__(self):
         """
-        Management base command for all management commands
+        Discovery base command for all management discovery commands
         Use scanner_tool string to choose the desider scanner to use
         """
         BaseCommand.__init__(self)

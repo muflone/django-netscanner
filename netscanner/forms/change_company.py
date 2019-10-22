@@ -23,11 +23,23 @@ from django.utils.translation import pgettext_lazy
 
 from ..models.company import Company
 
+from utility.misc import ChangeFieldAction
+
 
 class ChangeCompanyForm(forms.Form):
     _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
-    company = forms.ModelChoiceField(
+    changed_data = forms.ModelChoiceField(
         queryset=Company.objects,
         required=False,
         label=pgettext_lazy('Host',
                             'Company'))
+
+
+change_field_company_action = ChangeFieldAction(
+    item='Company',
+    field_name='company',
+    title=pgettext_lazy('Host', 'Change Company'),
+    question=pgettext_lazy('Host',
+                           'Confirm you want to change the '
+                           'company for the selected hosts?'),
+    form=ChangeCompanyForm)

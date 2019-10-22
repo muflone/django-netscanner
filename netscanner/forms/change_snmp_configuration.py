@@ -23,11 +23,22 @@ from django.utils.translation import pgettext_lazy
 
 from ..models.snmp_configuration import SNMPConfiguration
 
+from utility.misc import ChangeFieldAction
+
 
 class ChangeSNMPConfigurationForm(forms.Form):
     _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
-    snmp_configuration = forms.ModelChoiceField(
+    changed_data = forms.ModelChoiceField(
         queryset=SNMPConfiguration.objects,
         required=False,
         label=pgettext_lazy('Host',
                             'SNMP configuration'))
+
+change_field_snmp_config_action = ChangeFieldAction(
+    item='SNMP Configuration',
+    field_name='snmp_configuration',
+    title=pgettext_lazy('Host', 'Change SNMP Configuration'),
+    question=pgettext_lazy('Host',
+                           'Confirm you want to change the '
+                           'SNMP configuration for the selected hosts?'),
+    form=ChangeSNMPConfigurationForm)

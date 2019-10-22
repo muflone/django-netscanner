@@ -19,19 +19,20 @@
 ##
 
 from django.db import models
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import pgettext_lazy
 
 from ..forms.confirm_action import ConfirmActionForm
-from ..forms.change_company import ChangeCompanyForm
-from ..forms.change_device_model import ChangeDeviceModelForm
-from ..forms.change_domain import ChangeDomainForm
-from ..forms.change_location import ChangeLocationForm
-from ..forms.change_operating_system import ChangeOperatingSystemForm
-from ..forms.change_snmp_configuration import ChangeSNMPConfigurationForm
-from ..forms.change_subnetv4 import ChangeSubnetV4Form
+from ..forms.change_company import change_field_company_action
+from ..forms.change_device_model import change_field_device_model_action
+from ..forms.change_domain import change_field_domain_action
+from ..forms.change_location import change_field_location_action
+from ..forms.change_operating_system import change_field_os_action
+from ..forms.change_snmp_configuration import change_field_snmp_config_action
+from ..forms.change_subnetv4 import change_field_subnetv4_action
 
+from utility.misc import ChangeFieldAction
 from utility.models import BaseModel, BaseModelAdmin
 
 
@@ -248,13 +249,23 @@ class HostAdmin(BaseModelAdmin):
     action_disable.short_description = pgettext_lazy('Host',
                                                      'Disable')
 
-    def action_change_company(self, request, queryset):
-        form = ChangeCompanyForm(request.POST)
-        if 'action_change_company' in request.POST:
+    def do_action_change(self, request, queryset,
+                         action: ChangeFieldAction,
+                         action_name: str) -> HttpResponse:
+        """
+        Execute a change action on a group of selected records
+        :param request: Request object from the page
+        :param queryset: queryset with the data to edit
+        :param action: ChangeFieldAction object containing the messages
+        :param action_name: called action name
+        :return: HttpResponse or HttpResponseRedirect object
+        """
+        form = action.form(request.POST)
+        if 'action_%s' % action_name in request.POST:
             if form.is_valid():
-                # Change Company for every selected row
-                company = form.cleaned_data['company']
-                queryset.update(company=company)
+                # Change Field for every selected row
+                fields = {action.field_name: form.cleaned_data['changed_data']}
+                queryset.update(**fields)
                 # Operation successful
                 self.message_user(request,
                                   pgettext_lazy(
@@ -267,235 +278,80 @@ class HostAdmin(BaseModelAdmin):
                       'utility/change_attribute/form.html',
                       context={'queryset': queryset,
                                'form': form,
-                               'title': pgettext_lazy(
-                                   'Host',
-                                   'Change Company'),
-                               'question': pgettext_lazy(
-                                   'Host',
-                                   'Confirm you want to change the '
-                                   'company for the selected hosts?'),
-                               'items_name': 'Company',
-                               'action': 'action_change_company',
-                               'action_description': pgettext_lazy(
-                                   'Host',
-                                   'Change Company'),
+                               'title': action.title,
+                               'question': action.question,
+                               'items_name': action.item,
+                               'action': 'action_%s' % action_name,
+                               'action_description': action.title,
                                })
-    action_change_company.short_description = pgettext_lazy(
-        'Host',
-        'Change Company')
+
+
+    def action_change_company(self, request, queryset):
+        """
+        Change Company
+        """
+        return self.do_action_change(request, queryset,
+                                     action=change_field_company_action,
+                                     action_name='change_company')
+    action_change_company.short_description = (
+        change_field_company_action.title)
 
     def action_change_device_model(self, request, queryset):
-        form = ChangeDeviceModelForm(request.POST)
-        if 'action_change_device_model' in request.POST:
-            if form.is_valid():
-                # Change Device model for every selected row
-                device_model = form.cleaned_data['device_model']
-                queryset.update(device_model=device_model)
-                # Operation successful
-                self.message_user(request,
-                                  pgettext_lazy(
-                                      'Host',
-                                      'Changed {COUNT} hosts'.format(
-                                          COUNT=queryset.count())))
-                return HttpResponseRedirect(request.get_full_path())
-        # Render form to confirm changes
-        return render(request,
-                      'utility/change_attribute/form.html',
-                      context={'queryset': queryset,
-                               'form': form,
-                               'title': pgettext_lazy(
-                                   'Host',
-                                   'Change Device model'),
-                               'question': pgettext_lazy(
-                                   'Host',
-                                   'Confirm you want to change the '
-                                   'device model for the selected hosts?'),
-                               'items_name': 'Device model',
-                               'action': 'action_change_device_model',
-                               'action_description': pgettext_lazy(
-                                   'Host',
-                                   'Change Device model'),
-                               })
-    action_change_device_model.short_description = pgettext_lazy(
-        'Host',
-        'Change Device model')
+        """
+        Change Device model
+        """
+        return self.do_action_change(request, queryset,
+                                     action=change_field_device_model_action,
+                                     action_name='change_device_model')
+    action_change_device_model.short_description = (
+        change_field_device_model_action.title)
 
     def action_change_domain(self, request, queryset):
-        form = ChangeDomainForm(request.POST)
-        if 'action_change_domain' in request.POST:
-            if form.is_valid():
-                # Change Domain for every selected row
-                domain = form.cleaned_data['domain']
-                queryset.update(domain=domain)
-                # Operation successful
-                self.message_user(request,
-                                  pgettext_lazy(
-                                      'Host',
-                                      'Changed {COUNT} hosts'.format(
-                                          COUNT=queryset.count())))
-                return HttpResponseRedirect(request.get_full_path())
-        # Render form to confirm changes
-        return render(request,
-                      'utility/change_attribute/form.html',
-                      context={'queryset': queryset,
-                               'form': form,
-                               'title': pgettext_lazy(
-                                   'Host',
-                                   'Change Domain'),
-                               'question': pgettext_lazy(
-                                   'Host',
-                                   'Confirm you want to change the '
-                                   'domain for the selected hosts?'),
-                               'items_name': 'Domain',
-                               'action': 'action_change_domain',
-                               'action_description': pgettext_lazy(
-                                   'Host',
-                                   'Change Domain'),
-                               })
-    action_change_domain.short_description = pgettext_lazy(
-        'Host',
-        'Change Domain')
+        """
+        Change Domain
+        """
+        return self.do_action_change(request, queryset,
+                                     action=change_field_domain_action,
+                                     action_name='change_domain')
+    action_change_domain.short_description = (
+        change_field_domain_action.title)
 
     def action_change_location(self, request, queryset):
-        form = ChangeLocationForm(request.POST)
-        if 'action_change_location' in request.POST:
-            if form.is_valid():
-                # Change Location for every selected row
-                location = form.cleaned_data['location']
-                queryset.update(location=location)
-                # Operation successful
-                self.message_user(request,
-                                  pgettext_lazy(
-                                      'Host',
-                                      'Changed {COUNT} hosts'.format(
-                                          COUNT=queryset.count())))
-                return HttpResponseRedirect(request.get_full_path())
-        # Render form to confirm changes
-        return render(request,
-                      'utility/change_attribute/form.html',
-                      context={'queryset': queryset,
-                               'form': form,
-                               'title': pgettext_lazy(
-                                   'Host',
-                                   'Change Location'),
-                               'question': pgettext_lazy(
-                                   'Host',
-                                   'Confirm you want to change the '
-                                   'location for the selected hosts?'),
-                               'items_name': 'Location',
-                               'action': 'action_change_location',
-                               'action_description': pgettext_lazy(
-                                   'Host',
-                                   'Change Location'),
-                               })
-    action_change_location.short_description = pgettext_lazy('Host',
-                                                             'Change Location')
+        """
+        Change Location
+        """
+        return self.do_action_change(request, queryset,
+                                     action=change_field_location_action,
+                                     action_name='change_location')
+    action_change_location.short_description = (
+        change_field_location_action.title)
 
     def action_change_operating_system(self, request, queryset):
-        form = ChangeOperatingSystemForm(request.POST)
-        if 'action_change_operating_system' in request.POST:
-            if form.is_valid():
-                # Change Operating system for every selected row
-                operating_system = form.cleaned_data['operating_system']
-                queryset.update(os=operating_system)
-                # Operation successful
-                self.message_user(request,
-                                  pgettext_lazy(
-                                      'Host',
-                                      'Changed {COUNT} hosts'.format(
-                                          COUNT=queryset.count())))
-                return HttpResponseRedirect(request.get_full_path())
-        # Render form to confirm changes
-        return render(request,
-                      'utility/change_attribute/form.html',
-                      context={'queryset': queryset,
-                               'form': form,
-                               'title': pgettext_lazy(
-                                   'Host',
-                                   'Change Operating system'),
-                               'question': pgettext_lazy(
-                                   'Host',
-                                   'Confirm you want to change the '
-                                   'operating system for the selected hosts?'),
-                               'items_name': 'Operating system',
-                               'action': 'action_change_operating_system',
-                               'action_description': pgettext_lazy(
-                                   'Host',
-                                   'Change Operating system'),
-                               })
-    action_change_operating_system.short_description = pgettext_lazy(
-        'Host',
-        'Change Operating system')
+        """
+        Change Operating System
+        """
+        return self.do_action_change(request, queryset,
+                                     action=change_field_os_action,
+                                     action_name='change_operating_system')
+    action_change_operating_system.short_description = (
+        change_field_os_action.title)
 
     def action_change_snmp_configuration(self, request, queryset):
-        form = ChangeSNMPConfigurationForm(request.POST)
-        if 'action_change_snmp_configuration' in request.POST:
-            if form.is_valid():
-                # Change SNMP configuration for every selected row
-                snmp_configuration = form.cleaned_data['snmp_configuration']
-                queryset.update(snmp_configuration=snmp_configuration)
-                # Operation successful
-                self.message_user(request,
-                                  pgettext_lazy(
-                                      'Host',
-                                      'Changed {COUNT} hosts'.format(
-                                          COUNT=queryset.count())))
-                return HttpResponseRedirect(request.get_full_path())
-        # Render form to confirm changes
-        return render(request,
-                      'utility/change_attribute/form.html',
-                      context={'queryset': queryset,
-                               'form': form,
-                               'title': pgettext_lazy(
-                                   'Host',
-                                   'Change SNMP configuration'),
-                               'question': pgettext_lazy(
-                                   'Host',
-                                   'Confirm you want to change the '
-                                   'SNMP configuration for the selected '
-                                   'hosts?'),
-                               'items_name': 'SNMP Configuration',
-                               'action': 'action_change_snmp_configuration',
-                               'action_description': pgettext_lazy(
-                                   'Host',
-                                   'Change SNMP configuration'),
-                               })
-    action_change_snmp_configuration.short_description = pgettext_lazy(
-        'Host',
-        'Change SNMP configuration')
+        """
+        Change SNMP Configuration
+        """
+        return self.do_action_change(request, queryset,
+                                     action=change_field_snmp_config_action,
+                                     action_name='change_snmp_configuration')
+    action_change_snmp_configuration.short_description = (
+        change_field_snmp_config_action.title)
 
     def action_change_subnetv4(self, request, queryset):
-        form = ChangeSubnetV4Form(request.POST)
-        if 'action_change_subnetv4' in request.POST:
-            if form.is_valid():
-                # Change SNMP configuration for every selected row
-                subnetv4 = form.cleaned_data['subnetv4']
-                queryset.update(subnetv4=subnetv4)
-                # Operation successful
-                self.message_user(request,
-                                  pgettext_lazy(
-                                      'Host',
-                                      'Changed {COUNT} hosts'.format(
-                                          COUNT=queryset.count())))
-                return HttpResponseRedirect(request.get_full_path())
-        # Render form to confirm changes
-        return render(request,
-                      'utility/change_attribute/form.html',
-                      context={'queryset': queryset,
-                               'form': form,
-                               'title': pgettext_lazy(
-                                   'Host',
-                                   'Change Subnet V4'),
-                               'question': pgettext_lazy(
-                                   'Host',
-                                   'Confirm you want to change the '
-                                   'Subnet V4 for the selected hosts?'),
-                               'items_name': 'SNMP Configuration',
-                               'action': 'action_change_subnetv4',
-                               'action_description': pgettext_lazy(
-                                   'Host',
-                                   'Change Subnet V4'),
-                               })
-    action_change_subnetv4.short_description = pgettext_lazy(
-        'Host',
-        'Change Subnet V4')
+        """
+        Change Subnet v4
+        """
+        return self.do_action_change(request, queryset,
+                                     action=change_field_subnetv4_action,
+                                     action_name='change_subnetv4')
+    action_change_subnetv4.short_description = (
+        change_field_subnetv4_action.title)

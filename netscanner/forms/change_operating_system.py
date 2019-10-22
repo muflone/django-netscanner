@@ -23,11 +23,23 @@ from django.utils.translation import pgettext_lazy
 
 from ..models.operating_system import OperatingSystem
 
+from utility.misc import ChangeFieldAction
+
 
 class ChangeOperatingSystemForm(forms.Form):
     _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
-    operating_system = forms.ModelChoiceField(
+    changed_data = forms.ModelChoiceField(
         queryset=OperatingSystem.objects,
         required=False,
         label=pgettext_lazy('Host',
                             'Operating system'))
+
+
+change_field_os_action = ChangeFieldAction(
+    item='Operating System',
+    field_name='os',
+    title=pgettext_lazy('Host', 'Change Operating System'),
+    question=pgettext_lazy('Host',
+                           'Confirm you want to change the '
+                           'operating system for the selected hosts?'),
+    form=ChangeOperatingSystemForm)

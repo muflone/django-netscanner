@@ -19,27 +19,26 @@
 ##
 
 from django import forms
-from django.utils.translation import pgettext_lazy
-
-from ..models.device_model import DeviceModel
-
-from utility.misc import ChangeFieldAction
 
 
-class ChangeDeviceModelForm(forms.Form):
-    _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
-    changed_data = forms.ModelChoiceField(
-        queryset=DeviceModel.objects,
-        required=False,
-        label=pgettext_lazy('Host',
-                            'Device model'))
+class ChangeFieldAction(object):
+    def __init__(self,
+                 item: str,
+                 field_name: str,
+                 title: str,
+                 question: str,
+                 form: forms.Form):
+        """
+        ChangeFieldAction to map a change field Action
 
-
-change_field_device_model_action = ChangeFieldAction(
-    item='Device Model',
-    field_name='device_model',
-    title=pgettext_lazy('Host', 'Change Device model'),
-    question=pgettext_lazy('Host',
-                           'Confirm you want to change the '
-                           'device model for the selected hosts?'),
-    form=ChangeDeviceModelForm)
+        :param item: Object (model) name to change
+        :param field_name: Field name to change
+        :param title: Title of the requesting page
+        :param question: Question to confirm the change
+        :param form: Form object containing the information
+        """
+        self.item = item
+        self.field_name = field_name
+        self.title = title
+        self.question = question
+        self.form = form

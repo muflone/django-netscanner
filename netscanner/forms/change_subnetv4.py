@@ -23,11 +23,23 @@ from django.utils.translation import pgettext_lazy
 
 from ..models.subnet_v4 import SubnetV4
 
+from utility.misc import ChangeFieldAction
+
 
 class ChangeSubnetV4Form(forms.Form):
     _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
-    subnetv4 = forms.ModelChoiceField(
+    changed_data = forms.ModelChoiceField(
         queryset=SubnetV4.objects,
         required=False,
         label=pgettext_lazy('Host',
                             'Subnet v4'))
+
+
+change_field_subnetv4_action = ChangeFieldAction(
+    item='Subnet v4',
+    field_name='subnetv4',
+    title=pgettext_lazy('Host', 'Change Subnet v4'),
+    question=pgettext_lazy('Host',
+                           'Confirm you want to change the '
+                           'subnet v4 for the selected hosts?'),
+    form=ChangeSubnetV4Form)

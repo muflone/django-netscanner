@@ -18,5 +18,6 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
+from .change_field_action import ChangeFieldAction                # noqa: F401
 from .get_admin_models import get_admin_models                    # noqa: F401
 from .get_class_from_module import get_class_from_module          # noqa: F401

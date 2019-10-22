@@ -23,11 +23,23 @@ from django.utils.translation import pgettext_lazy
 
 from ..models.domain import Domain
 
+from utility.misc import ChangeFieldAction
+
 
 class ChangeDomainForm(forms.Form):
     _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
-    domain = forms.ModelChoiceField(
+    changed_data = forms.ModelChoiceField(
         queryset=Domain.objects,
         required=False,
         label=pgettext_lazy('Host',
                             'Network domain'))
+
+
+change_field_domain_action = ChangeFieldAction(
+    item='Domain',
+    field_name='domain',
+    title=pgettext_lazy('Host', 'Change Domain'),
+    question=pgettext_lazy('Host',
+                           'Confirm you want to change the '
+                           'domain for the selected hosts?'),
+    form=ChangeDomainForm)

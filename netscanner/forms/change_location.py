@@ -23,11 +23,23 @@ from django.utils.translation import pgettext_lazy
 
 from ..models.location import Location
 
+from utility.misc import ChangeFieldAction
+
 
 class ChangeLocationForm(forms.Form):
     _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
-    location = forms.ModelChoiceField(
+    changed_data = forms.ModelChoiceField(
         queryset=Location.objects,
         required=False,
         label=pgettext_lazy('Host',
                             'Location'))
+
+
+change_field_location_action = ChangeFieldAction(
+    item='Location',
+    field_name='location',
+    title=pgettext_lazy('Host', 'Change Location'),
+    question=pgettext_lazy('Host',
+                           'Confirm you want to change the '
+                           'location for the selected hosts?'),
+    form=ChangeLocationForm)

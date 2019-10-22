@@ -127,7 +127,7 @@ class Host(BaseModel):
                                              ('v2c', '2C')),
                                     verbose_name=pgettext_lazy('Host',
                                                                'SNMP version'))
-    snmp_community = models.CharField(max_length=5,
+    snmp_community = models.CharField(max_length=255,
                                       blank=True,
                                       verbose_name=pgettext_lazy(
                                           'Host',

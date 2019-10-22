@@ -68,7 +68,6 @@ class DeviceModel(BaseModel):
 class DeviceModelAdmin(BaseModelAdmin):
     actions = ('action_change_snmp_configuration', )
 
-
     def action_change_snmp_configuration(self, request, queryset):
         form = ChangeSNMPConfigurationForm(request.POST)
         if 'action_change_snmp_configuration' in request.POST:

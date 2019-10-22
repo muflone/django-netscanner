@@ -29,6 +29,7 @@ from .models.subnet_v4 import SubnetV4
 class ConfirmActionForm(forms.Form):
     _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
 
+
 class ChangeLocationForm(forms.Form):
     _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
     location = forms.ModelChoiceField(
@@ -37,6 +38,7 @@ class ChangeLocationForm(forms.Form):
         label=pgettext_lazy('Host',
                             'Location'))
 
+
 class ChangeSNMPConfigurationForm(forms.Form):
     _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
     snmp_configuration = forms.ModelChoiceField(
@@ -44,6 +46,7 @@ class ChangeSNMPConfigurationForm(forms.Form):
         required=False,
         label=pgettext_lazy('Host',
                             'SNMP configuration'))
+
 
 class ChangeSubnetV4Form(forms.Form):
     _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)

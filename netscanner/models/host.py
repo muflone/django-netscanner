@@ -285,7 +285,6 @@ class HostAdmin(BaseModelAdmin):
                                'action_description': action.title,
                                })
 
-
     def action_change_company(self, request, queryset):
         """
         Change Company

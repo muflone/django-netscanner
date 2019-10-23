@@ -20,5 +20,6 @@
 
 from django import forms
 
+
 class ConfirmActionForm(forms.Form):
     _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)

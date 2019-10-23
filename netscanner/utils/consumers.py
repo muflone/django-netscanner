@@ -26,7 +26,7 @@ from .consumer import Consumer
 
 class Consumers(object):
     def __init__(self,
-                 tasks_queue: multiprocessing.Queue) -> None:
+                 tasks_queue: multiprocessing.JoinableQueue) -> None:
         """
         Consumers object to collect many Consumer objects to consume
         the data in the tasks queue.

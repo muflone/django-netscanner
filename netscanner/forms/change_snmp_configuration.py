@@ -34,6 +34,7 @@ class ChangeSNMPConfigurationForm(forms.Form):
         label=pgettext_lazy('Host',
                             'SNMP configuration'))
 
+
 change_field_snmp_config_action = ChangeFieldAction(
     item='SNMP Configuration',
     field_name='snmp_configuration',

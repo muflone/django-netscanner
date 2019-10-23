@@ -28,7 +28,7 @@ class Consumer(multiprocessing.Process):
     queue and save the results in the results queue
     """
     def __init__(self,
-                 tasks_queue: multiprocessing.Queue,
+                 tasks_queue: multiprocessing.JoinableQueue,
                  results_queue: multiprocessing.Queue,
                  action: types.FunctionType) -> None:
         multiprocessing.Process.__init__(self)

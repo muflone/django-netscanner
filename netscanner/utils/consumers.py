@@ -33,7 +33,13 @@ class Consumers(object):
         The results will be saved in the results queue.
         """
         self.tasks = tasks_queue
-        self.results = multiprocessing.Queue()
+        # A multiprocessing.Queue hangs indefinitively during the
+        # fill using self.results.put(...) as it appears to be locked
+        # even if no others processes or threads are using it.
+        # The multiprocessing.Manager().Queue() send the data from the
+        # queue at once, resulting in no lock during the put operation.
+        # https://bugs.python.org/issue29797
+        self.results = multiprocessing.Manager().Queue()
 
     def execute(self,
                 runners: int,
@@ -45,13 +51,16 @@ class Consumers(object):
         All the results at the end can be find in the results queue.
         """
         # Define consumers
+        consumers = []
         for _ in range(1, runners + 1):
             # Create a new Consumer object and start it
-            Consumer(tasks_queue=self.tasks,
-                     results_queue=self.results,
-                     action=action).start()
+            consumers.append(Consumer(tasks_queue=self.tasks,
+                                      results_queue=self.results,
+                                      action=action))
             # For each consumer add a stopper value to exit from loop
             self.tasks.put(None)
+        for consumer in consumers:
+            consumer.start()
         # Wait until the the queue is empty
         self.tasks.join()
 

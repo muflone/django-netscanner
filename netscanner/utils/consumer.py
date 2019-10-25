@@ -19,6 +19,7 @@
 ##
 
 import multiprocessing
+import queue
 import types
 
 
@@ -29,7 +30,7 @@ class Consumer(multiprocessing.Process):
     """
     def __init__(self,
                  tasks_queue: multiprocessing.JoinableQueue,
-                 results_queue: multiprocessing.Queue,
+                 results_queue: queue.Queue,
                  action: types.FunctionType) -> None:
         multiprocessing.Process.__init__(self)
         self.tasks = tasks_queue

@@ -39,6 +39,21 @@ class SNMPConfiguration(BaseModel):
         blank=True,
         verbose_name=pgettext_lazy('SNMPConfiguration',
                                    'SNMP values'))
+    autodetect = models.ForeignKey('SNMPValue',
+                                   blank=True,
+                                   null=True,
+                                   default=None,
+                                   on_delete=models.PROTECT,
+                                   related_name=(
+                                       'snmp_configuration_autodetect'),
+                                   verbose_name=pgettext_lazy(
+                                       'SNMPConfiguration',
+                                       'Autodetect'))
+    autodetect_value = models.CharField(max_length=255,
+                                        blank=True,
+                                        verbose_name=pgettext_lazy(
+                                            'SNMPConfiguration',
+                                            'Autodetect value'))
 
     class Meta:
         # Define the database table

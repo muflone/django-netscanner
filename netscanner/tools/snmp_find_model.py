@@ -22,6 +22,7 @@ import easysnmp
 
 from .snmp_get import SNMPGet
 
+from ..models import Host
 
 class SNMPFindModel(object):
     def __init__(self,
@@ -30,12 +31,14 @@ class SNMPFindModel(object):
                  version: str,
                  community: str,
                  retries: int,
+                 skip_existing: bool,
                  models: list):
         self.timeout = timeout
         self.port = port
         self.snmp_version = version
         self.snmp_community = community
         self.retries = retries
+        self.skip_existing = skip_existing
         self.models = models
 
     def execute(self,
@@ -44,6 +47,12 @@ class SNMPFindModel(object):
         Scan an IP address for SNMP values
         """
         result = {'status': False}
+        # If requested, skip any existing hosts with the device model set
+        if self.skip_existing and Host.objects.filter(
+                address=destination).exclude(
+                device_model__isnull=True):
+            return result
+
         snmp_version = {'v1': 1,
                         'v2c': 2}.get(self.snmp_version, 2)
         session = easysnmp.session.Session(hostname=destination,

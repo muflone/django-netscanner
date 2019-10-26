@@ -46,6 +46,7 @@ class Command(DiscoveryBaseCommand):
                              version=options['version'],
                              community=options['community'],
                              retries=options.get('retries', 0),
+                             skip_existing=options.get('skip_existing', False),
                              models=models)
 
     def process_results(self,

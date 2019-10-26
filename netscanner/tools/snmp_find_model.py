@@ -73,8 +73,12 @@ class SNMPFindModel(object):
                 # Handle SystemError bug under Python >= 3.7
                 # https://github.com/kamakazikamikaze/easysnmp/issues/108
                 value = None
+            # Replace '${ }' with spaces in autodetection value
+            # Django-admin automatically removes trailing whitespaces
+            autodetect_value = (model.snmp_configuration.autodetect_value
+                                .replace('${ }', ' '))
             # Check if the value is the autodetection value
-            if value and value == model.snmp_configuration.autodetect_value:
+            if value and value == autodetect_value:
                 # Get the first valid value
                 result['status'] = True
                 result['model_name'] = model.name

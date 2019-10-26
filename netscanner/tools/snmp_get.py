@@ -37,7 +37,7 @@ class SNMPGet(object):
     def execute(self,
                 host: Host) -> dict:
         """
-        Resolve the address hostname
+        Get the values using SNMP
         """
         snmp_configuration = (host.snmp_configuration or
                               host.device_model.snmp_configuration)
@@ -53,6 +53,7 @@ class SNMPGet(object):
                                                    'public'),
                                                timeout=self.timeout or 30,
                                                retries=self.retries)
+            # Cycle all configured SNMP values and save values
             for snmp_value in snmp_configuration.values.all():
                 result[str(snmp_value)] = self.format_snmp_value(
                     snmp_value,

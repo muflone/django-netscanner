@@ -24,6 +24,7 @@ from .snmp_get import SNMPGet
 
 from ..models import Host
 
+
 class SNMPFindModel(object):
     def __init__(self,
                  timeout: int,

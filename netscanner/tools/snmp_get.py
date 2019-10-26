@@ -84,8 +84,8 @@ class SNMPGet(object):
             elif (value_configuration.format.startswith('[') and
                     value_configuration.format.endswith(']')):
                 # Slice string
-                format_parts = list(map(int,
-                        value_configuration.format[1:-1].split(':')))
+                format_parts = list(map(int, value_configuration.format[1:-1]
+                                        .split(':')))
                 if len(format_parts) == 1:
                     # Start only
                     result = value.value[format_parts[0]]

@@ -18,8 +18,6 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
-import argparse
-
 from django.utils import timezone
 
 from netscanner.management.discovery_base_command import DiscoveryBaseCommand
@@ -30,12 +28,6 @@ from netscanner.tools.raw_icmp_reply import RawICMPReply
 class Command(DiscoveryBaseCommand):
     help = 'Discover network hosts using raw Raw socket ICMP reply requests'
     tool_name = 'raw_icmp_reply'
-
-    def __init__(self):
-        super().__init__()
-
-    def add_arguments(self, parser: argparse.ArgumentParser):
-        super().add_arguments(parser)
 
     def instance_scanner_tool(self,
                               discovery: Discovery,

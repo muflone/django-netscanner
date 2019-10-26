@@ -61,8 +61,8 @@ class SNMPGet(object):
         result['status'] = bool(result)
         return result
 
-    def format_snmp_value(self,
-                          value_configuration: SNMPValue,
+    @staticmethod
+    def format_snmp_value(value_configuration: SNMPValue,
                           value: easysnmp.variables.SNMPVariable):
         """
         Format SNMPVariable value using the SNMPValue configuration

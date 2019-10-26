@@ -30,7 +30,7 @@ from ..forms.change_domain import change_field_domain_action
 from ..forms.change_location import change_field_location_action
 from ..forms.change_operating_system import change_field_os_action
 from ..forms.change_snmp_configuration import change_field_snmp_config_action
-from ..forms.change_subnetv4 import change_field_subnetv4_action
+from ..forms.change_subnetv4 import change_field_host_subnetv4_action
 
 from utility.misc import ChangeFieldAction
 from utility.models import BaseModel, BaseModelAdmin
@@ -350,7 +350,7 @@ class HostAdmin(BaseModelAdmin):
         Change Subnet v4
         """
         return self.do_action_change(request, queryset,
-                                     action=change_field_subnetv4_action,
+                                     action=change_field_host_subnetv4_action,
                                      action_name='change_subnetv4')
     action_change_subnetv4.short_description = (
-        change_field_subnetv4_action.title)
+        change_field_host_subnetv4_action.title)

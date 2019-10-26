@@ -35,7 +35,7 @@ class ChangeSubnetV4Form(forms.Form):
                             'Subnet v4'))
 
 
-change_field_subnetv4_action = ChangeFieldAction(
+change_field_host_subnetv4_action = ChangeFieldAction(
     item='Subnet v4',
     field_name='subnetv4',
     title=pgettext_lazy('Host', 'Change Subnet v4'),

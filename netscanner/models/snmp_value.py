@@ -46,9 +46,14 @@ class SNMPValue(BaseModel):
                               blank=True,
                               verbose_name=pgettext_lazy('SNMPValue',
                                                          'format string'))
-    trim = models.BooleanField(default=False,
-                               verbose_name=pgettext_lazy('SNMPValue',
-                                                          'trim spaces'))
+    lstrip = models.BooleanField(default=False,
+                                 verbose_name=pgettext_lazy(
+                                     'SNMPValue',
+                                     'Strip spaces on the left'))
+    rstrip = models.BooleanField(default=False,
+                                 verbose_name=pgettext_lazy(
+                                     'SNMPValue',
+                                     'Strip spaces on the right'))
 
     class Meta:
         # Define the database table

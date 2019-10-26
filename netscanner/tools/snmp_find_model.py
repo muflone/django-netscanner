@@ -66,9 +66,10 @@ class SNMPFindModel(object):
         for configuration in self.configurations:
             try:
                 value = SNMPGet.format_snmp_value(
-                    value_configuration=configuration.autodetect,
-                    value=session.get(configuration.autodetect.oid)
-                )
+                    value=session.get(configuration.autodetect.oid),
+                    format=configuration.format,
+                    lstrip=configuration.lstrip,
+                    rstrip=configuration.rstrip)
             except SystemError:
                 # Handle SystemError bug under Python >= 3.7
                 # https://github.com/kamakazikamikaze/easysnmp/issues/108

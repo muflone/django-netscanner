@@ -22,7 +22,7 @@ import datetime
 
 import easysnmp
 
-from ..models import Host, SNMPValue
+from ..models import Host
 
 
 class SNMPGet(object):
@@ -56,14 +56,18 @@ class SNMPGet(object):
             # Cycle all configured SNMP values and save values
             for snmp_value in snmp_configuration.values.all():
                 result[str(snmp_value)] = self.format_snmp_value(
-                    snmp_value,
-                    session.get(snmp_value.oid))
-        result['status'] = bool(result)
+                    value=session.get(snmp_value.oid),
+                    format=snmp_value.format,
+                    lstrip=snmp_value.lstrip,
+                    rstrip=snmp_value.rstrip)
+                result['status'] = bool(result)
         return result
 
     @staticmethod
-    def format_snmp_value(value_configuration: SNMPValue,
-                          value: easysnmp.variables.SNMPVariable):
+    def format_snmp_value(value: easysnmp.variables.SNMPVariable,
+                          format: str,
+                          lstrip: bool,
+                          rstrip: bool) -> str:
         """
         Format SNMPVariable value using the SNMPValue configuration
         :param value_configuration: SNMPValue object containing configuration
@@ -72,20 +76,18 @@ class SNMPGet(object):
         """
         result = None
         if value:
-            if value_configuration.format == 'int':
+            if format == 'int':
                 # Integer value
                 result = int(value.value)
-            elif value_configuration.format == 'timeticks':
+            elif format == 'timeticks':
                 # Timeticks
                 milliseconds = int(value.value) * 10
                 result = (datetime.datetime.now() -
                           datetime.timedelta(milliseconds=milliseconds)
                           ).replace(microsecond=0)
-            elif (value_configuration.format.startswith('[') and
-                    value_configuration.format.endswith(']')):
+            elif (format.startswith('[') and format.endswith(']')):
                 # Slice string
-                format_parts = list(map(int, value_configuration.format[1:-1]
-                                        .split(':')))
+                format_parts = list(map(int, format[1:-1].split(':')))
                 if len(format_parts) == 1:
                     # Start only
                     result = value.value[format_parts[0]]
@@ -102,9 +104,15 @@ class SNMPGet(object):
                     # Whole string
                     result = value.value
                 return result
-            elif value_configuration.format == 'mac address':
+            elif format == 'mac address':
                 # MAC Address
                 result = ':'.join(['%0.2x' % ord(_) for _ in value.value])
             else:
                 result = value.value
+            # Strip spaces from the left side
+            if isinstance(result, str) and lstrip:
+                result = result.lstrip()
+            # Strip spaces from the right side
+            if isinstance(result, str) and rstrip:
+                result = result.rstrip()
         return result

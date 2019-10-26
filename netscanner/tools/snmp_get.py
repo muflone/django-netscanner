@@ -81,6 +81,27 @@ class SNMPGet(object):
                 result = (datetime.datetime.now() -
                           datetime.timedelta(milliseconds=milliseconds)
                           ).replace(microsecond=0)
+            elif (value_configuration.format.startswith('[') and
+                    value_configuration.format.endswith(']')):
+                # Slice string
+                format_parts = list(map(int,
+                        value_configuration.format[1:-1].split(':')))
+                if len(format_parts) == 1:
+                    # Start only
+                    result = value.value[format_parts[0]]
+                elif len(format_parts) == 2:
+                    # Start:End
+                    result = value.value[format_parts[0]:
+                                         format_parts[1]]
+                elif len(format_parts) == 3:
+                    # Start:End:Count
+                    result = value.value[format_parts[0]:
+                                         format_parts[1]:
+                                         format_parts[2]]
+                else:
+                    # Whole string
+                    result = value.value
+                return result
             elif value_configuration.format == 'mac address':
                 # MAC Address
                 result = ':'.join(['%0.2x' % ord(_) for _ in value.value])

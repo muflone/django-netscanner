@@ -44,6 +44,7 @@ class SNMPGet(object):
             snmp_version = {'v1': 1,
                             'v2c': 2}.get(host.snmp_version, 2)
             session = easysnmp.session.Session(hostname=host.address,
+                                               remote_port=self.port,
                                                version=snmp_version,
                                                community=(
                                                    host.snmp_community or

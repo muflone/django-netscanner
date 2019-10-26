@@ -21,7 +21,7 @@
 from django.utils import timezone
 
 from netscanner.management.discovery_base_command import DiscoveryBaseCommand
-from netscanner.models import Discovery, Host, DeviceModel
+from netscanner.models import Discovery, Host, DeviceModel, SNMPConfiguration
 from netscanner.tools.snmp_find_model import SNMPFindModel
 
 
@@ -38,16 +38,15 @@ class Command(DiscoveryBaseCommand):
         :param options: dictionary containing the options
         :return:
         """
-        models = DeviceModel.objects.filter().exclude(
-            snmp_configuration__isnull=True).exclude(
-            snmp_configuration__autodetect__isnull=True)
+        snmp_configurations = SNMPConfiguration.objects.all().exclude(
+            device_model__isnull=True).exclude(autodetect__isnull=True)
         return SNMPFindModel(timeout=discovery.timeout,
                              port=options.get('port', 161),
                              version=options['version'],
                              community=options['community'],
                              retries=options.get('retries', 0),
                              skip_existing=options.get('skip_existing', False),
-                             models=models)
+                             configurations=snmp_configurations)
 
     def process_results(self,
                         discovery: Discovery,

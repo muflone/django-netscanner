@@ -25,6 +25,14 @@ from utility.models import BaseModel, BaseModelAdmin
 
 
 class SNMPConfiguration(BaseModel):
+    device_model = models.ForeignKey('DeviceModel',
+                                     blank=True,
+                                     null=True,
+                                     default=None,
+                                     on_delete=models.PROTECT,
+                                     verbose_name=pgettext_lazy(
+                                         'SNMPConfiguration',
+                                         'Device model'))
     name = models.CharField(max_length=255,
                             unique=True,
                             verbose_name=pgettext_lazy('SNMPConfiguration',
@@ -48,17 +56,28 @@ class SNMPConfiguration(BaseModel):
                                        'snmp_configuration_autodetect'),
                                    verbose_name=pgettext_lazy(
                                        'SNMPConfiguration',
-                                       'Autodetect'))
-    autodetect_value = models.CharField(max_length=255,
-                                        blank=True,
-                                        verbose_name=pgettext_lazy(
-                                            'SNMPConfiguration',
-                                            'Autodetect value'))
+                                       'Autodetect value'))
+    format = models.CharField(max_length=255,
+                              blank=True,
+                              verbose_name=pgettext_lazy('SNMPConfiguration',
+                                                         'Format string'))
+    lstrip = models.BooleanField(default=False,
+                                 verbose_name=pgettext_lazy(
+                                     'SNMPConfiguration',
+                                     'Strip spaces on the left'))
+    rstrip = models.BooleanField(default=False,
+                                 verbose_name=pgettext_lazy(
+                                     'SNMPConfiguration',
+                                     'Strip spaces on the right'))
+    value = models.CharField(max_length=255,
+                             default='',
+                             verbose_name=pgettext_lazy('SNMPConfiguration',
+                                                        'Resulting value'))
 
     class Meta:
         # Define the database table
         db_table = 'netscanner_snmp_configuration'
-        ordering = ['name']
+        ordering = ['device_model', 'name']
         verbose_name = pgettext_lazy('SNMPConfiguration', 'SNMP Configuration')
         verbose_name_plural = pgettext_lazy('SNMPConfiguration',
                                             'SNMP Configurations')

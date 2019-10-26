@@ -33,14 +33,14 @@ class SNMPFindModel(object):
                  community: str,
                  retries: int,
                  skip_existing: bool,
-                 models: list):
+                 configurations: list):
         self.timeout = timeout
         self.port = port
         self.snmp_version = version
         self.snmp_community = community
         self.retries = retries
         self.skip_existing = skip_existing
-        self.models = models
+        self.configurations = configurations
 
     def execute(self,
                 destination: str) -> dict:
@@ -63,11 +63,11 @@ class SNMPFindModel(object):
                                            timeout=self.timeout,
                                            retries=self.retries)
         # Try every model for the best matching
-        for model in self.models:
+        for configuration in self.configurations:
             try:
                 value = SNMPGet.format_snmp_value(
-                    value_configuration=model.snmp_configuration.autodetect,
-                    value=session.get(model.snmp_configuration.autodetect.oid)
+                    value_configuration=configuration.autodetect,
+                    value=session.get(configuration.autodetect.oid)
                 )
             except SystemError:
                 # Handle SystemError bug under Python >= 3.7
@@ -75,14 +75,13 @@ class SNMPFindModel(object):
                 value = None
             # Replace '${ }' with spaces in autodetection value
             # Django-admin automatically removes trailing whitespaces
-            autodetect_value = (model.snmp_configuration.autodetect_value
-                                .replace('${ }', ' '))
+            autodetect_value = configuration.value.replace('${ }', ' ')
             # Check if the value is the autodetection value
             if value and value == autodetect_value:
                 # Get the first valid value
                 result['status'] = True
-                result['model_name'] = model.name
-                result['model_id'] = model.id
+                result['model_name'] = configuration.device_model.name
+                result['model_id'] = configuration.device_model.id
                 break
         # Add some information to the results
         if result['status']:

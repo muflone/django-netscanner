@@ -28,9 +28,11 @@ from ..models import Host, SNMPValue
 class SNMPGet(object):
     def __init__(self,
                  timeout: int,
-                 port: int):
+                 port: int,
+                 retries: int):
         self.timeout = timeout
         self.port = port
+        self.retries = retries
 
     def execute(self,
                 host: Host) -> dict:
@@ -49,7 +51,8 @@ class SNMPGet(object):
                                                community=(
                                                    host.snmp_community or
                                                    'public'),
-                                               timeout=self.timeout or 30)
+                                               timeout=self.timeout or 30,
+                                               retries=self.retries)
             for snmp_value in snmp_configuration.values.all():
                 result[str(snmp_value)] = self.format_snmp_value(
                     snmp_value,

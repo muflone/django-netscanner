@@ -39,7 +39,8 @@ class Command(HostBaseCommand):
         :return:
         """
         return SNMPGet(timeout=discovery.timeout,
-                       port=options.get('port', 161))
+                       port=options.get('port', 161),
+                       retries=options.get('retries', 0))
 
     def process_results(self,
                         discovery: Discovery,

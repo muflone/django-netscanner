@@ -19,12 +19,14 @@
 ##
 
 from django.db import models
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import pgettext_lazy
 
 from ..forms.confirm_action import ConfirmActionForm
+from ..forms.change_subnetv4 import change_field_discovery_subnetv4_action
 
+from utility.misc import ChangeFieldAction
 from utility.models import BaseModel, BaseModelAdmin
 
 
@@ -80,7 +82,9 @@ class Discovery(BaseModel):
 
 
 class DiscoveryAdmin(BaseModelAdmin):
-    actions = ('action_enable', 'action_disable')
+    actions = ('action_enable',
+               'action_disable',
+               'action_change_subnetv4')
 
     def action_enable(self, request, queryset):
         form = ConfirmActionForm(request.POST)
@@ -149,3 +153,51 @@ class DiscoveryAdmin(BaseModelAdmin):
                                })
     action_disable.short_description = pgettext_lazy('Discovery',
                                                      'Disable')
+
+    def do_action_change(self, request, queryset,
+                         action: ChangeFieldAction,
+                         action_name: str) -> HttpResponse:
+        """
+        Execute a change action on a group of selected records
+        :param request: Request object from the page
+        :param queryset: queryset with the data to edit
+        :param action: ChangeFieldAction object containing the messages
+        :param action_name: called action name
+        :return: HttpResponse or HttpResponseRedirect object
+        """
+        form = action.form(request.POST)
+        if 'action_%s' % action_name in request.POST:
+            if form.is_valid():
+                # Change Field for every selected row
+                fields = {action.field_name: form.cleaned_data['changed_data']}
+                queryset.update(**fields)
+                # Operation successful
+                self.message_user(request,
+                                  pgettext_lazy(
+                                      'Discovery',
+                                      'Changed {COUNT} discoveries'.format(
+                                          COUNT=queryset.count())))
+                return HttpResponseRedirect(request.get_full_path())
+        # Render form to confirm changes
+        return render(request,
+                      'utility/change_attribute/form.html',
+                      context={'queryset': queryset,
+                               'form': form,
+                               'title': action.title,
+                               'question': action.question,
+                               'items_name': action.item,
+                               'action': 'action_%s' % action_name,
+                               'action_description': action.title,
+                               })
+
+    def action_change_subnetv4(self, request, queryset):
+        """
+        Change Subnet v4
+        """
+        return self.do_action_change(
+            request,
+            queryset,
+            action=change_field_discovery_subnetv4_action,
+            action_name='change_subnetv4')
+    action_change_subnetv4.short_description = (
+        change_field_discovery_subnetv4_action.title)

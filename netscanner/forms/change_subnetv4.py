@@ -43,3 +43,13 @@ change_field_host_subnetv4_action = ChangeFieldAction(
                            'Confirm you want to change the '
                            'subnet v4 for the selected hosts?'),
     form=ChangeSubnetV4Form)
+
+
+change_field_discovery_subnetv4_action = ChangeFieldAction(
+    item='Subnet v4',
+    field_name='subnetv4',
+    title=pgettext_lazy('Discovery', 'Change Subnet v4'),
+    question=pgettext_lazy('Discovery',
+                           'Confirm you want to change the '
+                           'subnet v4 for the selected discoveries?'),
+    form=ChangeSubnetV4Form)

@@ -25,6 +25,7 @@ from django.utils.translation import pgettext_lazy
 
 from ..forms.confirm_action import ConfirmActionForm
 from ..forms.change_subnetv4 import change_field_discovery_subnetv4_action
+from ..forms.change_scanner import change_field_scanner_action
 
 from utility.misc import ChangeFieldAction
 from utility.models import BaseModel, BaseModelAdmin
@@ -84,6 +85,7 @@ class Discovery(BaseModel):
 class DiscoveryAdmin(BaseModelAdmin):
     actions = ('action_enable',
                'action_disable',
+               'action_change_scanner',
                'action_change_subnetv4')
 
     def action_enable(self, request, queryset):
@@ -189,6 +191,18 @@ class DiscoveryAdmin(BaseModelAdmin):
                                'action': 'action_%s' % action_name,
                                'action_description': action.title,
                                })
+
+    def action_change_scanner(self, request, queryset):
+        """
+        Change Scanner
+        """
+        return self.do_action_change(
+            request,
+            queryset,
+            action=change_field_scanner_action,
+            action_name='change_scanner')
+    action_change_scanner.short_description = (
+        change_field_scanner_action.title)
 
     def action_change_subnetv4(self, request, queryset):
         """

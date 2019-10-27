@@ -79,7 +79,7 @@ class SNMPFindModel(object):
             autodetect_value = configuration.value.replace('${ }', ' ')
             # Check if the value is the autodetection value
             if value and value == autodetect_value:
-                # Get the first valid value
+                # Save status and model
                 result['status'] = True
                 result['model_name'] = configuration.device_model.name
                 result['model_id'] = configuration.device_model.id

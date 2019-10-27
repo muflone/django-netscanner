@@ -23,7 +23,9 @@ import scapy.all
 
 class ARPRequest(object):
     def __init__(self,
+                 verbosity: int,
                  timeout: int):
+        self.verbosity = verbosity
         self.timeout = timeout
 
     def execute(self,
@@ -31,6 +33,9 @@ class ARPRequest(object):
         """
         Send an ARP request to the address (requires root access)
         """
+        # Print destination for verbosity > 1
+        if self.verbosity > 1:
+            print(destination)
         broadcast = scapy.all.Ether(dst="ff:ff:ff:ff:ff:ff")
         arp = scapy.all.ARP(pdst=destination)
         reply = scapy.all.srp(broadcast / arp,

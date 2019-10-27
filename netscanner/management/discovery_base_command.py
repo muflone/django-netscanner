@@ -41,6 +41,8 @@ class DiscoveryBaseCommand(BaseCommand):
         # Automatically save a DiscoveryResult record for each successful
         # discovery result
         self.save_results = True
+        # Verbosity level for printing results
+        self.verbosity = 0
 
     def add_arguments(self, parser: argparse.ArgumentParser) -> None:
         BaseCommand.add_arguments(self, parser)
@@ -58,10 +60,12 @@ class DiscoveryBaseCommand(BaseCommand):
             if discovery.options:
                 discovery_options.update(json.loads(discovery.options))
             # Exlude Django reserved options
-            for reserved_options in ('verbosity', 'settings', 'pythonpath',
+            for reserved_options in ('settings', 'pythonpath',
                                      'traceback', 'no_color', 'force_color'):
                 if reserved_options in discovery_options:
                     del discovery_options[reserved_options]
+            # Save verbosity level
+            self.verbosity = discovery_options['verbosity']
             # Prepare addresses to discover
             tasks = multiprocessing.JoinableQueue()
             for address in discovery.subnetv4.get_ip_list():
@@ -72,14 +76,16 @@ class DiscoveryBaseCommand(BaseCommand):
             tool = self.instance_scanner_tool(discovery=discovery,
                                               options=discovery_options)
             if tool:
-                self.print('Discovery "{DISCOVERY}" - '
-                           'workers: {WORKERS}, '
-                           'timeout: {TIMEOUT}, '
-                           'options: {OPTIONS}'.format(
-                               DISCOVERY=discovery.name,
-                               WORKERS=discovery.workers,
-                               TIMEOUT=discovery.timeout,
-                               OPTIONS=discovery_options))
+                # Print results if verbosity > 0
+                if self.verbosity > 0:
+                    self.print('Discovery "{DISCOVERY}" - '
+                               'workers: {WORKERS}, '
+                               'timeout: {TIMEOUT}, '
+                               'options: {OPTIONS}'.format(
+                                   DISCOVERY=discovery.name,
+                                   WORKERS=discovery.workers,
+                                   TIMEOUT=discovery.timeout,
+                                   OPTIONS=discovery_options))
                 consumers.execute(runners=discovery.workers,
                                   action=tool.execute)
                 # Process the results in a single operation on the DB side
@@ -145,6 +151,9 @@ class DiscoveryBaseCommand(BaseCommand):
                              if serializable_values
                              else '')
                 )
+        # Print results if verbosity > 0
+        if self.verbosity > 0:
+            self.print('Results:')
 
     def print(self,
               message: str) -> None:

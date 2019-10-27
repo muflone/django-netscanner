@@ -27,6 +27,7 @@ from ..models import Host
 
 class SNMPFindModel(object):
     def __init__(self,
+                 verbosity: int,
                  timeout: int,
                  port: int,
                  version: str,
@@ -34,6 +35,7 @@ class SNMPFindModel(object):
                  retries: int,
                  skip_existing: bool,
                  configurations: list):
+        self.verbosity = verbosity
         self.timeout = timeout
         self.port = port
         self.snmp_version = version
@@ -48,6 +50,9 @@ class SNMPFindModel(object):
         Scan an IP address for SNMP values
         """
         result = {'status': False}
+        # Print destination for verbosity > 1
+        if self.verbosity > 1:
+            print(destination)
         # If requested, skip any existing hosts with the device model set
         if self.skip_existing and Host.objects.filter(
                 address=destination).exclude(

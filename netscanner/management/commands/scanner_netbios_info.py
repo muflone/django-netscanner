@@ -38,7 +38,8 @@ class Command(DiscoveryBaseCommand):
         :param options: dictionary containing the options
         :return:
         """
-        return NetBIOSSMBInfo(timeout=discovery.timeout,
+        return NetBIOSSMBInfo(verbosity=options.get('verbosity', 1),
+                              timeout=discovery.timeout,
                               protocol=PROTOCOL_NETBIOS,
                               port=options.get('port', 139),
                               port_names=options.get('port_names', 137))
@@ -57,7 +58,9 @@ class Command(DiscoveryBaseCommand):
         super().process_results(discovery, options, results)
         for item in results:
             (address, values) = item
-            self.print('%-18s %s' % (address, values))
+            # Print results if verbosity > 0
+            if self.verbosity > 0:
+                self.print('%-18s %s' % (address, values))
             # Update last seen time
             hosts = Host.objects.filter(address=address)
             if hosts:

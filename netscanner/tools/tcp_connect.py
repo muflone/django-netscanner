@@ -23,8 +23,10 @@ import socket
 
 class TCPConnect(object):
     def __init__(self,
+                 verbosity: int,
                  timeout: int,
                  portnr: int):
+        self.verbosity = verbosity
         self.timeout = timeout
         self.portnr = portnr
 
@@ -33,6 +35,9 @@ class TCPConnect(object):
         """
         Connect to an IP address using socket TCP connection
         """
+        # Print destination for verbosity > 1
+        if self.verbosity > 1:
+            print(destination)
         sock = socket.socket(family=socket.AF_INET,
                              type=socket.SOCK_STREAM,
                              proto=socket.IPPROTO_TCP)

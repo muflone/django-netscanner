@@ -40,7 +40,8 @@ class Command(DiscoveryBaseCommand):
         """
         snmp_configurations = SNMPConfiguration.objects.all().exclude(
             device_model__isnull=True).exclude(autodetect__isnull=True)
-        return SNMPFindModel(timeout=discovery.timeout,
+        return SNMPFindModel(verbosity=options.get('verbosity', 1),
+                             timeout=discovery.timeout,
                              port=options.get('port', 161),
                              version=options['version'],
                              community=options['community'],
@@ -64,7 +65,9 @@ class Command(DiscoveryBaseCommand):
             (address, values) = item
             model_id = values['model_id']
             model = DeviceModel.objects.get(id=model_id)
-            self.print('%-18s %s' % (address, values))
+            # Print results if verbosity > 0
+            if self.verbosity > 0:
+                self.print('%-18s %s' % (address, values))
             # Update last seen time
             hosts = Host.objects.filter(address=address)
             if hosts:

@@ -38,7 +38,7 @@ class Command(DiscoveryBaseCommand):
         :param options: dictionary containing the options
         :return:
         """
-        return Hostname()
+        return Hostname(verbosity=options.get('verbosity', 1))
 
     def process_results(self,
                         discovery: Discovery,
@@ -55,7 +55,9 @@ class Command(DiscoveryBaseCommand):
         for item in results:
             (address, values) = item
             fqdn = values['fqdn']
-            self.print('%-18s %s' % (address, values))
+            # Print results if verbosity > 0
+            if self.verbosity > 0:
+                self.print('%-18s %s' % (address, values))
             # Update last seen time, hostname and domain name
             if '.' in fqdn:
                 # Hostname + domain name

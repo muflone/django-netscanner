@@ -27,9 +27,11 @@ from ..models import Host
 
 class SNMPGet(object):
     def __init__(self,
+                 verbosity: int,
                  timeout: int,
                  port: int,
                  retries: int):
+        self.verbosity = verbosity
         self.timeout = timeout
         self.port = port
         self.retries = retries
@@ -39,6 +41,9 @@ class SNMPGet(object):
         """
         Get the values using SNMP
         """
+        # Print destination for verbosity > 1
+        if self.verbosity > 1:
+            print(host.address)
         snmp_configuration = (host.snmp_configuration or
                               host.device_model.snmp_configuration)
         result = {}

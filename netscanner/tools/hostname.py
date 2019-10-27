@@ -22,14 +22,18 @@ import socket
 
 
 class Hostname(object):
-    def __init__(self):
-        pass
+    def __init__(self,
+                 verbosity: int):
+        self.verbosity = verbosity
 
     def execute(self,
                 destination: str) -> dict:
         """
         Resolve the address hostname
         """
+        # Print destination for verbosity > 1
+        if self.verbosity > 1:
+            print(destination)
         result = socket.getfqdn(destination)
         return {
             'fqdn': result,

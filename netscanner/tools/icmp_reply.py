@@ -23,7 +23,9 @@ import scapy.all
 
 class ICMPReply(object):
     def __init__(self,
+                 verbosity: int,
                  timeout: int):
+        self.verbosity = verbosity
         self.timeout = timeout
 
     def execute(self,
@@ -31,6 +33,9 @@ class ICMPReply(object):
         """
         Ping an IP address (requires root access)
         """
+        # Print destination for verbosity > 1
+        if self.verbosity > 1:
+            print(destination)
         ip_request = scapy.all.IP(dst=destination)
         ping = scapy.all.ICMP()
         reply = scapy.all.sr1(ip_request / ping,

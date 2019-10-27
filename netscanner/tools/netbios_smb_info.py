@@ -36,10 +36,12 @@ PROTOCOL_SMB = 1
 
 class NetBIOSSMBInfo(object):
     def __init__(self,
+                 verbosity: int,
                  timeout: int,
                  protocol: int,
                  port: int,
                  port_names: int):
+        self.verbosity = verbosity
         self.timeout = timeout
         self.protocol = protocol
         # Port used for NetBIOS and SMB data
@@ -53,7 +55,9 @@ class NetBIOSSMBInfo(object):
         Inspect NetBIOS and SMB info
         """
         results = {}
-
+        # Print destination for verbosity > 1
+        if self.verbosity > 1:
+            print(destination)
         if self.protocol == PROTOCOL_NETBIOS:
             nbns_result = self._get_netbios_names(destination)
             if not nbns_result or not nbns_result['unique_names']:

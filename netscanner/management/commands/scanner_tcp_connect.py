@@ -38,7 +38,8 @@ class Command(DiscoveryBaseCommand):
         :param options: dictionary containing the options
         :return:
         """
-        return TCPConnect(timeout=discovery.timeout,
+        return TCPConnect(verbosity=options.get('verbosity', 1),
+                          timeout=discovery.timeout,
                           portnr=options.get('port', 80))
 
     def process_results(self,
@@ -55,7 +56,9 @@ class Command(DiscoveryBaseCommand):
         super().process_results(discovery, options, results)
         for item in results:
             (address, values) = item
-            self.print('%-18s %s' % (address, values))
+            # Print results if verbosity > 0
+            if self.verbosity > 0:
+                self.print('%-18s %s' % (address, values))
             # Update last seen time
             hosts = Host.objects.filter(address=address)
             if hosts:

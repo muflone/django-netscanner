@@ -23,7 +23,9 @@ import scapy.all
 
 class RawICMPReply(object):
     def __init__(self,
+                 verbosity: int,
                  timeout: int):
+        self.verbosity = verbosity
         self.timeout = timeout
 
     def execute(self,
@@ -31,6 +33,9 @@ class RawICMPReply(object):
         """
         Ping an IP address using Raw socket (requires root access)
         """
+        # Print destination for verbosity > 1
+        if self.verbosity > 1:
+            print(destination)
         scapy.all.conf.L3socket = scapy.all.L3RawSocket
         ip_request = scapy.all.IP(dst=destination)
         ping = scapy.all.ICMP()

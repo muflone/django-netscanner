@@ -38,7 +38,8 @@ class Command(HostBaseCommand):
         :param options: dictionary containing the options
         :return:
         """
-        return SNMPGet(timeout=discovery.timeout,
+        return SNMPGet(verbosity=options.get('verbosity', 1),
+                       timeout=discovery.timeout,
                        port=options.get('port', 161),
                        retries=options.get('retries', 0))
 
@@ -56,7 +57,9 @@ class Command(HostBaseCommand):
         super().process_results(discovery, options, results)
         for item in results:
             (host, values) = item
-            self.print('%-18s %s' % (host.address, values))
+            # Print results if verbosity > 0
+            if self.verbosity > 0:
+                self.print('%-18s %s' % (host.address, values))
             # Update last seen time
             # Update only if not excluded from discovery
             if not host.no_discovery:

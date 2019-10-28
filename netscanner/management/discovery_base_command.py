@@ -98,6 +98,7 @@ class DiscoveryBaseCommand(BaseCommand):
                                          options=options,
                                          results=results)
                     # Update last scan discovery
+                    discovery = Discovery.objects.get(pk=discovery.pk)
                     discovery.last_scan = timezone.now()
                     discovery.save()
 

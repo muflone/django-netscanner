@@ -50,6 +50,9 @@ class Command(BaseCommand):
                                 'Launch also disabled discoveries'))
 
     def handle(self, *args, **options) -> None:
+        management_command = DiscoveryBaseCommand()
+        # Set verbosity level
+        management_command.verbosity = options['verbosity']
         try:
             discovery = Discovery.objects.get(name=options['discovery'])
             # Execute only enabled discoveries or any if disabled is passed
@@ -60,16 +63,19 @@ class Command(BaseCommand):
                         # Execute discovery for the requested tool
                         command().do_discovery(
                             discovery=discovery,
-                            options=DiscoveryBaseCommand().get_options(
+                            options=management_command.get_options(
                                 general_options={**options},
                                 scanner_options=discovery.scanner.options,
                                 discovery_options=discovery.options))
                         break
             else:
                 # Disabled discovery
-                print('The discovery "{NAME}" is disabled'.format(
-                    NAME=discovery.name))
+                if management_command.verbosity > 0:
+                    management_command.print(
+                        'The discovery "{NAME}" is disabled'.format(
+                            NAME=discovery.name))
         except models.ObjectDoesNotExist:
             # Not existing Discovery
-            print('No discovery named "{NAME}"'.format(
-                NAME=options['discovery']))
+            if management_command.verbosity > 0:
+                management_command.print('No discovery named "{NAME}"'.format(
+                    NAME=options['discovery']))

@@ -19,11 +19,7 @@
 ##
 
 from django.db import models
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from django.utils.translation import pgettext_lazy
-
-from ..forms.change_snmp_configuration import ChangeSNMPConfigurationForm
 
 from utility.models import BaseModel, BaseModelAdmin
 

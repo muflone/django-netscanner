@@ -18,14 +18,17 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
-from django.db import models
+from django.contrib import messages
+from django.db import models, IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.urls import path
 from django.utils.translation import pgettext_lazy
 
 from ..forms.confirm_action import ConfirmActionForm
 from ..forms.change_subnetv4 import change_field_discovery_subnetv4_action
 from ..forms.change_scanner import change_field_scanner_action
+from ..forms.create_discovery import CreateDiscoveryForm
 
 from utility.misc import ChangeFieldAction
 from utility.models import BaseModel, BaseModelAdmin
@@ -87,6 +90,16 @@ class DiscoveryAdmin(BaseModelAdmin):
                'action_disable',
                'action_change_scanner',
                'action_change_subnetv4')
+    change_list_template = 'netscanner/discovery_create/change_list.html'
+
+    def get_urls(self):
+        """
+        Additional URLs for the DiscoveryAdmin model
+        """
+        urls = [
+            path('create/', self.create),
+        ] + super().get_urls()
+        return urls
 
     def action_enable(self, request, queryset):
         form = ConfirmActionForm(request.POST)
@@ -215,3 +228,70 @@ class DiscoveryAdmin(BaseModelAdmin):
             action_name='change_subnetv4')
     action_change_subnetv4.short_description = (
         change_field_discovery_subnetv4_action.title)
+
+    def create(self, request):
+        """
+        Discoveries mass creation for each SubnetV4
+        """
+        if request.method == 'POST':
+            form = CreateDiscoveryForm(request.POST)
+            if form.is_valid():
+                # Process the request by creating many Discovery objects
+                counter = 0
+                scanner = form.cleaned_data['scanner']
+                # Create a new Discovery object for each selected subnet
+                for subnet in form.cleaned_data['subnetv4']:
+                    # Define name between two styles
+                    naming_style = form.cleaned_data['naming_style']
+                    name = ('{SUBNET} - {SCANNER}'
+                            if naming_style == 'subnet_scanner'
+                            else '{SCANNER} - {SUBNET}').format(
+                        SUBNET=subnet.name,
+                        SCANNER=scanner.name)
+                    try:
+                        # Create a new Discovery
+                        Discovery.objects.create(
+                            name=name,
+                            description=form.cleaned_data['description'],
+                            subnetv4_id=subnet.pk,
+                            enabled=form.cleaned_data['enabled'],
+                            scanner_id=scanner.pk,
+                            timeout=form.cleaned_data['timeout'],
+                            workers=form.cleaned_data['workers'],
+                            options=form.cleaned_data['options'],
+                            interval=form.cleaned_data['interval'])
+                        counter += 1
+                    except IntegrityError:
+                        # Discovery already exists
+                        self.message_user(
+                            request=request,
+                            message=pgettext_lazy(
+                                'Discovery',
+                                'The discovery {NAME} already exists'.format(
+                                    NAME=name)),
+                            level=messages.ERROR)
+                # Operation completed
+                if counter > 0:
+                    # Discoveries created successfully
+                    message = pgettext_lazy('Discovery',
+                                            '{COUNT} discoveries were '
+                                            'created'.format(COUNT=counter))
+                    message_level = messages.INFO
+                else:
+                    # No discoveries created
+                    message = pgettext_lazy('Discovery',
+                                            'No discoveries were created')
+                    message_level = messages.WARNING
+                # Show results to the user
+                self.message_user(request=request,
+                                  message=message,
+                                  level=message_level)
+                # Return to the calling page
+                return redirect('..')
+        # Show the requesting form
+        return render(request,
+                      'netscanner/discovery_create/form.html',
+                      {'form': CreateDiscoveryForm(),
+                       'action': 'create',
+                       'action_description': 'Create new discoveries',
+                       })

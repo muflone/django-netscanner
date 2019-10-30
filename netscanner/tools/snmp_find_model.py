@@ -55,6 +55,12 @@ class SNMPFindModel(object):
             print(destination)
         # Get existing hosts
         hosts = Host.objects.filter(address=destination)
+        # Skip hosts with SNMP disabled
+        if hosts.filter(snmp_version='off'):
+            if self.verbosity > 2:
+                print('Host {DESTINATION} has SNMP disabled, skipping'.format(
+                    DESTINATION=destination))
+            return result
         # If requested, skip any existing hosts with the device model set
         if self.skip_existing and hosts.exclude(device_model__isnull=True):
             if self.verbosity > 2:

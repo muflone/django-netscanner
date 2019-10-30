@@ -85,6 +85,12 @@ class SNMPConfiguration(BaseModel):
     def __str__(self):
         return '{NAME}'.format(NAME=self.name)
 
+    def autodetect_title(self) -> str:
+        return '{SECTION} - {BRAND} {NAME}'.format(
+            SECTION=self.autodetect.section.name,
+            BRAND=self.autodetect.brand.name,
+            NAME=self.autodetect.name)
+
 
 class SNMPConfigurationAdmin(BaseModelAdmin):
     pass

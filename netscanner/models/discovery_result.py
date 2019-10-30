@@ -52,7 +52,7 @@ class DiscoveryResult(BaseModel):
     class Meta:
         # Define the database table
         db_table = 'netscanner_discovery_result'
-        ordering = ['scan_datetime']
+        ordering = ['-scan_datetime']
         verbose_name = pgettext_lazy('DiscoveryResult', 'Discovery result')
         verbose_name_plural = pgettext_lazy('DiscoveryResult',
                                             'Discovery results')

@@ -53,10 +53,13 @@ class SNMPFindModel(object):
         # Print destination for verbosity > 1
         if self.verbosity > 1:
             print(destination)
+        # Get existing hosts
+        hosts = Host.objects.filter(address=destination)
         # If requested, skip any existing hosts with the device model set
-        if self.skip_existing and Host.objects.filter(
-                address=destination).exclude(
-                device_model__isnull=True):
+        if self.skip_existing and hosts.exclude(device_model__isnull=True):
+            if self.verbosity > 2:
+                print('Host {DESTINATION} has DeviceModel, skipping'.format(
+                    DESTINATION=destination))
             return result
 
         snmp_version = {'v1': 1,

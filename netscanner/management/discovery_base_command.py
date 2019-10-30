@@ -52,10 +52,11 @@ class DiscoveryBaseCommand(BaseCommand):
                                                enabled=True)
         for discovery in discoveries:
             # Launch a discovery
-            self.do_discovery(discovery, self.get_options(
-                general_options={**options},
-                scanner_options=discovery.scanner.options,
-                discovery_options=discovery.options))
+            self.do_discovery(discovery=discovery,
+                              options=self.get_options(
+                                  general_options={**options},
+                                  scanner_options=discovery.scanner.options,
+                                  discovery_options=discovery.options))
 
     def get_options(self,
                     general_options: dict,
@@ -83,11 +84,13 @@ class DiscoveryBaseCommand(BaseCommand):
                 del result[reserved_options]
         return result
 
-    def do_discovery(self, discovery, options: dict) -> None:
+    def do_discovery(self,
+                     discovery: Discovery,
+                     options: dict) -> None:
         """
         Launch a discovery
-        :param discovery:
-        :param options
+        :param discovery: Discovery object to launch
+        :param options: discovery options
         :return:
         """
         # Save verbosity level
@@ -95,7 +98,8 @@ class DiscoveryBaseCommand(BaseCommand):
         # Prepare addresses to discover
         excluded_addresses = options.get('excluded', [])
         tasks = multiprocessing.JoinableQueue()
-        for address in discovery.subnetv4.get_ip_list():
+        addresses = discovery.subnetv4.get_ip_list()
+        for address in addresses:
             # Process only not excluded addresses
             if address not in excluded_addresses:
                 # Add address to the processing queue

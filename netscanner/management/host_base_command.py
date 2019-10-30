@@ -55,7 +55,8 @@ class HostBaseCommand(BaseCommand):
                               options=self.get_options(
                                   general_options={**options},
                                   scanner_options=discovery.scanner.options,
-                                  discovery_options=discovery.options))
+                                  discovery_options=discovery.options),
+                              destinations=None)
 
     def get_options(self,
                     general_options: dict,
@@ -85,20 +86,26 @@ class HostBaseCommand(BaseCommand):
 
     def do_discovery(self,
                      discovery: Discovery,
-                     options: dict) -> None:
+                     options: dict,
+                     destinations: list) -> None:
         """
         Launch a discovery
         :param discovery: Discovery object to launch
         :param options: discovery options
+        :param destinations: list of manual destinations
         :return:
         """
         # Save verbosity level
         self.verbosity = options['verbosity']
         # Prepare addresses to discover
         tasks = multiprocessing.JoinableQueue()
-        addresses = Host.objects.filter(
-            address__in=discovery.subnetv4.get_ip_list()).exclude(
-            device_model=None)
+        # Choose destinations group (manual group or Hosts from a Discovery)
+        if destinations:
+            addresses = destinations
+        else:
+            addresses = Host.objects.filter(
+                address__in=discovery.subnetv4.get_ip_list()).exclude(
+                device_model=None)
         for address in addresses:
             tasks.put(address)
         # Prepare consumers to execute the network discovery

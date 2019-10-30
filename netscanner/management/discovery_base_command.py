@@ -56,7 +56,8 @@ class DiscoveryBaseCommand(BaseCommand):
                               options=self.get_options(
                                   general_options={**options},
                                   scanner_options=discovery.scanner.options,
-                                  discovery_options=discovery.options))
+                                  discovery_options=discovery.options),
+                              destinations=None)
 
     def get_options(self,
                     general_options: dict,
@@ -86,11 +87,13 @@ class DiscoveryBaseCommand(BaseCommand):
 
     def do_discovery(self,
                      discovery: Discovery,
-                     options: dict) -> None:
+                     options: dict,
+                     destinations: list) -> None:
         """
         Launch a discovery
         :param discovery: Discovery object to launch
         :param options: discovery options
+        :param destinations: list of manual destinations
         :return:
         """
         # Save verbosity level
@@ -98,7 +101,10 @@ class DiscoveryBaseCommand(BaseCommand):
         # Prepare addresses to discover
         excluded_addresses = options.get('excluded', [])
         tasks = multiprocessing.JoinableQueue()
-        addresses = discovery.subnetv4.get_ip_list()
+        # Choose destinations group (manual group or Discovery subnet)
+        addresses = (destinations
+                     if destinations
+                     else discovery.subnetv4.get_ip_list())
         for address in addresses:
             # Process only not excluded addresses
             if address not in excluded_addresses:

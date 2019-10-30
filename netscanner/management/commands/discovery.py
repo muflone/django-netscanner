@@ -48,6 +48,14 @@ class Command(BaseCommand):
                             help=pgettext_lazy(
                                 'Scanner Custom',
                                 'Launch also disabled discoveries'))
+        parser.add_argument('--destinations',
+                            action='store',
+                            type=str,
+                            required=False,
+                            help=pgettext_lazy(
+                                'Scanner Custom',
+                                'Execute the discovery only to the selected '
+                                'destinations'))
 
     def handle(self, *args, **options) -> None:
         management_command = DiscoveryBaseCommand()
@@ -55,6 +63,9 @@ class Command(BaseCommand):
         management_command.verbosity = options['verbosity']
         try:
             discovery = Discovery.objects.get(name=options['discovery'])
+            destinations = (options['destinations'].split(' ')
+                            if options['destinations']
+                            else None)
             # Execute only enabled discoveries or any if disabled is passed
             if discovery.enabled or options['disabled']:
                 # Find the tool for the requested discovery
@@ -66,7 +77,8 @@ class Command(BaseCommand):
                             options=management_command.get_options(
                                 general_options={**options},
                                 scanner_options=discovery.scanner.options,
-                                discovery_options=discovery.options))
+                                discovery_options=discovery.options),
+                            destinations=destinations)
                         break
             else:
                 # Disabled discovery

@@ -50,58 +50,85 @@ class HostBaseCommand(BaseCommand):
         discoveries = Discovery.objects.filter(scanner__tool=self.tool_name,
                                                enabled=True)
         for discovery in discoveries:
-            # Define options (Command line + Scanner + Discovery)
-            host_options = {**options}
-            # Add Scanner options
-            if discovery.scanner.options:
-                host_options.update(json.loads(discovery.scanner.options))
-            # Add Discovery options
-            if discovery.options:
-                host_options.update(json.loads(discovery.options))
-            # Exlude Django reserved options
-            for reserved_options in ('settings', 'pythonpath',
-                                     'traceback', 'no_color', 'force_color'):
-                if reserved_options in host_options:
-                    del host_options[reserved_options]
-            # Save verbosity level
-            self.verbosity = host_options['verbosity']
-            # Prepare addresses to discover
-            tasks = multiprocessing.JoinableQueue()
-            hosts = Host.objects.filter(
-                address__in=discovery.subnetv4.get_ip_list()).exclude(
-                device_model=None)
-            for host in hosts:
-                tasks.put(host)
-            # Prepare consumers to execute the network discovery
-            consumers = Consumers(tasks_queue=tasks)
-            # Instance the scanner tool using the discovery options
-            tool = self.instance_scanner_tool(discovery=discovery,
-                                              options=host_options)
-            if tool:
-                # Print results if verbosity > 0
-                if self.verbosity > 0:
-                    self.print('Discovery "{DISCOVERY}" - '
-                               'workers: {WORKERS}, '
-                               'timeout: {TIMEOUT}, '
-                               'options: {OPTIONS}'.format(
-                                   DISCOVERY=discovery.name,
-                                   WORKERS=discovery.workers,
-                                   TIMEOUT=discovery.timeout,
-                                   OPTIONS=host_options))
-                consumers.execute(runners=discovery.workers,
-                                  action=tool.execute)
-                # Process the results in a single operation on the DB side
-                with transaction.atomic():
-                    # Exclude invalid items from their status
-                    results = list(filter(lambda item: item[1]['status'],
-                                          consumers.results_as_list()))
-                    # Process the results to update the models, if needed
-                    self.process_results(discovery=discovery,
-                                         options=options,
-                                         results=results)
-                    # Update last scan discovery
-                    discovery.last_scan = timezone.now()
-                    discovery.save()
+            # Launch a discovery
+            self.do_discovery(discovery, self.get_options(
+                general_options={**options},
+                scanner_options=discovery.scanner.options,
+                discovery_options=discovery.options))
+
+    def get_options(self,
+                    general_options: dict,
+                    scanner_options: dict,
+                    discovery_options: dict) -> dict:
+        """
+        Get a dictionary with options
+        :param general_options: general options from command line
+        :param scanner_options: scanner options from Scanner object
+        :param discovery_options: discovery options from Discovery object
+        :return: dict with all the combined options
+        """
+        # Define options (Command line + Scanner + Discovery)
+        result = dict(general_options)
+        # Add Scanner options
+        if scanner_options:
+            result.update(json.loads(scanner_options))
+        # Add Discovery options
+        if discovery_options:
+            result.update(json.loads(discovery_options))
+        # Exlude Django reserved options
+        for reserved_options in ('settings', 'pythonpath',
+                                 'traceback', 'no_color', 'force_color'):
+            if reserved_options in result:
+                del result[reserved_options]
+        return result
+
+    def do_discovery(self, discovery, options: dict) -> None:
+        """
+        Launch a discovery
+        :param discovery:
+        :param options
+        :return:
+        """
+        # Save verbosity level
+        self.verbosity = options['verbosity']
+        # Prepare addresses to discover
+        tasks = multiprocessing.JoinableQueue()
+        hosts = Host.objects.filter(
+            address__in=discovery.subnetv4.get_ip_list()).exclude(
+            device_model=None)
+        for host in hosts:
+            tasks.put(host)
+        # Prepare consumers to execute the network discovery
+        consumers = Consumers(tasks_queue=tasks)
+        # Instance the scanner tool using the discovery options
+        tool = self.instance_scanner_tool(discovery=discovery,
+                                          options=options)
+        if tool:
+            # Print results if verbosity > 0
+            if self.verbosity > 0:
+                self.print('Discovery "{DISCOVERY}" - '
+                           'workers: {WORKERS}, '
+                           'timeout: {TIMEOUT}, '
+                           'options: {OPTIONS}'.format(
+                                DISCOVERY=discovery.name,
+                                WORKERS=discovery.workers,
+                                TIMEOUT=discovery.timeout,
+                                OPTIONS=options))
+            consumers.execute(runners=discovery.workers,
+                              action=tool.execute)
+            # Process the results in a single operation on the DB side
+            with transaction.atomic():
+                # Exclude invalid items from their status
+                results = list(filter(lambda item: item[1]['status'],
+                                      consumers.results_as_list()))
+                # Process the results to update the models, if needed
+                self.process_results(discovery=discovery,
+                                     options=options,
+                                     results=results)
+                # Update last scan discovery
+                discovery = Discovery.objects.get(pk=discovery.pk)
+                discovery.last_scan = timezone.now()
+                discovery.save()
 
     def instance_scanner_tool(self,
                               discovery: Discovery,

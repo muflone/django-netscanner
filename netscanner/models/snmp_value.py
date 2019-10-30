@@ -64,9 +64,11 @@ class SNMPValue(BaseModel):
         verbose_name_plural = pgettext_lazy('SNMPValue', 'SNMP Values')
 
     def __str__(self):
-        return '{SECTION} - {BRAND} {NAME}'.format(SECTION=self.section.name,
-                                                   BRAND=self.brand.name,
-                                                   NAME=self.name)
+        return '{SECTION} - {BRAND} {NAME} ({OID})'.format(
+            SECTION=self.section.name,
+            BRAND=self.brand.name,
+            NAME=self.name,
+            OID=self.oid)
 
 
 class SNMPValueAdmin(BaseModelAdmin):

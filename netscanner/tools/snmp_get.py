@@ -22,6 +22,7 @@ import datetime
 
 import easysnmp
 
+from netscanner.models import SNMPConfiguration
 from ..models import Host
 
 
@@ -44,10 +45,15 @@ class SNMPGet(object):
         # Print destination for verbosity > 1
         if self.verbosity > 1:
             print(host.address)
-        snmp_configuration = (host.snmp_configuration or
-                              host.device_model.snmp_configuration)
+        if host.snmp_configuration:
+            # Check host SNMP Configuration
+            snmp_configurations = (host.snmp_configuration, )
+        else:
+            # Check model SNMP Configurations
+            snmp_configurations = SNMPConfiguration.objects.filter(
+                device_model__id=host.device_model.pk)
         result = {}
-        if snmp_configuration:
+        if snmp_configurations:
             snmp_version = {'v1': 1,
                             'v2c': 2}.get(host.snmp_version, 2)
             session = easysnmp.session.Session(hostname=host.address,
@@ -58,14 +64,27 @@ class SNMPGet(object):
                                                    'public'),
                                                timeout=self.timeout or 30,
                                                retries=self.retries)
-            # Cycle all configured SNMP values and save values
-            for snmp_value in snmp_configuration.values.all():
-                result[str(snmp_value)] = self.format_snmp_value(
-                    value=session.get(snmp_value.oid),
-                    format=snmp_value.format,
-                    lstrip=snmp_value.lstrip,
-                    rstrip=snmp_value.rstrip)
-                result['status'] = bool(result)
+            # Cycle all SNMP Configurations
+            for snmp_configuration in snmp_configurations:
+                # Cycle all configured SNMP values and save values
+                for snmp_value in snmp_configuration.values.all():
+                    try:
+                        result[str(snmp_value)] = self.format_snmp_value(
+                            value=session.get(snmp_value.oid),
+                            format=snmp_value.format,
+                            lstrip=snmp_value.lstrip,
+                            rstrip=snmp_value.rstrip)
+                        if self.verbosity > 2:
+                            print('destination="{}"'.format(host.address),
+                                  'requested value="{}"'.format(
+                                      snmp_value.name),
+                                  'oid="{}"'.format(snmp_value.oid),
+                                  'value="{}"'.format(result[str(snmp_value)]))
+                    except SystemError:
+                        # Handle SystemError bug under Python >= 3.7
+                        # https://github.com/kamakazikamikaze/easysnmp/issues/108
+                        pass
+        result['status'] = bool(result)
         return result
 
     @staticmethod

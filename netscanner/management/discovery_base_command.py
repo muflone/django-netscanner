@@ -93,9 +93,17 @@ class DiscoveryBaseCommand(BaseCommand):
         # Save verbosity level
         self.verbosity = options['verbosity']
         # Prepare addresses to discover
+        excluded_addresses = options.get('excluded', [])
         tasks = multiprocessing.JoinableQueue()
         for address in discovery.subnetv4.get_ip_list():
-            tasks.put(address)
+            # Process only not excluded addresses
+            if address not in excluded_addresses:
+                # Add address to the processing queue
+                tasks.put(address)
+            elif self.verbosity > 2:
+                # Excluded address
+                self.print('Host {ADDRESS} excluded, skipping'.format(
+                    ADDRESS=address))
         # Prepare consumers to execute the network discovery
         consumers = Consumers(tasks_queue=tasks)
         # Instance the scanner tool using the discovery options

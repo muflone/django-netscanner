@@ -82,6 +82,11 @@ class SNMPFindModel(object):
             # Replace '${ }' with spaces in autodetection value
             # Django-admin automatically removes trailing whitespaces
             autodetect_value = configuration.value.replace('${ }', ' ')
+            if self.verbosity > 2:
+                print('destination="{}"'.format(destination),
+                      'requested value="{}"'.format(autodetect_value),
+                      'oid="{}"'.format(configuration.autodetect.oid),
+                      'value="{}"'.format(value))
             # Check if the value is the autodetection value
             if value and value == autodetect_value:
                 # Save status and model

@@ -90,7 +90,7 @@ class SNMPConfiguration(BaseModel):
         return '{SECTION} - {BRAND} {NAME}'.format(
             SECTION=self.autodetect.section.name,
             BRAND=self.autodetect.brand.name,
-            NAME=self.autodetect.name)
+            NAME=self.autodetect.name) if self.autodetect else None
 
 
 class SNMPConfigurationAdmin(BaseModelAdmin):

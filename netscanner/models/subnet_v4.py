@@ -66,9 +66,14 @@ class SubnetV4(BaseModel):
         """
         Get the whole IP list for a network/CIDR
         """
-        ip_network = ipaddress.ip_network('{}/{}'.format(self.subnet_ip,
-                                                         self.cidr))
-        return list(map(str, ip_network.hosts()))
+        if self.cidr < 32:
+            # Normal network
+            ip_network = ipaddress.ip_network('{}/{}'.format(self.subnet_ip,
+                                                             self.cidr))
+            return list(map(str, ip_network.hosts()))
+        else:
+            # Single host subnet
+            return (self.subnet_ip, )
 
 
 class SubnetV4Admin(BaseModelAdmin):

@@ -26,7 +26,7 @@ from netscanner.models import SNMPConfiguration
 from ..models import Host
 
 
-class SNMPGet(object):
+class SNMPGetInfo(object):
     def __init__(self,
                  verbosity: int,
                  timeout: int,
@@ -94,8 +94,10 @@ class SNMPGet(object):
                           rstrip: bool) -> str:
         """
         Format SNMPVariable value using the SNMPValue configuration
-        :param value_configuration: SNMPValue object containing configuration
         :param value: SNMPVariable object with value
+        :param format: string format
+        :param lstrip: boolean value to strip spaces on the left side
+        :param rstrip: boolean value to strip spaces on the right side
         :return: interpreted value
         """
         result = None

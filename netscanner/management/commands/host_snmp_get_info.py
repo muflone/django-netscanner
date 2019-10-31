@@ -22,12 +22,12 @@ from django.utils import timezone
 
 from netscanner.management.host_base_command import HostBaseCommand
 from netscanner.models import Discovery
-from netscanner.tools.snmp_get import SNMPGet
+from netscanner.tools.snmp_get_info import SNMPGetInfo
 
 
 class Command(HostBaseCommand):
-    help = 'Discover SNMP information about existing hosts with model set'
-    tool_name = 'snmp_get'
+    help = 'Get SNMP information about existing hosts with model set'
+    tool_name = 'snmp_get_info'
 
     def instance_scanner_tool(self,
                               discovery: Discovery,
@@ -38,10 +38,10 @@ class Command(HostBaseCommand):
         :param options: dictionary containing the options
         :return:
         """
-        return SNMPGet(verbosity=options.get('verbosity', 1),
-                       timeout=discovery.timeout,
-                       port=options.get('port', 161),
-                       retries=options.get('retries', 0))
+        return SNMPGetInfo(verbosity=options.get('verbosity', 1),
+                           timeout=discovery.timeout,
+                           port=options.get('port', 161),
+                           retries=options.get('retries', 0))
 
     def process_results(self,
                         discovery: Discovery,

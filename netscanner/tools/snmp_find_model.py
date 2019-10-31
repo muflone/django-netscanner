@@ -20,7 +20,7 @@
 
 import easysnmp
 
-from .snmp_get import SNMPGet
+from .snmp_get_info import SNMPGetInfo
 
 from ..models import Host
 
@@ -79,7 +79,7 @@ class SNMPFindModel(object):
         # Try every model for the best matching
         for configuration in self.configurations:
             try:
-                value = SNMPGet.format_snmp_value(
+                value = SNMPGetInfo.format_snmp_value(
                     value=session.get(configuration.autodetect.oid),
                     format=configuration.format,
                     lstrip=configuration.lstrip,

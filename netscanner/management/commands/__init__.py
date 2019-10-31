@@ -25,7 +25,7 @@ from .scanner_netbios_info import Command as NetBIOSInfoCommand
 from .scanner_raw_icmp_reply import Command as RawICMPReplyCommand
 from .scanner_smb_info import Command as SmbInfoCommand
 from .scanner_snmp_find_model import Command as SNMPFindCommand
-from .scanner_snmp_get import Command as SNMPGetCommand
+from .host_snmp_get_info import Command as SNMPGetInfoCommand
 from .scanner_tcp_connect import Command as TCPConnectCommand
 
 discovery_tool_commands = (ARPRequestCommand,
@@ -35,5 +35,5 @@ discovery_tool_commands = (ARPRequestCommand,
                            RawICMPReplyCommand,
                            SmbInfoCommand,
                            SNMPFindCommand,
-                           SNMPGetCommand,
+                           SNMPGetInfoCommand,
                            TCPConnectCommand)

@@ -70,6 +70,7 @@ class SNMPConfiguration(BaseModel):
                                      'SNMPConfiguration',
                                      'Strip spaces on the right'))
     value = models.CharField(max_length=255,
+                             blank=True,
                              default='',
                              verbose_name=pgettext_lazy('SNMPConfiguration',
                                                         'Resulting value'))

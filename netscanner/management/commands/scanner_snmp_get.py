@@ -26,7 +26,7 @@ from netscanner.tools.snmp_get import SNMPGet
 
 
 class Command(HostBaseCommand):
-    help = 'Discover SNMP information'
+    help = 'Discover SNMP information about existing hosts with model set'
     tool_name = 'snmp_get'
 
     def instance_scanner_tool(self,

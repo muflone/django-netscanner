@@ -35,8 +35,8 @@ class TCPConnect(object):
         """
         Connect to an IP address using socket TCP connection
         """
-        # Print destination for verbosity > 1
-        if self.verbosity > 1:
+        # Print destination for verbosity >= 2
+        if self.verbosity >= 2:
             print(destination)
         sock = socket.socket(family=socket.AF_INET,
                              type=socket.SOCK_STREAM,

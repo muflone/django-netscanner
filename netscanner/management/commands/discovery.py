@@ -82,12 +82,12 @@ class Command(BaseCommand):
                         break
             else:
                 # Disabled discovery
-                if management_command.verbosity > 0:
+                if management_command.verbosity >= 1:
                     management_command.print(
                         'The discovery "{NAME}" is disabled'.format(
                             NAME=discovery.name))
         except models.ObjectDoesNotExist:
             # Not existing Discovery
-            if management_command.verbosity > 0:
+            if management_command.verbosity >= 1:
                 management_command.print('No discovery named "{NAME}"'.format(
                     NAME=options['discovery']))

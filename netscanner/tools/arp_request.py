@@ -33,8 +33,8 @@ class ARPRequest(object):
         """
         Send an ARP request to the address (requires root access)
         """
-        # Print destination for verbosity > 1
-        if self.verbosity > 1:
+        # Print destination for verbosity >= 2
+        if self.verbosity >= 2:
             print(destination)
         broadcast = scapy.all.Ether(dst="ff:ff:ff:ff:ff:ff")
         arp = scapy.all.ARP(pdst=destination)

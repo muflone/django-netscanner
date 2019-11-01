@@ -65,8 +65,8 @@ class Command(DiscoveryBaseCommand):
             (address, values) = item
             model_id = values['model_id']
             model = DeviceModel.objects.get(id=model_id)
-            # Print results if verbosity > 0
-            if self.verbosity > 0:
+            # Print results if verbosity >= 1
+            if self.verbosity >= 1:
                 self.print('%-18s %s' % (address, values))
             # Update last seen time
             hosts = Host.objects.filter(address=address)

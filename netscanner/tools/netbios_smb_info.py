@@ -55,8 +55,8 @@ class NetBIOSSMBInfo(object):
         Inspect NetBIOS and SMB info
         """
         results = {}
-        # Print destination for verbosity > 1
-        if self.verbosity > 1:
+        # Print destination for verbosity >= 2
+        if self.verbosity >= 2:
             print(destination)
         if self.protocol == PROTOCOL_NETBIOS:
             nbns_result = self._get_netbios_names(destination)

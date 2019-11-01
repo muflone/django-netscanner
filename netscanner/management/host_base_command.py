@@ -114,8 +114,8 @@ class HostBaseCommand(BaseCommand):
         tool = self.instance_scanner_tool(discovery=discovery,
                                           options=options)
         if tool:
-            # Print results if verbosity > 0
-            if self.verbosity > 0:
+            # Print results if verbosity >= 1
+            if self.verbosity >= 1:
                 self.print('Discovery "{DISCOVERY}" - '
                            'workers: {WORKERS}, '
                            'timeout: {TIMEOUT}, '
@@ -191,8 +191,8 @@ class HostBaseCommand(BaseCommand):
                              if serializable_values
                              else '')
                 )
-        # Print results if verbosity > 0
-        if self.verbosity > 0:
+        # Print results if verbosity >= 1
+        if self.verbosity >= 1:
             self.print('Results:')
 
     def print(self,

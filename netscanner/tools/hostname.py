@@ -31,8 +31,8 @@ class Hostname(object):
         """
         Resolve the address hostname
         """
-        # Print destination for verbosity > 1
-        if self.verbosity > 1:
+        # Print destination for verbosity >= 2
+        if self.verbosity >= 2:
             print(destination)
         result = socket.getfqdn(destination)
         return {

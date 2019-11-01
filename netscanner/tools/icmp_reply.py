@@ -33,8 +33,8 @@ class ICMPReply(object):
         """
         Ping an IP address (requires root access)
         """
-        # Print destination for verbosity > 1
-        if self.verbosity > 1:
+        # Print destination for verbosity >= 2
+        if self.verbosity >= 2:
             print(destination)
         ip_request = scapy.all.IP(dst=destination)
         ping = scapy.all.ICMP()

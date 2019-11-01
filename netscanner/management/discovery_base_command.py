@@ -110,7 +110,7 @@ class DiscoveryBaseCommand(BaseCommand):
             if address not in excluded_addresses:
                 # Add address to the processing queue
                 tasks.put(address)
-            elif self.verbosity > 2:
+            elif self.verbosity >= 3:
                 # Excluded address
                 self.print('Host {ADDRESS} excluded, skipping'.format(
                     ADDRESS=address))
@@ -120,8 +120,8 @@ class DiscoveryBaseCommand(BaseCommand):
         tool = self.instance_scanner_tool(discovery=discovery,
                                           options=options)
         if tool:
-            # Print results if verbosity > 0
-            if self.verbosity > 0:
+            # Print results if verbosity >= 1
+            if self.verbosity >= 1:
                 self.print('Discovery "{DISCOVERY}" - '
                            'workers: {WORKERS}, '
                            'timeout: {TIMEOUT}, '
@@ -196,8 +196,8 @@ class DiscoveryBaseCommand(BaseCommand):
                              if serializable_values
                              else '')
                 )
-        # Print results if verbosity > 0
-        if self.verbosity > 0:
+        # Print results if verbosity >= 1
+        if self.verbosity >= 1:
             self.print('Results:')
 
     def print(self,

@@ -62,8 +62,8 @@ class Command(DiscoveryBaseCommand):
         super().process_results(discovery, options, results)
         for item in results:
             (address, values) = item
-            # Print results if verbosity > 0
-            if self.verbosity > 0:
+            # Print results if verbosity >= 1
+            if self.verbosity >= 1:
                 self.print('%-18s %s' % (address, values))
             # Update last seen time
             hosts = Host.objects.filter(address=address)

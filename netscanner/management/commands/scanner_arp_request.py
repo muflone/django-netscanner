@@ -56,8 +56,8 @@ class Command(DiscoveryBaseCommand):
         for item in results:
             (address, values) = item
             mac_address = values['mac_address']
-            # Print results if verbosity > 0
-            if self.verbosity > 0:
+            # Print results if verbosity >= 1
+            if self.verbosity >= 1:
                 self.print('%-18s %s' % (address, values))
             # Update last seen time and MAC Address
             hosts = Host.objects.filter(address=address)

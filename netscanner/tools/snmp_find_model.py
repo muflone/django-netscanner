@@ -50,20 +50,20 @@ class SNMPFindModel(object):
         Scan an IP address for SNMP values
         """
         result = {'status': False}
-        # Print destination for verbosity > 1
-        if self.verbosity > 1:
+        # Print destination for verbosity >= 2
+        if self.verbosity >= 2:
             print(destination)
         # Get existing hosts
         hosts = Host.objects.filter(address=destination)
         # Skip hosts with SNMP disabled
         if hosts.filter(snmp_version='off'):
-            if self.verbosity > 2:
+            if self.verbosity >= 3:
                 print('Host {DESTINATION} has SNMP disabled, skipping'.format(
                     DESTINATION=destination))
             return result
         # If requested, skip any existing hosts with the device model set
         if self.skip_existing and hosts.exclude(device_model__isnull=True):
-            if self.verbosity > 2:
+            if self.verbosity >= 3:
                 print('Host {DESTINATION} has DeviceModel, skipping'.format(
                     DESTINATION=destination))
             return result
@@ -91,7 +91,7 @@ class SNMPFindModel(object):
             # Replace '${ }' with spaces in autodetection value
             # Django-admin automatically removes trailing whitespaces
             autodetect_value = configuration.value.replace('${ }', ' ')
-            if self.verbosity > 2:
+            if self.verbosity >= 3:
                 print('destination="{}"'.format(destination),
                       'requested value="{}"'.format(autodetect_value),
                       'oid="{}"'.format(configuration.autodetect.oid),

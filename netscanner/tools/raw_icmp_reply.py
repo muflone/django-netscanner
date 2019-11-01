@@ -33,8 +33,8 @@ class RawICMPReply(object):
         """
         Ping an IP address using Raw socket (requires root access)
         """
-        # Print destination for verbosity > 1
-        if self.verbosity > 1:
+        # Print destination for verbosity >= 2
+        if self.verbosity >= 2:
             print(destination)
         scapy.all.conf.L3socket = scapy.all.L3RawSocket
         ip_request = scapy.all.IP(dst=destination)

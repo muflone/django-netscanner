@@ -42,8 +42,8 @@ class SNMPGetInfo(object):
         """
         Get the values using SNMP
         """
-        # Print destination for verbosity > 1
-        if self.verbosity > 1:
+        # Print destination for verbosity >= 2
+        if self.verbosity >= 2:
             print(host.address)
         if host.snmp_configuration:
             # Check host SNMP Configuration
@@ -74,7 +74,7 @@ class SNMPGetInfo(object):
                             format=snmp_value.format,
                             lstrip=snmp_value.lstrip,
                             rstrip=snmp_value.rstrip)
-                        if self.verbosity > 2:
+                        if self.verbosity >= 3:
                             print('destination="{}"'.format(host.address),
                                   'requested value="{}"'.format(
                                       snmp_value.name),

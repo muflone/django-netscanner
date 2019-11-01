@@ -57,8 +57,8 @@ class Command(HostBaseCommand):
         super().process_results(discovery, options, results)
         for item in results:
             (host, values) = item
-            # Print results if verbosity > 0
-            if self.verbosity > 0:
+            # Print results if verbosity >= 1
+            if self.verbosity >= 1:
                 self.print('%-18s %s' % (host.address, values))
             # Update last seen time
             # Update only if not excluded from discovery

@@ -46,8 +46,8 @@ class SNMPRequest(object):
         Scan a destination for SNMP values
         """
         results = {}
-        # Print destination for verbosity > 1
-        if self.verbosity > 1:
+        # Print destination for verbosity >= 2
+        if self.verbosity >= 2:
             print(destination)
         snmp_version = {'v1': 1,
                         'v2c': 2}.get(self.snmp_version, 2)
@@ -58,7 +58,7 @@ class SNMPRequest(object):
                                            timeout=self.timeout,
                                            retries=self.retries)
         for value in self.values:
-            if self.verbosity > 2:
+            if self.verbosity >= 3:
                 print(destination, value.name, value.oid)
             try:
                 results[value.name] = SNMPGetInfo.format_snmp_value(

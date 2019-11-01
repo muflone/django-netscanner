@@ -379,3 +379,15 @@ class HostAdminAddressInputFilter(AdminTextInputFilter):
     def queryset(self, request, queryset):
         if self.value():
             return queryset.filter(address__icontains=self.value())
+
+
+class HostAdminMACAddressInputFilter(AdminTextInputFilter):
+    """
+    Filter SNMPValues by MAC address
+    """
+    parameter_name = 'mac_address'
+    title = pgettext_lazy('Host', 'MAC Address')
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(mac_address__icontains=self.value())

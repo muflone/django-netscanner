@@ -21,6 +21,7 @@
 from django.db import models
 from django.utils.translation import pgettext_lazy
 
+from utility.misc.admin_text_input_filter import AdminTextInputFilter
 from utility.models import BaseModel, BaseModelAdmin
 
 
@@ -73,3 +74,15 @@ class SNMPValue(BaseModel):
 
 class SNMPValueAdmin(BaseModelAdmin):
     pass
+
+
+class SNMPValueAdminOIDInputFilter(AdminTextInputFilter):
+    """
+    Filter SNMPValues by textual OID
+    """
+    parameter_name = 'oid'
+    title = pgettext_lazy('SNMPValue', 'OID')
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(oid__icontains=self.value())

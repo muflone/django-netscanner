@@ -17,7 +17,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
-
+from django.db import models
 from django.utils import timezone
 
 from netscanner.management.discovery_base_command import DiscoveryBaseCommand
@@ -38,15 +38,21 @@ class Command(DiscoveryBaseCommand):
         :param options: dictionary containing the options
         :return:
         """
-        snmp_configurations = SNMPConfiguration.objects.get(
-            name=options['configuration'])
-        return SNMPRequest(verbosity=options.get('verbosity', 1),
-                           timeout=discovery.timeout,
-                           port=options.get('port', 161),
-                           version=options['version'],
-                           community=options['community'],
-                           retries=options.get('retries', 0),
-                           values=snmp_configurations.values.all())
+        try:
+            snmp_configurations = SNMPConfiguration.objects.get(
+                name=options['configuration'])
+            return SNMPRequest(verbosity=options.get('verbosity', 1),
+                               timeout=discovery.timeout,
+                               port=options.get('port', 161),
+                               version=options['version'],
+                               community=options['community'],
+                               retries=options.get('retries', 0),
+                               values=snmp_configurations.values.all())
+        except models.ObjectDoesNotExist:
+            # Not existing Discovery
+            if self.verbosity >= 1:
+                self.print('No configuration named "{NAME}"'.format(
+                    NAME=options.get('configuration', '')))
 
     def process_results(self,
                         discovery: Discovery,

@@ -60,6 +60,19 @@ class DiscoveryResult(BaseModel):
     def __str__(self):
         return '{ID}'.format(ID=self.id)
 
+    def scan_date(self):
+        """
+        Get the scan date
+        """
+        return self.scan_datetime.date()
+    scan_date.admin_order_field = 'scan_datetime__date'
+
+    def scan_time(self):
+        """
+        Get the scan time
+        """
+        return self.scan_datetime.time()
+    scan_time.admin_order_field = 'scan_datetime__time'
 
 class DiscoveryResultAdmin(BaseModelAdmin):
     actions = ('action_apply_to_hosts', )

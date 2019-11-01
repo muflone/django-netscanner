@@ -39,6 +39,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'rangefilter',
     'utility',
     'netscanner',
     'django.contrib.admin',

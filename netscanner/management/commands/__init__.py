@@ -18,6 +18,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
+from .host_snmp_get_info import Command as SNMPGetInfoCommand
 from .scanner_arp_request import Command as ARPRequestCommand
 from .scanner_hostname import Command as HostnameCommand
 from .scanner_icmp_reply import Command as ICMPReplyCommand
@@ -25,7 +26,6 @@ from .scanner_netbios_info import Command as NetBIOSInfoCommand
 from .scanner_raw_icmp_reply import Command as RawICMPReplyCommand
 from .scanner_smb_info import Command as SmbInfoCommand
 from .scanner_snmp_find_model import Command as SNMPFindCommand
-from .host_snmp_get_info import Command as SNMPGetInfoCommand
 from .scanner_tcp_connect import Command as TCPConnectCommand
 
 discovery_tool_commands = (ARPRequestCommand,

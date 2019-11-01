@@ -367,3 +367,15 @@ class HostAdminNameInputFilter(AdminTextInputFilter):
     def queryset(self, request, queryset):
         if self.value():
             return queryset.filter(name__icontains=self.value())
+
+
+class HostAdminAddressInputFilter(AdminTextInputFilter):
+    """
+    Filter SNMPValues by address
+    """
+    parameter_name = 'address'
+    title = pgettext_lazy('Host', 'Address')
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(address__icontains=self.value())

@@ -22,7 +22,7 @@ import easysnmp
 
 from .snmp_get_info import SNMPGetInfo
 
-from ..models import Host
+from ..models import Host, SNMPConfiguration
 
 
 class SNMPFindModel(object):
@@ -34,7 +34,8 @@ class SNMPFindModel(object):
                  community: str,
                  retries: int,
                  skip_existing: bool,
-                 configurations: list):
+                 configurations: list,
+                 initial_configuration: SNMPConfiguration):
         self.verbosity = verbosity
         self.timeout = timeout
         self.port = port
@@ -43,6 +44,7 @@ class SNMPFindModel(object):
         self.retries = retries
         self.skip_existing = skip_existing
         self.configurations = configurations
+        self.initial_configuration = initial_configuration
 
     def execute(self,
                 destination: str) -> dict:
@@ -76,6 +78,38 @@ class SNMPFindModel(object):
                                            community=self.snmp_community,
                                            timeout=self.timeout,
                                            retries=self.retries)
+        # First test an initial configuration before trying all configurations.
+        # A reduced group of SNMP values will try to avoid to loop over
+        # all the configuration models, resulting in a quicker scan.
+        # If no values are probed from the initial configuration, no scan
+        # will be done using the models configurations.
+        if self.initial_configuration:
+            value = None
+            for snmp_value in self.initial_configuration.values.all():
+                if self.verbosity >= 4:
+                    print(destination,
+                          'Initial configuration',
+                          snmp_value.name,
+                          snmp_value.oid)
+                try:
+                    value = SNMPGetInfo.format_snmp_value(
+                        value=session.get(snmp_value.oid),
+                        format=snmp_value.format,
+                        lstrip=snmp_value.lstrip,
+                        rstrip=snmp_value.rstrip)
+                    if value is not None:
+                        break
+                except SystemError:
+                    # Handle SystemError bug under Python >= 3.7
+                    # https://github.com/kamakazikamikaze/easysnmp/issues/108
+                    pass
+            # If not a single value was found from the request, abort the scan
+            if value is None:
+                if self.verbosity >= 3:
+                    print('Host {DESTINATION} does not respond to the SNMP'
+                          'initial configuration, skipping'.format(
+                              DESTINATION=destination))
+                return result
         # Try every model for the best matching
         for configuration in self.configurations:
             try:

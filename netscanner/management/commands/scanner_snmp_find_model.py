@@ -40,6 +40,10 @@ class Command(DiscoveryBaseCommand):
         """
         snmp_configurations = SNMPConfiguration.objects.all().exclude(
             device_model__isnull=True).exclude(autodetect__isnull=True)
+        initial_configuration = (SNMPConfiguration.objects.get(
+            name=options['initial_configuration'])
+                                 if 'initial_configuration' in options
+                                 else None)
         return SNMPFindModel(verbosity=options.get('verbosity', 1),
                              timeout=discovery.timeout,
                              port=options.get('port', 161),
@@ -47,7 +51,8 @@ class Command(DiscoveryBaseCommand):
                              community=options['community'],
                              retries=options.get('retries', 0),
                              skip_existing=options.get('skip_existing', False),
-                             configurations=snmp_configurations)
+                             configurations=snmp_configurations,
+                             initial_configuration=initial_configuration)
 
     def process_results(self,
                         discovery: Discovery,

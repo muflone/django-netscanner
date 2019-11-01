@@ -23,6 +23,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import pgettext_lazy
 
+from utility.misc.admin_text_input_filter import AdminTextInputFilter
 from ..forms.confirm_action import ConfirmActionForm
 from ..forms.change_company import change_field_company_action
 from ..forms.change_device_model import change_field_device_model_action
@@ -354,3 +355,15 @@ class HostAdmin(BaseModelAdmin):
                                      action_name='change_subnetv4')
     action_change_subnetv4.short_description = (
         change_field_host_subnetv4_action.title)
+
+
+class HostAdminNameInputFilter(AdminTextInputFilter):
+    """
+    Filter SNMPValues by name
+    """
+    parameter_name = 'name'
+    title = pgettext_lazy('Host', 'Name')
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(name__icontains=self.value())

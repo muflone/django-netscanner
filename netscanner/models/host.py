@@ -130,14 +130,13 @@ class Host(BaseModel):
                                     default=None,
                                     verbose_name=pgettext_lazy('Host',
                                                                'verification'))
-    snmp_version = models.CharField(max_length=5,
-                                    blank=True,
-                                    choices=(('off', pgettext_lazy('Host',
-                                                                   'Off')),
-                                             ('v1', '1'),
-                                             ('v2c', '2C')),
-                                    verbose_name=pgettext_lazy('Host',
-                                                               'SNMP version'))
+    snmp_version = models.ForeignKey('SNMPVersion',
+                                     blank=True,
+                                     null=True,
+                                     default=None,
+                                     on_delete=models.PROTECT,
+                                     verbose_name=pgettext_lazy('Host',
+                                                                'SNMP version'))
     snmp_community = models.CharField(max_length=255,
                                       blank=True,
                                       verbose_name=pgettext_lazy(

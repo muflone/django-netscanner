@@ -19,6 +19,7 @@
 ##
 
 from django.db import models
+from django.utils.safestring import mark_safe, SafeText
 from django.utils.translation import pgettext_lazy
 
 from utility.models import BaseModel, BaseModelAdmin
@@ -32,6 +33,11 @@ class Brand(BaseModel):
     description = models.TextField(blank=True,
                                    verbose_name=pgettext_lazy('Brand',
                                                               'description'))
+    image = models.ImageField(null=True,
+                              blank=True,
+                              upload_to='brands/',
+                              verbose_name=pgettext_lazy('Brand',
+                                                         'image'))
 
     class Meta:
         # Define the database table
@@ -45,4 +51,14 @@ class Brand(BaseModel):
 
 
 class BrandAdmin(BaseModelAdmin):
-    pass
+    def image_thumbnail(self,
+                        instance: Brand) -> SafeText:
+        """
+        Show image
+        :param instance: Brand object containing the image
+        :return: SafeText object with the HTML text
+        """
+        if instance.image.name:
+            url_image = instance.image.url
+            return mark_safe('<img src="{image}" />'.format(image=url_image))
+    image_thumbnail.short_description = pgettext_lazy('Brand', 'Image')

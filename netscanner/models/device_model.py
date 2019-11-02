@@ -66,6 +66,22 @@ class DeviceModelAdmin(BaseModelAdmin):
             'all': ('admin/css/device_model.css',)
         }
 
+    def brand_thumbnail(self,
+                        instance: DeviceModel) -> SafeText:
+        """
+        Show Brand image
+        :param instance: DeviceModel object containing the image
+        :return: SafeText object with the HTML text
+        """
+        if instance.brand.image.name:
+            url_image = instance.brand.image.url
+            return mark_safe('<a href="{image}" target="_blank">'
+                             '<img class="device_model_image"'
+                             ' src="{image}" />'
+                             '</a>'.format(image=url_image))
+    brand_thumbnail.short_description = pgettext_lazy('DeviceModel',
+                                                      'Brand Image')
+
     def image_thumbnail(self,
                         instance: DeviceModel) -> SafeText:
         """

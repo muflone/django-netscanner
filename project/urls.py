@@ -46,6 +46,8 @@ urlpatterns = []
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL,
                           document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
 
 # Add i18n prefixes for sections
 urlpatterns += i18n_patterns(

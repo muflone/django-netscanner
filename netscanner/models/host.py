@@ -21,6 +21,7 @@
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.utils.safestring import mark_safe, SafeText
 from django.utils.translation import pgettext_lazy
 
 from utility.misc.admin_text_input_filter import AdminTextInputFilter
@@ -173,6 +174,44 @@ class Host(BaseModel):
 
 
 class HostAdmin(BaseModelAdmin):
+    class Media:
+        # Add custom CSS for images
+        css = {
+            'all': ('admin/css/device_model.css',)
+        }
+
+    def brand_thumbnail(self,
+                        instance: Host) -> SafeText:
+        """
+        Show Brand image
+        :param instance: Host object containing the image
+        :return: SafeText object with the HTML text
+        """
+        if instance.device_model and instance.device_model.brand.image.name:
+            url_image = instance.device_model.brand.image.url
+            return mark_safe('<a href="{image}" target="_blank">'
+                             '<img class="device_model_image"'
+                             ' src="{image}" />'
+                             '</a>'.format(image=url_image))
+    brand_thumbnail.short_description = pgettext_lazy('Host',
+                                                      'Brand Image')
+
+    def device_model_thumbnail(self,
+                               instance: Host) -> SafeText:
+        """
+        Show image
+        :param instance: Host object containing the image
+        :return: SafeText object with the HTML text
+        """
+        if instance.device_model and instance.device_model.image.name:
+            url_image = instance.device_model.image.url
+            return mark_safe('<a href="{image}" target="_blank">'
+                             '<img class="device_model_image"'
+                             ' src="{image}" />'
+                             '</a>'.format(image=url_image))
+    device_model_thumbnail.short_description = pgettext_lazy('Host',
+                                                             'Model image')
+
     actions = ('action_enable',
                'action_disable',
                'action_change_company',

@@ -172,6 +172,20 @@ class Host(BaseModel):
         return '{NAME} {ADDRESS}'.format(NAME=self.name,
                                          ADDRESS=self.address)
 
+    def last_seen_date(self):
+        """
+        Get the last seen date
+        """
+        return self.last_seen.date() if self.last_seen else None
+    last_seen_date.admin_order_field = 'last_seen__date'
+
+    def last_seen_time(self):
+        """
+        Get the last seen time
+        """
+        return self.last_seen.time() if self.last_seen else None
+    last_seen_time.admin_order_field = 'last_seen__time'
+
 
 class HostAdmin(BaseModelAdmin):
     class Media:

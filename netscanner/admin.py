@@ -37,6 +37,7 @@ from .models.snmp_configuration import (SNMPConfiguration,
                                         SNMPConfigurationAdmin)
 from .models.snmp_section import SNMPSection, SNMPSectionAdmin
 from .models.snmp_value import SNMPValue, SNMPValueAdmin
+from .models.snmp_version import SNMPVersion, SNMPVersionAdmin
 from .models.subnet_v4 import SubnetV4, SubnetV4Admin
 
 
@@ -56,4 +57,5 @@ admin.site.register(Scanner, ScannerAdmin)
 admin.site.register(SNMPConfiguration, SNMPConfigurationAdmin)
 admin.site.register(SNMPSection, SNMPSectionAdmin)
 admin.site.register(SNMPValue, SNMPValueAdmin)
+admin.site.register(SNMPVersion, SNMPVersionAdmin)
 admin.site.register(SubnetV4, SubnetV4Admin)

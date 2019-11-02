@@ -74,6 +74,7 @@ class DiscoveryResult(BaseModel):
         return self.scan_datetime.time()
     scan_time.admin_order_field = 'scan_datetime__time'
 
+
 class DiscoveryResultAdmin(BaseModelAdmin):
     actions = ('action_apply_to_hosts', )
 

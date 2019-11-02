@@ -136,8 +136,9 @@ class Host(BaseModel):
                                      null=True,
                                      default=None,
                                      on_delete=models.PROTECT,
-                                     verbose_name=pgettext_lazy('Host',
-                                                                'SNMP version'))
+                                     verbose_name=pgettext_lazy(
+                                         'Host',
+                                         'SNMP version'))
     snmp_community = models.CharField(max_length=255,
                                       blank=True,
                                       verbose_name=pgettext_lazy(

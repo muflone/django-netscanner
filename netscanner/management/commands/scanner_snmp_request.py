@@ -41,6 +41,13 @@ class Command(DiscoveryBaseCommand):
         try:
             snmp_configurations = SNMPConfiguration.objects.get(
                 name=options['configuration'])
+        except models.ObjectDoesNotExist:
+            # Not existing SNMPConfiguration
+            snmp_configurations = None
+            if self.verbosity >= 1:
+                self.print('No configuration named "{NAME}"'.format(
+                    NAME=options.get('configuration', '')))
+        if snmp_configurations:
             return SNMPRequest(verbosity=options.get('verbosity', 1),
                                timeout=discovery.timeout,
                                port=options.get('port', 161),
@@ -49,11 +56,6 @@ class Command(DiscoveryBaseCommand):
                                community=options['community'],
                                retries=options.get('retries', 0),
                                values=snmp_configurations.values.all())
-        except models.ObjectDoesNotExist:
-            # Not existing Discovery
-            if self.verbosity >= 1:
-                self.print('No configuration named "{NAME}"'.format(
-                    NAME=options.get('configuration', '')))
 
     def process_results(self,
                         discovery: Discovery,

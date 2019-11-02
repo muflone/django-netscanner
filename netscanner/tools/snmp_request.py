@@ -22,13 +22,15 @@ import easysnmp
 
 from .snmp_get_info import SNMPGetInfo
 
+from ..models import SNMPVersion
+
 
 class SNMPRequest(object):
     def __init__(self,
                  verbosity: int,
                  timeout: int,
                  port: int,
-                 version: str,
+                 version: SNMPVersion,
                  community: str,
                  retries: int,
                  values: list):
@@ -49,11 +51,9 @@ class SNMPRequest(object):
         # Print destination for verbosity >= 2
         if self.verbosity >= 2:
             print(destination)
-        snmp_version = {'v1': 1,
-                        'v2c': 2}.get(self.snmp_version, 2)
         session = easysnmp.session.Session(hostname=destination,
                                            remote_port=self.port,
-                                           version=snmp_version,
+                                           version=self.snmp_version.version,
                                            community=self.snmp_community,
                                            timeout=self.timeout,
                                            retries=self.retries)

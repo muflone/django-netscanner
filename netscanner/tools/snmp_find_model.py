@@ -22,7 +22,7 @@ import easysnmp
 
 from .snmp_get_info import SNMPGetInfo
 
-from ..models import Host, SNMPConfiguration
+from ..models import Host, SNMPConfiguration, SNMPVersion
 
 
 class SNMPFindModel(object):
@@ -30,7 +30,7 @@ class SNMPFindModel(object):
                  verbosity: int,
                  timeout: int,
                  port: int,
-                 version: str,
+                 version: SNMPVersion,
                  community: str,
                  retries: int,
                  skip_existing: bool,
@@ -58,7 +58,7 @@ class SNMPFindModel(object):
         # Get existing hosts
         hosts = Host.objects.filter(address=destination)
         # Skip hosts with SNMP disabled
-        if hosts.filter(snmp_version='off'):
+        if hosts.filter(snmp_version__version=0):
             if self.verbosity >= 3:
                 print('Host {DESTINATION} has SNMP disabled, skipping'.format(
                     DESTINATION=destination))
@@ -70,11 +70,9 @@ class SNMPFindModel(object):
                     DESTINATION=destination))
             return result
 
-        snmp_version = {'v1': 1,
-                        'v2c': 2}.get(self.snmp_version, 2)
         session = easysnmp.session.Session(hostname=destination,
                                            remote_port=self.port,
-                                           version=snmp_version,
+                                           version=self.snmp_version.version,
                                            community=self.snmp_community,
                                            timeout=self.timeout,
                                            retries=self.retries)
@@ -139,5 +137,5 @@ class SNMPFindModel(object):
                 break
         # Add some information to the results
         if result['status']:
-            result['version'] = self.snmp_version
+            result['version'] = self.snmp_version.name
         return result

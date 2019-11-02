@@ -21,7 +21,7 @@ from django.db import models
 from django.utils import timezone
 
 from netscanner.management.discovery_base_command import DiscoveryBaseCommand
-from netscanner.models import Discovery, Host, SNMPConfiguration
+from netscanner.models import Discovery, Host, SNMPConfiguration, SNMPVersion
 from netscanner.tools.snmp_request import SNMPRequest
 
 
@@ -44,7 +44,8 @@ class Command(DiscoveryBaseCommand):
             return SNMPRequest(verbosity=options.get('verbosity', 1),
                                timeout=discovery.timeout,
                                port=options.get('port', 161),
-                               version=options['version'],
+                               version=SNMPVersion.objects.get(
+                                   name=options['version']),
                                community=options['community'],
                                retries=options.get('retries', 0),
                                values=snmp_configurations.values.all())

@@ -17,11 +17,15 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
-
+from django.db import models
 from django.utils import timezone
 
 from netscanner.management.discovery_base_command import DiscoveryBaseCommand
-from netscanner.models import Discovery, Host, DeviceModel, SNMPConfiguration
+from netscanner.models import (Discovery,
+                               Host,
+                               DeviceModel,
+                               SNMPConfiguration,
+                               SNMPVersion)
 from netscanner.tools.snmp_find_model import SNMPFindModel
 
 
@@ -44,15 +48,26 @@ class Command(DiscoveryBaseCommand):
             name=options['initial_configuration'])
                                  if 'initial_configuration' in options
                                  else None)
-        return SNMPFindModel(verbosity=options.get('verbosity', 1),
-                             timeout=discovery.timeout,
-                             port=options.get('port', 161),
-                             version=options['version'],
-                             community=options['community'],
-                             retries=options.get('retries', 0),
-                             skip_existing=options.get('skip_existing', False),
-                             configurations=snmp_configurations,
-                             initial_configuration=initial_configuration)
+        try:
+            snmp_version = SNMPVersion.objects.get(
+                                     name=options['version'])
+        except models.ObjectDoesNotExist:
+            # Not existing SNMPVersion
+            snmp_version = None
+            if self.verbosity >= 1:
+                self.print('No SNMP version named "{NAME}"'.format(
+                    NAME=options['version']))
+        if snmp_version:
+            return SNMPFindModel(verbosity=options.get('verbosity', 1),
+                                 timeout=discovery.timeout,
+                                 port=options.get('port', 161),
+                                 version=snmp_version,
+                                 community=options['community'],
+                                 retries=options.get('retries', 0),
+                                 skip_existing=options.get('skip_existing',
+                                                           False),
+                                 configurations=snmp_configurations,
+                                 initial_configuration=initial_configuration)
 
     def process_results(self,
                         discovery: Discovery,

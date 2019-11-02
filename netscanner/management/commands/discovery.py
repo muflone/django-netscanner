@@ -61,8 +61,16 @@ class Command(BaseCommand):
         management_command = DiscoveryBaseCommand()
         # Set verbosity level
         management_command.verbosity = options['verbosity']
+        # Get Discovery
         try:
             discovery = Discovery.objects.get(name=options['discovery'])
+        except models.ObjectDoesNotExist:
+            # Not existing Discovery
+            discovery = None
+            if management_command.verbosity >= 1:
+                management_command.print('No discovery named "{NAME}"'.format(
+                    NAME=options['discovery']))
+        if discovery:
             destinations = (options['destinations'].split(' ')
                             if options['destinations']
                             else None)
@@ -86,8 +94,3 @@ class Command(BaseCommand):
                     management_command.print(
                         'The discovery "{NAME}" is disabled'.format(
                             NAME=discovery.name))
-        except models.ObjectDoesNotExist:
-            # Not existing Discovery
-            if management_command.verbosity >= 1:
-                management_command.print('No discovery named "{NAME}"'.format(
-                    NAME=options['discovery']))

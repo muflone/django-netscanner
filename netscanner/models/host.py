@@ -194,6 +194,17 @@ class HostAdmin(BaseModelAdmin):
             'all': ('admin/css/device_model.css',)
         }
 
+    def brand(self,
+              instance: Host) -> SafeText:
+        """
+        Brand for DeviceModel
+        :param instance: Host object containing the brand
+        :return: SafeText object with the HTML text
+        """
+        return instance.device_model.brand if instance.device_model else None
+    brand.short_description = pgettext_lazy('Host',
+                                            'Brand')
+
     def brand_thumbnail(self,
                         instance: Host) -> SafeText:
         """

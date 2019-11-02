@@ -212,12 +212,20 @@ class HostAdmin(BaseModelAdmin):
         :param instance: Host object containing the image
         :return: SafeText object with the HTML text
         """
-        if instance.device_model and instance.device_model.brand.image.name:
-            url_image = instance.device_model.brand.image.url
-            return mark_safe('<a href="{image}" target="_blank">'
-                             '<img class="device_model_image"'
-                             ' src="{image}" />'
-                             '</a>'.format(image=url_image))
+        if instance.device_model:
+            if instance.device_model.brand.image.name:
+                # Brand with image
+                url_image = instance.device_model.brand.image.url
+                return mark_safe('<a href="{image}" target="_blank">'
+                                 '<img class="device_model_image"'
+                                 ' src="{image}" '
+                                 ' title="{title}" />'
+                                 '</a>'.format(
+                                    image=url_image,
+                                    title=instance.device_model.brand))
+            else:
+                # Missing brand image
+                return instance.device_model.brand
     brand_thumbnail.short_description = pgettext_lazy('Host',
                                                       'Brand Image')
 

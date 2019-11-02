@@ -31,6 +31,7 @@ from ..forms.change_domain import change_field_domain_action
 from ..forms.change_location import change_field_location_action
 from ..forms.change_operating_system import change_field_os_action
 from ..forms.change_snmp_configuration import change_field_snmp_config_action
+from ..forms.change_snmp_version import change_field_snmp_version_action
 from ..forms.change_subnetv4 import change_field_host_subnetv4_action
 
 from utility.misc import ChangeFieldAction
@@ -178,6 +179,7 @@ class HostAdmin(BaseModelAdmin):
                'action_change_domain',
                'action_change_location',
                'action_change_operating_system',
+               'action_change_snmp_version',
                'action_change_snmp_configuration',
                'action_change_subnetv4')
 
@@ -334,6 +336,16 @@ class HostAdmin(BaseModelAdmin):
                                      action_name='change_operating_system')
     action_change_operating_system.short_description = (
         change_field_os_action.title)
+
+    def action_change_snmp_version(self, request, queryset):
+        """
+        Change SNMP Version
+        """
+        return self.do_action_change(request, queryset,
+                                     action=change_field_snmp_version_action,
+                                     action_name='change_snmp_version')
+    action_change_snmp_version.short_description = (
+        change_field_snmp_version_action.title)
 
     def action_change_snmp_configuration(self, request, queryset):
         """

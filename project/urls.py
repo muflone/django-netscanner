@@ -55,7 +55,7 @@ urlpatterns += i18n_patterns(
 )
 
 # Add standard paths
-urlpatterns = [
+urlpatterns.extend([
     path(settings.ADMIN_URL, admin.site.urls),
     path('netscanner/', include('netscanner.urls')),
-]
+])

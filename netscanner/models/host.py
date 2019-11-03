@@ -216,11 +216,9 @@ class HostAdmin(BaseModelAdmin):
             if instance.device_model.brand.image.name:
                 # Brand with image
                 url_image = instance.device_model.brand.image.url
-                return mark_safe('<a href="{image}" target="_blank">'
-                                 '<img class="device_model_image"'
+                return mark_safe('<img class="device_model_image"'
                                  ' src="{image}" '
-                                 ' title="{title}" />'
-                                 '</a>'.format(
+                                 ' title="{title}" />'.format(
                                     image=url_image,
                                     title=instance.device_model.brand))
             else:

@@ -41,6 +41,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'rangefilter',
     'utility',
+    'oui',
     'netscanner',
     'django.contrib.admin',
     'django.contrib.auth',

@@ -63,3 +63,15 @@ class OuiAdminPrefixInputFilter(AdminTextInputFilter):
     def queryset(self, request, queryset):
         if self.value():
             return queryset.filter(prefix__startswith=self.value())
+
+
+class OuiAdminOrganizationInputFilter(AdminTextInputFilter):
+    """
+    Filter OID by organization
+    """
+    parameter_name = 'organization'
+    title = pgettext_lazy('Oui', 'organization')
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(organization__icontains=self.value())

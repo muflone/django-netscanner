@@ -21,6 +21,7 @@
 from django.db import models
 from django.utils.translation import pgettext_lazy
 
+from utility.misc.admin_text_input_filter import AdminTextInputFilter
 from utility.models import BaseModel, BaseModelAdmin
 
 
@@ -50,3 +51,15 @@ class Oui(BaseModel):
 
 class OuiAdmin(BaseModelAdmin):
     pass
+
+
+class OuiAdminPrefixInputFilter(AdminTextInputFilter):
+    """
+    Filter OID by prefix
+    """
+    parameter_name = 'prefix'
+    title = pgettext_lazy('Oui', 'prefix')
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(prefix__startswith=self.value())

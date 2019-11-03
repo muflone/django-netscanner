@@ -226,6 +226,7 @@ class HostAdmin(BaseModelAdmin):
                 return instance.device_model.brand
     brand_thumbnail.short_description = pgettext_lazy('Host',
                                                       'Brand Image')
+    brand_thumbnail.admin_order_field = 'device_model__brand'
 
     def device_model_thumbnail(self,
                                instance: Host) -> SafeText:

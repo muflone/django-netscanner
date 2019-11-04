@@ -18,6 +18,9 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
+import socket
+import struct
+
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -61,6 +64,11 @@ class Host(BaseModel):
     address = models.CharField(max_length=255,
                                verbose_name=pgettext_lazy('Host',
                                                           'address'))
+    address_numeric = models.IntegerField(default=0,
+                                          verbose_name=pgettext_lazy(
+                                              'Host',
+                                              'address in numeric form'),
+                                          editable=False)
     mac_address = models.CharField(max_length=12,
                                    blank=True,
                                    verbose_name=pgettext_lazy('Host',
@@ -163,7 +171,7 @@ class Host(BaseModel):
     class Meta:
         # Define the database table
         db_table = 'netscanner_hosts'
-        ordering = ['location', 'name', 'address']
+        ordering = ['location', 'address_numeric']
         unique_together = (('location', 'name', 'address'))
         verbose_name = pgettext_lazy('Host', 'Host')
         verbose_name_plural = pgettext_lazy('Host', 'Hosts')
@@ -171,6 +179,12 @@ class Host(BaseModel):
     def __str__(self):
         return '{NAME} {ADDRESS}'.format(NAME=self.name,
                                          ADDRESS=self.address)
+
+    def save(self, *args, **kwargs):
+        # Override address_numeric field during the save
+        self.address_numeric = struct.unpack('!I',
+                                             socket.inet_aton(self.address))[0]
+        super().save()
 
     def last_seen_date(self):
         """
@@ -185,6 +199,14 @@ class Host(BaseModel):
         """
         return self.last_seen.time() if self.last_seen else None
     last_seen_time.admin_order_field = 'last_seen__time'
+
+    def ip_address(self):
+        """
+        Get the address using the numeric ordering
+        :return:
+        """
+        return self.address
+    ip_address.admin_order_field = 'address_numeric'
 
 
 class HostAdmin(BaseModelAdmin):

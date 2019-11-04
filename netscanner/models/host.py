@@ -194,6 +194,17 @@ class HostAdmin(BaseModelAdmin):
             'all': ('admin/css/device_model.css',)
         }
 
+    actions = ('action_enable',
+               'action_disable',
+               'action_change_company',
+               'action_change_device_model',
+               'action_change_domain',
+               'action_change_location',
+               'action_change_operating_system',
+               'action_change_snmp_version',
+               'action_change_snmp_configuration',
+               'action_change_subnetv4')
+
     def brand(self,
               instance: Host) -> SafeText:
         """
@@ -243,17 +254,6 @@ class HostAdmin(BaseModelAdmin):
                              '</a>'.format(image=url_image))
     device_model_thumbnail.short_description = pgettext_lazy('Host',
                                                              'Model image')
-
-    actions = ('action_enable',
-               'action_disable',
-               'action_change_company',
-               'action_change_device_model',
-               'action_change_domain',
-               'action_change_location',
-               'action_change_operating_system',
-               'action_change_snmp_version',
-               'action_change_snmp_configuration',
-               'action_change_subnetv4')
 
     def action_enable(self, request, queryset):
         form = ConfirmActionForm(request.POST)

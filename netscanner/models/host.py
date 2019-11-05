@@ -161,12 +161,6 @@ class Host(BaseModel):
                                            verbose_name=pgettext_lazy(
                                                'Host',
                                                'SNMP configuration'))
-    custom_fields = models.ManyToManyField('CustomField',
-                                           db_table='netscanner_host_custom',
-                                           blank=True,
-                                           verbose_name=pgettext_lazy(
-                                               'Host',
-                                               'custom fields'))
 
     class Meta:
         # Define the database table

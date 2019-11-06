@@ -207,6 +207,53 @@ class Host(BaseModel):
         return self.address
     ip_address.admin_order_field = 'address_numeric'
 
+    def brand(self) -> SafeText:
+        """
+        Brand for DeviceModel
+        :param instance: Host object containing the brand
+        :return: SafeText object with the HTML text
+        """
+        return self.device_model.brand if self.device_model else None
+    brand.short_description = pgettext_lazy('Host',
+                                            'Brand')
+
+    def brand_thumbnail(self) -> SafeText:
+        """
+        Show Brand image
+        :param instance: Host object containing the image
+        :return: SafeText object with the HTML text
+        """
+        if self.device_model:
+            if self.device_model.brand.image.name:
+                # Brand with image
+                url_image = self.device_model.brand.image.url
+                return mark_safe('<img class="device_model_image"'
+                                 ' src="{image}" '
+                                 ' title="{title}" />'.format(
+                                    image=url_image,
+                                    title=self.device_model.brand))
+            else:
+                # Missing brand image
+                return self.device_model.brand
+    brand_thumbnail.short_description = pgettext_lazy('Host',
+                                                      'Brand Image')
+    brand_thumbnail.admin_order_field = 'device_model__brand'
+
+    def device_model_thumbnail(self) -> SafeText:
+        """
+        Show image
+        :param instance: Host object containing the image
+        :return: SafeText object with the HTML text
+        """
+        if self.device_model and self.device_model.image.name:
+            url_image = self.device_model.image.url
+            return mark_safe('<a href="{image}" target="_blank">'
+                             '<img class="device_model_image"'
+                             ' src="{image}" />'
+                             '</a>'.format(image=url_image))
+    device_model_thumbnail.short_description = pgettext_lazy('Host',
+                                                             'Model image')
+
 
 class HostAdmin(BaseModelAdmin):
     class Media:
@@ -225,56 +272,6 @@ class HostAdmin(BaseModelAdmin):
                'action_change_snmp_version',
                'action_change_snmp_configuration',
                'action_change_subnetv4')
-
-    def brand(self,
-              instance: Host) -> SafeText:
-        """
-        Brand for DeviceModel
-        :param instance: Host object containing the brand
-        :return: SafeText object with the HTML text
-        """
-        return instance.device_model.brand if instance.device_model else None
-    brand.short_description = pgettext_lazy('Host',
-                                            'Brand')
-
-    def brand_thumbnail(self,
-                        instance: Host) -> SafeText:
-        """
-        Show Brand image
-        :param instance: Host object containing the image
-        :return: SafeText object with the HTML text
-        """
-        if instance.device_model:
-            if instance.device_model.brand.image.name:
-                # Brand with image
-                url_image = instance.device_model.brand.image.url
-                return mark_safe('<img class="device_model_image"'
-                                 ' src="{image}" '
-                                 ' title="{title}" />'.format(
-                                    image=url_image,
-                                    title=instance.device_model.brand))
-            else:
-                # Missing brand image
-                return instance.device_model.brand
-    brand_thumbnail.short_description = pgettext_lazy('Host',
-                                                      'Brand Image')
-    brand_thumbnail.admin_order_field = 'device_model__brand'
-
-    def device_model_thumbnail(self,
-                               instance: Host) -> SafeText:
-        """
-        Show image
-        :param instance: Host object containing the image
-        :return: SafeText object with the HTML text
-        """
-        if instance.device_model and instance.device_model.image.name:
-            url_image = instance.device_model.image.url
-            return mark_safe('<a href="{image}" target="_blank">'
-                             '<img class="device_model_image"'
-                             ' src="{image}" />'
-                             '</a>'.format(image=url_image))
-    device_model_thumbnail.short_description = pgettext_lazy('Host',
-                                                             'Model image')
 
     def action_enable(self, request, queryset):
         form = ConfirmActionForm(request.POST)

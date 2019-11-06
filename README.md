@@ -19,5 +19,6 @@ Django Snippets is a Django application to make network scans
 * Python 3.x
 * Django 2.2.5 (https://pypi.org/project/Django/)
 * Django Admin RangeFilter (https://pypi.org/project/django-admin-rangefilter/)
+* Django Admin List Filter Dropdown (https://pypi.org/project/django-admin-list-filter-dropdown/)
 * scapy (https://pypi.org/project/scapy/)
 * easysnmp (https://pypi.org/project/easysnmp/)

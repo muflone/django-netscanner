@@ -68,11 +68,14 @@ class SNMPGetInfo(object):
                 # Cycle all configured SNMP values and save values
                 for snmp_value in snmp_configuration.values.all():
                     try:
-                        result[str(snmp_value)] = self.format_snmp_value(
-                            value=session.get(snmp_value.oid),
-                            format=snmp_value.format,
-                            lstrip=snmp_value.lstrip,
-                            rstrip=snmp_value.rstrip)
+                        result['{SECTION} - {BRAND} - {NAME}'.format(
+                            SECTION=snmp_value.section,
+                            BRAND=snmp_value.brand,
+                            NAME=snmp_value.name)] = self.format_snmp_value(
+                                value=session.get(snmp_value.oid),
+                                format=snmp_value.format,
+                                lstrip=snmp_value.lstrip,
+                                rstrip=snmp_value.rstrip)
                         if self.verbosity >= 3:
                             print('destination="{}"'.format(host.address),
                                   'requested value="{}"'.format(

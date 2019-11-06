@@ -45,7 +45,8 @@ class Command(DiscoveryBaseCommand):
         snmp_configurations = SNMPConfiguration.objects.all().exclude(
             device_model__isnull=True).exclude(autodetect__isnull=True)
         initial_configuration = (SNMPConfiguration.objects.get(
-            name=options['initial_configuration'])
+                                 name=options['initial_configuration'])
+                                 .snmpconfigurationvalue_set.all()
                                  if 'initial_configuration' in options
                                  else None)
         try:

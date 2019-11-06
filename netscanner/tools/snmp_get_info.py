@@ -66,12 +66,15 @@ class SNMPGetInfo(object):
             # Cycle all SNMP Configurations
             for snmp_configuration in snmp_configurations:
                 # Cycle all configured SNMP values and save values
-                for snmp_value in snmp_configuration.values.all():
+                values = snmp_configuration.snmpconfigurationvalue_set.all()
+                for snmp_configuration_value in values:
+                    snmp_value = snmp_configuration_value.snmp_value
                     try:
-                        result['{SECTION} - {BRAND} - {NAME}'.format(
+                        result_value = '{SECTION} - {BRAND} - {NAME}'.format(
                             SECTION=snmp_value.section,
                             BRAND=snmp_value.brand,
-                            NAME=snmp_value.name)] = self.format_snmp_value(
+                            NAME=snmp_value.name)
+                        result[result_value] = self.format_snmp_value(
                                 value=session.get(snmp_value.oid),
                                 format=snmp_value.format,
                                 lstrip=snmp_value.lstrip,
@@ -81,7 +84,7 @@ class SNMPGetInfo(object):
                                   'requested value="{}"'.format(
                                       snmp_value.name),
                                   'oid="{}"'.format(snmp_value.oid),
-                                  'value="{}"'.format(result[str(snmp_value)]))
+                                  'value="{}"'.format(result[result_value]))
                     except SystemError:
                         # Handle SystemError bug under Python >= 3.7
                         # https://github.com/kamakazikamikaze/easysnmp/issues/108

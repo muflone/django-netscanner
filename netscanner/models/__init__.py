@@ -37,6 +37,8 @@ from .operating_system import (OperatingSystem,                   # noqa: F401
 from .scanner import Scanner, ScannerAdmin                        # noqa: F401
 from .snmp_configuration import (SNMPConfiguration,               # noqa: F401
                                  SNMPConfigurationAdmin)          # noqa: F401
+from .snmp_configuration_value import (                           # noqa: F401
+    SNMPConfigurationValue, SNMPConfigurationValueAdmin)          # noqa: F401
 from .snmp_section import SNMPSection, SNMPSectionAdmin           # noqa: F401
 from .snmp_value import SNMPValue, SNMPValueAdmin                 # noqa: F401
 from .snmp_version import SNMPVersion, SNMPVersionAdmin           # noqa: F401

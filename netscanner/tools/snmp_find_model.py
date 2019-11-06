@@ -83,7 +83,8 @@ class SNMPFindModel(object):
         # will be done using the models configurations.
         if self.initial_configuration:
             value = None
-            for snmp_value in self.initial_configuration.values.all():
+            for snmp_configuration_value in self.initial_configuration:
+                snmp_value = snmp_configuration_value.snmp_value
                 if self.verbosity >= 4:
                     print(destination,
                           'Initial configuration',

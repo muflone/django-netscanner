@@ -48,6 +48,8 @@ class Command(DiscoveryBaseCommand):
                 self.print('No configuration named "{NAME}"'.format(
                     NAME=options.get('configuration', '')))
         if snmp_configurations:
+            snmp_configuration_values = (
+                snmp_configurations.snmpconfigurationvalue_set.all())
             return SNMPRequest(verbosity=options.get('verbosity', 1),
                                timeout=discovery.timeout,
                                port=options.get('port', 161),
@@ -55,7 +57,9 @@ class Command(DiscoveryBaseCommand):
                                    name=options['version']),
                                community=options['community'],
                                retries=options.get('retries', 0),
-                               values=snmp_configurations.values.all())
+                               values=[snmp_configuration_value.snmp_value
+                                       for snmp_configuration_value
+                                       in snmp_configuration_values])
 
     def process_results(self,
                         discovery: Discovery,

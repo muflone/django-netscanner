@@ -41,12 +41,6 @@ class SNMPConfiguration(BaseModel):
                                    verbose_name=pgettext_lazy(
                                        'SNMPConfiguration',
                                        'description'))
-    values = models.ManyToManyField(
-        'SNMPValue',
-        db_table='netscanner_snmp_configuration_values',
-        blank=True,
-        verbose_name=pgettext_lazy('SNMPConfiguration',
-                                   'SNMP values'))
     autodetect = models.ForeignKey('SNMPValue',
                                    blank=True,
                                    null=True,

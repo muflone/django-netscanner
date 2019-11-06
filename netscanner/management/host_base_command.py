@@ -101,7 +101,7 @@ class HostBaseCommand(BaseCommand):
         tasks = multiprocessing.JoinableQueue()
         # Choose destinations group (manual group or Hosts from a Discovery)
         if destinations:
-            addresses = destinations
+            addresses = Host.objects.filter(address__in=destinations)
         else:
             addresses = Host.objects.filter(
                 address__in=discovery.subnetv4.get_ip_list()).exclude(

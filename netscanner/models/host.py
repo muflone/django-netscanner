@@ -176,8 +176,13 @@ class Host(BaseModel):
 
     def save(self, *args, **kwargs):
         # Override address_numeric field during the save
-        self.address_numeric = struct.unpack('!I',
-                                             socket.inet_aton(self.address))[0]
+        try:
+            self.address_numeric = struct.unpack('!I',
+                                                 socket.inet_aton(
+                                                     self.address))[0]
+        except OSError:
+            # Skip invalid IP addresses
+            pass
         super().save()
 
     def last_seen_date(self):

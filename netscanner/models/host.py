@@ -28,6 +28,9 @@ from django.utils.safestring import mark_safe, SafeText
 from django.utils.translation import pgettext_lazy
 
 from utility.misc.admin_text_input_filter import AdminTextInputFilter
+
+from .host_custom_field import HostCustomFieldInlineAdmin
+
 from ..forms.change_company import change_field_company_action
 from ..forms.change_device_model import change_field_device_model_action
 from ..forms.change_domain import change_field_domain_action
@@ -261,6 +264,21 @@ class HostAdmin(BaseModelAdmin):
             'all': ('admin/css/device_model.css',)
         }
 
+
+class HostProxy(Host):
+    class Meta:
+        proxy = True
+        verbose_name = pgettext_lazy('Host', 'Host (extended)')
+        verbose_name_plural = pgettext_lazy('Host', 'Hosts (extended)')
+
+
+class HostProxyAdmin(BaseModelAdmin):
+    class Media:
+        # Add custom CSS for images
+        css = {
+            'all': ('admin/css/device_model.css',)
+        }
+
     actions = ('action_enable',
                'action_disable',
                'action_change_company',
@@ -271,6 +289,7 @@ class HostAdmin(BaseModelAdmin):
                'action_change_snmp_version',
                'action_change_snmp_configuration',
                'action_change_subnetv4')
+    inlines = [HostCustomFieldInlineAdmin]
 
     def action_enable(self, request, queryset):
         enable_disable = EnableDisableRecords(

@@ -28,7 +28,7 @@ from .discovery_result import (DiscoveryResult,                   # noqa: F401
                                DiscoveryResultAdmin)              # noqa: F401
 from .domain import Domain, DomainAdmin                           # noqa: F401
 from .domain_main import DomainMain, DomainMainAdmin              # noqa: F401
-from .host import Host, HostAdmin                                 # noqa: F401
+from .host import Host, HostAdmin, HostProxy, HostProxyAdmin      # noqa: F401
 from .host_custom_field import (HostCustomField,                  # noqa: F401
                                 HostCustomFieldAdmin)             # noqa: F401
 from .location import Location, LocationAdmin                     # noqa: F401

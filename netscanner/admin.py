@@ -29,7 +29,7 @@ from .models.discovery import Discovery, DiscoveryAdmin
 from .models.discovery_result import DiscoveryResult, DiscoveryResultAdmin
 from .models.domain import Domain, DomainAdmin
 from .models.domain_main import DomainMain, DomainMainAdmin
-from .models.host import Host, HostAdmin
+from .models.host import Host, HostAdmin, HostProxy, HostProxyAdmin
 from .models.host_custom_field import HostCustomField, HostCustomFieldAdmin
 from .models.location import Location, LocationAdmin
 from .models.operating_system import OperatingSystem, OperatingSystemAdmin
@@ -52,6 +52,7 @@ admin.site.register(DiscoveryResult, DiscoveryResultAdmin)
 admin.site.register(Domain, DomainAdmin)
 admin.site.register(DomainMain, DomainMainAdmin)
 admin.site.register(Host, HostAdmin)
+admin.site.register(HostProxy, HostProxyAdmin)
 admin.site.register(HostCustomField, HostCustomFieldAdmin)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(OperatingSystem, OperatingSystemAdmin)

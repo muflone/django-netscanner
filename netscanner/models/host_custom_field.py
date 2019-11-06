@@ -18,6 +18,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
+from django.contrib import admin
 from django.db import models
 from django.utils.translation import pgettext_lazy
 
@@ -57,3 +58,11 @@ class HostCustomField(BaseModel):
 
 class HostCustomFieldAdmin(BaseModelAdmin):
     pass
+
+
+class HostCustomFieldInlineAdmin(admin.TabularInline):
+    """
+    Proxy Admin Inline to show children rows for HostCustomField
+    """
+    model = HostCustomField
+    fields = ('field', 'value')

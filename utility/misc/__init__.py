@@ -19,5 +19,6 @@
 ##
 
 from .change_field_action import ChangeFieldAction                # noqa: F401
+from .enable_disable_records import EnableDisableRecords          # noqa: F401
 from .get_admin_models import get_admin_models                    # noqa: F401
 from .get_class_from_module import get_class_from_module          # noqa: F401

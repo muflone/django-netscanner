@@ -60,8 +60,8 @@ class Command(HostBaseCommand):
             # Print results if verbosity >= 1
             if self.verbosity >= 1:
                 self.print('%-18s %s' % (host.address, values))
-            # Update last seen time
             # Update only if not excluded from discovery
             if not host.no_discovery:
+                # Update last seen time
                 host.last_seen = timezone.now()
                 host.save()

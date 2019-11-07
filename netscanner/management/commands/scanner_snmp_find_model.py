@@ -86,6 +86,8 @@ class Command(DiscoveryBaseCommand):
             (address, values) = item
             model_id = values['model_id']
             model = DeviceModel.objects.get(id=model_id)
+            snmp_version = SNMPVersion.objects.get(
+                                     name=options['version'])
             # Print results if verbosity >= 1
             if self.verbosity >= 1:
                 self.print('%-18s %s' % (address, values))
@@ -97,6 +99,8 @@ class Command(DiscoveryBaseCommand):
                     # Update only if not excluded from discovery
                     if not host.no_discovery:
                         host.device_model = model
+                        if not host.snmp_version:
+                            host.snmp_version = snmp_version
                         host.last_seen = timezone.now()
                         host.save()
             else:
@@ -106,5 +110,6 @@ class Command(DiscoveryBaseCommand):
                 host.address = address
                 host.subnetv4 = discovery.subnetv4
                 host.device_model = model
+                host.snmp_version = snmp_version
                 host.last_seen = timezone.now()
                 host.save()

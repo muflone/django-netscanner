@@ -190,6 +190,9 @@ class Host(BaseModel):
                             .replace(':', '')
                             .replace('-', '')
                             .replace(' ', ''))
+        # Skip invalid MAC Address
+        if all(c == '0' for c in self.mac_address):
+            self.mac_address = ''
         super().save()
 
     def last_seen_date(self):

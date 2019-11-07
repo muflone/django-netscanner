@@ -74,6 +74,9 @@ class SNMPGetInfo(object):
                             SECTION=snmp_value.section,
                             BRAND=snmp_value.brand,
                             NAME=snmp_value.name)
+                        if self.verbosity >= 3:
+                            print('destination="{}"'.format(host.address),
+                                  'oid="{}"'.format(snmp_value.oid))
                         result_value = session.get(snmp_value.oid)
                         # Save values
                         result[result_name] = self.format_snmp_value(
@@ -82,6 +85,7 @@ class SNMPGetInfo(object):
                                 lstrip=snmp_value.lstrip,
                                 rstrip=snmp_value.rstrip)
                         if self.verbosity >= 3:
+                            print('\r')
                             print('destination="{}"'.format(host.address),
                                   'requested value="{}"'.format(
                                       snmp_value.name),

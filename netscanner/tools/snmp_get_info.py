@@ -82,12 +82,13 @@ class SNMPGetInfo(object):
                         if result_value.snmp_type in ('NOSUCHOBJECT',
                                                       'NOSUCHINSTANCE'):
                             raise TypeError
-                        # Save values
-                        result[result_name] = self.format_snmp_value(
+                        result_value = self.format_snmp_value(
                                 value=result_value,
                                 format=snmp_value.format,
                                 lstrip=snmp_value.lstrip,
                                 rstrip=snmp_value.rstrip)
+                        # Save values
+                        result[result_name] = result_value
                         if self.verbosity >= 3:
                             print('\r')
                             print('destination="{}"'.format(host.address),

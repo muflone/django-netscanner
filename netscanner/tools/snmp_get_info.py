@@ -143,6 +143,12 @@ class SNMPGetInfo(object):
                 # MAC Address
                 result = ''.join(['%0.2x' % ord(_)
                                   for _ in value.value]).upper()
+            elif format.startswith('remove:'):
+                # Remove symbols (space separated list)
+                result = value.value
+                format_parts = format[7:].split(' ')
+                for symbol in format_parts:
+                    result = result.replace(symbol, '')
             else:
                 result = value.value
             # Strip spaces from the left side

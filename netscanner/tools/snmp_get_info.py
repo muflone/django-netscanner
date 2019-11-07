@@ -137,7 +137,8 @@ class SNMPGetInfo(object):
                 return result
             elif format == 'mac address':
                 # MAC Address
-                result = ':'.join(['%0.2x' % ord(_) for _ in value.value])
+                result = ''.join(['%0.2x' % ord(_)
+                                  for _ in value.value]).upper()
             else:
                 result = value.value
             # Strip spaces from the left side

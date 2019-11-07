@@ -85,6 +85,10 @@ class SNMPGetInfo(object):
                                       snmp_value.name),
                                   'oid="{}"'.format(snmp_value.oid),
                                   'value="{}"'.format(result[result_value]))
+                        # SNMPConfigurationValue has field to set
+                        if snmp_configuration_value.field:
+                            result_name = snmp_configuration_value.field
+                            result[result_name] = result[result_value]
                     except SystemError:
                         # Handle SystemError bug under Python >= 3.7
                         # https://github.com/kamakazikamikaze/easysnmp/issues/108

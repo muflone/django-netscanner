@@ -64,4 +64,12 @@ class Command(HostBaseCommand):
             if not host.no_discovery:
                 # Update last seen time
                 host.last_seen = timezone.now()
+                # Update host fields
+                for key, value in values.items():
+                    if (key.startswith('host.') and
+                            # Existing attribute
+                            hasattr(host, key[5:]) and
+                            # Empty attribute value
+                            not getattr(host, key[5:])):
+                        setattr(host, key[5:], value)
                 host.save()

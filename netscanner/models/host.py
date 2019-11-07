@@ -185,6 +185,11 @@ class Host(BaseModel):
         except OSError:
             # Skip invalid IP addresses
             pass
+        # Fix MAC Address field
+        self.mac_address = (self.mac_address.upper()
+                            .replace(':', '')
+                            .replace('-', '')
+                            .replace(' ', ''))
         super().save()
 
     def last_seen_date(self):

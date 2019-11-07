@@ -87,6 +87,10 @@ class SNMPGetInfo(object):
                                 format=snmp_value.format,
                                 lstrip=snmp_value.lstrip,
                                 rstrip=snmp_value.rstrip)
+                        # Skip invalid MAC Addresses
+                        if (snmp_value.format == 'mac address' and
+                                all(c == '0' for c in result_value)):
+                            raise TypeError
                         # Save values
                         result[result_name] = result_value
                         if self.verbosity >= 3:

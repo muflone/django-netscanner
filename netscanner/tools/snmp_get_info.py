@@ -78,6 +78,10 @@ class SNMPGetInfo(object):
                             print('destination="{}"'.format(host.address),
                                   'oid="{}"'.format(snmp_value.oid))
                         result_value = session.get(snmp_value.oid)
+                        # Skip invalid response types
+                        if result_value.snmp_type in ('NOSUCHOBJECT',
+                                                      'NOSUCHINSTANCE'):
+                            raise TypeError
                         # Save values
                         result[result_name] = self.format_snmp_value(
                                 value=result_value,
@@ -98,6 +102,9 @@ class SNMPGetInfo(object):
                     except SystemError:
                         # Handle SystemError bug under Python >= 3.7
                         # https://github.com/kamakazikamikaze/easysnmp/issues/108
+                        pass
+                    except TypeError:
+                        # Skip invalid response types
                         pass
         result['status'] = bool(result)
         return result

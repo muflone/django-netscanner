@@ -70,12 +70,14 @@ class SNMPGetInfo(object):
                 for snmp_configuration_value in values:
                     snmp_value = snmp_configuration_value.snmp_value
                     try:
-                        result_value = '{SECTION} - {BRAND} - {NAME}'.format(
+                        result_name = '{SECTION} - {BRAND} - {NAME}'.format(
                             SECTION=snmp_value.section,
                             BRAND=snmp_value.brand,
                             NAME=snmp_value.name)
-                        result[result_value] = self.format_snmp_value(
-                                value=session.get(snmp_value.oid),
+                        result_value = session.get(snmp_value.oid)
+                        # Save values
+                        result[result_name] = self.format_snmp_value(
+                                value=result_value,
                                 format=snmp_value.format,
                                 lstrip=snmp_value.lstrip,
                                 rstrip=snmp_value.rstrip)
@@ -84,11 +86,11 @@ class SNMPGetInfo(object):
                                   'requested value="{}"'.format(
                                       snmp_value.name),
                                   'oid="{}"'.format(snmp_value.oid),
-                                  'value="{}"'.format(result[result_value]))
+                                  'value="{}"'.format(result[result_name]))
                         # SNMPConfigurationValue has field to set
                         if snmp_configuration_value.field:
-                            result_name = snmp_configuration_value.field
-                            result[result_name] = result[result_value]
+                            result[snmp_configuration_value.field] = (
+                                result[result_name])
                     except SystemError:
                         # Handle SystemError bug under Python >= 3.7
                         # https://github.com/kamakazikamikaze/easysnmp/issues/108

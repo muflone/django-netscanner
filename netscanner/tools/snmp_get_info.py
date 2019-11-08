@@ -19,10 +19,11 @@
 ##
 
 import datetime
+import json
 
 import easysnmp
 
-from netscanner.models import SNMPConfiguration
+from netscanner.models import OperatingSystem, SNMPConfiguration
 from ..models import Host
 
 
@@ -101,9 +102,19 @@ class SNMPGetInfo(object):
                                   'oid="{}"'.format(snmp_value.oid),
                                   'value="{}"'.format(result[result_name]))
                         # SNMPConfigurationValue has field to set
-                        if snmp_configuration_value.field:
-                            result[snmp_configuration_value.field] = (
-                                result[result_name])
+                        field = snmp_configuration_value.field
+                        if field:
+                            if snmp_configuration_value.text_values:
+                                # JSON Text value configuration
+                                json_values = json.loads(
+                                    snmp_configuration_value.text_values)
+                                # Get the field value if result matches
+                                if result[result_name] == json_values['value']:
+                                    result[field] = self.get_field_value(
+                                        field, json_values)
+                            else:
+                                # Field set
+                                result[field] = result[result_name]
                     except SystemError:
                         # Handle SystemError bug under Python >= 3.7
                         # https://github.com/kamakazikamikaze/easysnmp/issues/108
@@ -175,4 +186,19 @@ class SNMPGetInfo(object):
             # Strip spaces from the right side
             if isinstance(result, str) and rstrip:
                 result = result.rstrip()
+        return result
+
+    def get_field_value(self,
+                        field: str,
+                        value: dict):
+        """
+        Return a field value (can be a direct value or a FK value)
+        """
+        result = None
+        if field == 'host.os_id':
+            # Set OperatingSystem
+            result = OperatingSystem.objects.get(
+                brand__name=value['fk']['brand'],
+                name=value['fk']['name'],
+                version=value['fk']['version']).id
         return result

@@ -85,6 +85,9 @@ class Command(DiscoveryBaseCommand):
                 for host in hosts:
                     # Update only if not excluded from discovery
                     if not host.no_discovery:
+                        if not host.snmp_version:
+                            host.snmp_version = SNMPVersion.objects.get(
+                                name=options['version'])
                         host.last_seen = timezone.now()
                         host.save()
             else:
@@ -93,5 +96,7 @@ class Command(DiscoveryBaseCommand):
                 host.name = address
                 host.address = address
                 host.subnetv4 = discovery.subnetv4
+                host.snmp_version = SNMPVersion.objects.get(
+                    name=options['version'])
                 host.last_seen = timezone.now()
                 host.save()

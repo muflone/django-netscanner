@@ -44,6 +44,10 @@ class SNMPConfigurationValue(BaseModel):
                              verbose_name=pgettext_lazy(
                                  'SNMPConfigurationValue',
                                  'field'))
+    text_values = models.TextField(blank=True,
+                                   verbose_name=pgettext_lazy(
+                                       'SNMPConfigurationValue',
+                                       'JSON text values'))
 
     class Meta:
         # Define the database table

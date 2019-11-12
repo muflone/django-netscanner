@@ -28,6 +28,7 @@ from .scanner_smb_info import Command as SmbInfoCommand
 from .scanner_snmp_find_model import Command as SNMPFindCommand
 from .scanner_snmp_request import Command as SNMPRequest
 from .scanner_tcp_connect import Command as TCPConnectCommand
+from .scanner_zabbix_agent import Command as ZabbixAgentCommand
 
 discovery_tool_commands = (ARPRequestCommand,
                            HostnameCommand,
@@ -38,4 +39,5 @@ discovery_tool_commands = (ARPRequestCommand,
                            SNMPFindCommand,
                            SNMPGetInfoCommand,
                            SNMPRequest,
-                           TCPConnectCommand)
+                           TCPConnectCommand,
+                           ZabbixAgentCommand)

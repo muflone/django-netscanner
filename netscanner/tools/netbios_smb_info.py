@@ -65,7 +65,8 @@ class NetBIOSSMBInfo(object):
             results['names'] = nbns_result['unique_names']
             results['group'] = nbns_result['group']
 
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock = socket.socket(family=socket.AF_INET,
+                             type=socket.SOCK_STREAM)
         sock.settimeout(self.timeout)
         try:
             sock.connect((destination, self.port))
@@ -174,7 +175,8 @@ class NetBIOSSMBInfo(object):
         :return: dictionary object with workgroup and computer unique names
         """
         try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            sock = socket.socket(family=socket.AF_INET,
+                                 type=socket.SOCK_DGRAM)
             sock.settimeout(self.timeout)
             payload = (b'ff\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00 '
                        b'CKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\x00\x00!\x00\x01')

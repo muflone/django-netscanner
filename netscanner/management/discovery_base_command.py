@@ -57,7 +57,7 @@ class DiscoveryBaseCommand(BaseCommand):
                                   general_options={**options},
                                   scanner_options=discovery.scanner.options,
                                   discovery_options=discovery.options),
-                              destinations=None)
+                              destinations=[])
 
     def get_options(self,
                     general_options: dict,

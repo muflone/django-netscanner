@@ -1,0 +1,86 @@
+{% extends 'netscanner/site/base.html' %}
+{% load static %}
+
+{% block content %}
+		  	<div class="row content-box-large">
+              <div class="panel-heading">
+                <div class="panel-title">{{ subnet.name }}</div>
+              </div>
+              <div class="panel-body">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Address</th>
+                      <th>Name</th>
+                      <th>Location</th>
+                      <th>Area</th>
+                      <th>Position</th>
+                      <th>Type</th>
+                      <th>Brand</th>
+                      <th>Model</th>
+                      <th>Operating System</th>
+                      <th>Hostname</th>
+                      <th>Domain</th>
+                      <th>MAC Address</th>
+                      <th>Serial #</th>
+                      <th>TeamViewer ID</th>
+                      <th>SNMP</th>
+                      <th>Verification</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+{% for address, host in hosts.items %}
+                    <tr>
+                      <td>{{ address }}</td>
+                      <td>{{ host.name|default:'-' }}</td>
+                      <td>{{ host.location|default:'-' }}</td>
+                      <td>{{ host.area|default:'-' }}</td>
+                      <td>{{ host.position|default:'-' }}</td>
+                      <td>{{ host.device_model.device_type|default:'-' }}</td>
+                      <td>{{ host.brand_thumbnail|default:'-' }}</td>
+                      <td>
+  {% if host.device_model.image.name %}
+                        <a class="device_model" href="{{ host.device_model.image.url }}">{{ host.device_model }}</a>
+  {% else %}
+      {{ host.device_model|default:'-' }}
+  {% endif %}
+                      </td>
+                      <td>{{ host.os|default:'-' }}</td>
+                      <td>{{ host.hostname|default:'-' }}</td>
+                      <td>{{ host.domain|default:'-' }}</td>
+                      <td>{{ host.mac_address|default:'-' }}</td>
+                      <td>{{ host.serial|default:'-' }}</td>
+                      <td>{{ host.teamviewer_id|default:'-' }}</td>
+                      <td>{{ host.snmp_version|default:'-' }}</td>
+                      <td>{{ host.verification|default:'-' }}</td>
+                    </tr>
+{% endfor %}
+                  </tbody>
+                </table>
+            </div>
+{% endblock %}
+
+{% block footer_end %}
+    <style>
+      img.device_model {
+          max-width: 300px;
+          max-height: 300px;
+      }
+
+      .popover{
+        max-width: 600px;
+      }
+    </style>
+
+    <script language="JavaScript">
+      // Add Popover for model images
+      $('a[class=device_model]').popover({
+        html: true,
+        trigger: 'hover',
+        placement: 'bottom',
+        content: function(){
+          return '<img class="device_model" src="' + this.href + '" />';
+        }
+      });
+    </script>
+{% endblock %}

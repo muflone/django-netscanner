@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+{% block header_begin %}{% endblock %}
+{% block header_title %}
+    <title>{{ page_title }}</title>
+{% endblock %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block header_css %}
+  {% include 'netscanner/site/includes/bootstrap.html' with block='head' type='css' %}
+    <!-- Custom styles -->
+    <link href="{% static 'netscanner/css/bootstrap-admin.css' %}" rel="stylesheet">
+{% endblock %}
+{% block header_js %}
+    {% include 'netscanner/site/includes/html5_shim.html' with block='head' type='js' %}
+    {% include 'netscanner/site/includes/respond_js.html' with block='head' type='js' %}
+{% endblock %}
+{% block header_end %}{% endblock %}
+  </head>
+
+  <body>
+{% block body_begin %}{% endblock %}
+  	<div class="header">
+	     <div class="container">
+	        <div class="row">
+{% block content_title %}
+	           <div class="col-md-10">
+	              <!-- Logo -->
+	              <div class="logo">
+	                 <h1><a href="index.html">{{ page_title }}</a></h1>
+	              </div>
+	           </div>
+{% endblock %}
+{% block content_dropdown %}
+	           <div class="col-md-2">
+	              <div class="navbar navbar-inverse" role="banner">
+	                  <nav class="collapse navbar-collapse bs-navbar-collapse navbar-right" role="navigation">
+	                    <ul class="nav navbar-nav">
+	                      <li class="dropdown">
+	                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account <b class="caret"></b></a>
+	                        <ul class="dropdown-menu animated fadeInUp">
+	                          <li><a href="profile.html">Profile</a></li>
+	                          <li><a href="login.html">Logout</a></li>
+	                        </ul>
+	                      </li>
+	                    </ul>
+	                  </nav>
+	              </div>
+	           </div>
+{% endblock %}
+	        </div>
+	     </div>
+	</div>
+
+    <div class="page-content">
+    	<div class="row">
+		  <div class="col-md-2">
+{% block content_sidebar %}
+		  	<div class="sidebar content-box" style="display: block;">
+                <ul class="nav">
+                    <!-- Main menu -->
+                    <li><a href="index.html"><i class="glyphicon glyphicon-home"></i> Dashboard</a></li>
+                    <li><a href="{% url 'hosts_map' %}"><i class="glyphicon glyphicon glyphicon-tasks"></i> Hosts map</a></li>
+                </ul>
+            </div>
+{% endblock %}
+		  </div>
+		  <div class="col-md-10">
+{% block content %}{% endblock %}
+		  </div>
+		</div>
+    </div>
+{% block footer %}
+    <footer>
+         <div class="container">
+            <div class="copy text-center">
+               Copyright 2019 <a href='https://www.muflone.com/'>Fabio Castelli (Muflone)</a>
+            </div>
+
+         </div>
+      </footer>
+{% endblock %}
+{% block footer_begin %}{% endblock %}
+{% block footer_css %}{% endblock %}
+{% block footer_js %}
+  {% include 'netscanner/site/includes/jquery.html' with block='footer' type='js' %}
+  {% include 'netscanner/site/includes/bootstrap.html' with block='footer' type='js' %}
+{% endblock %}
+{% block footer_end %}{% endblock %}
+  </body>
+</html>

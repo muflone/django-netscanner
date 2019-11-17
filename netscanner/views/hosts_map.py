@@ -17,12 +17,23 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
+from django.views.generic import TemplateView
 
-from django.urls import path
+from netscanner.models import SubnetV4, Host
 
-from netscanner.views.hosts_map import HostsMapView
 
-urlpatterns = [path(route='hosts_map/',
-                    view=HostsMapView.as_view(),
-                    name='hosts_map')
-               ]
+class HostsMapView(TemplateView):
+    template_name = 'netscanner/site/hosts_map.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = 'Hosts map'
+        subnet = SubnetV4.objects.get(name='Giammoro')
+        hosts_dict = dict((address, None)
+                          for address in subnet.get_ip_list())
+        hosts_dict.update(dict((host.address, host)
+                               for host
+                               in Host.objects.filter(subnetv4_id=subnet.pk)))
+        context['subnet'] = subnet
+        context['hosts'] = hosts_dict
+        return context

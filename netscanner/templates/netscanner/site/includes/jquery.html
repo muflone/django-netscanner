@@ -1,0 +1,7 @@
+{% load static %}
+{% if block == 'footer' %}
+  {% if type == 'js' %}
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{% static 'netscanner/js/jquery-3.4.1.min.js' %}"></script>
+  {% endif %}
+{% endif %}

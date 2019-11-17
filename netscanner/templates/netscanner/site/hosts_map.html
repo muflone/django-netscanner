@@ -13,8 +13,6 @@
                       <th>Address</th>
                       <th>Name</th>
                       <th>Location</th>
-                      <th>Area</th>
-                      <th>Position</th>
                       <th>Type</th>
                       <th>Brand</th>
                       <th>Model</th>
@@ -30,9 +28,12 @@
                     <tr>
                       <td class="host_address">{{ address }}</td>
                       <td class="host_name">{{ host.name|default:'-' }}</td>
-                      <td class="host_location">{{ host.location|default:'-' }}</td>
-                      <td>{{ host.area|default:'-' }}</td>
-                      <td>{{ host.position|default:'-' }}</td>
+                      <td class="host_location">
+                        <div class="host_location"
+                             data-area="{{ host.area }}"
+                             data-position="{{ host.position }}">
+                             {{ host.location|default:'-' }}</div>
+                      </td>
                       <td class="host_type">{{ host.device_model.device_type|default:'-' }}</td>
                       <td class="host_brand">{{ host.brand_thumbnail|default:'-' }}</td>
                       <td class="host_model">
@@ -67,8 +68,6 @@
       }
 
       td.host_location,
-      td.host_area,
-      td.host_position,
       td.host_model,
       td.host_os,
       td.host_verification {
@@ -92,7 +91,26 @@
         trigger: 'hover',
         placement: 'bottom',
         content: function(){
-          return '<img class="device_model" src="' + this.href + '" />';
+          return '<img class="host_device_model" src="' + this.href + '" />';
+        }
+      });
+      // Add Popover for model images
+      $('div[class=host_location]').popover({
+        html: true,
+        trigger: 'hover',
+        placement: 'auto',
+        content: function(){
+          var result = '';
+          if ($(this).text().trim() != '-') {
+              result += '<div><strong>Location:</strong> ' + $(this).text().trim() + '</div>';
+          }
+          if ($(this).data('area')) {
+              result += '<div><strong>Area:</strong> ' + $(this).data('area') + '</div>';
+          }
+          if ($(this).data('position')) {
+              result += '<div><strong>Position:</strong> ' + $(this).data('position') + '</div>';
+          }
+          return result;
         }
       });
     </script>

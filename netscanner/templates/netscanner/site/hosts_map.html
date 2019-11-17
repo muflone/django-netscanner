@@ -91,7 +91,10 @@
         trigger: 'hover',
         placement: 'bottom',
         content: function(){
-          return '<img class="host_device_model" src="' + this.href + '" />';
+          var result = '';
+          result += '<div><strong>Model:</strong> ' + $(this).text().trim() + '</div>';
+          result += '<div><img class="host_device_model" src="' + this.href + '" /></div>';
+          return result;
         }
       });
       // Add Popover for model images

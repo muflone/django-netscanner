@@ -264,6 +264,15 @@ class Host(BaseModel):
     device_model_thumbnail.short_description = pgettext_lazy('Host',
                                                              'Model image')
 
+    def teamviewer_id(self) -> str:
+        """
+        Get TeamViewer ID from custom fields
+        :return: TeamViewer ID or empty string
+        """
+        custom_field = self.hostcustomfield_set.filter(
+            field__name='TeamViewer ID').first()
+        return custom_field.value if custom_field else None
+
 
 class HostAdmin(BaseModelAdmin):
     class Media:

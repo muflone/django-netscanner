@@ -19,12 +19,9 @@
                       <th>Brand</th>
                       <th>Model</th>
                       <th>Operating System</th>
-                      <th>Hostname</th>
-                      <th>Domain</th>
                       <th>MAC Address</th>
                       <th>Serial #</th>
                       <th>TeamViewer ID</th>
-                      <th>SNMP</th>
                       <th>Verification</th>
                     </tr>
                   </thead>
@@ -46,12 +43,9 @@
   {% endif %}
                       </td>
                       <td>{{ host.os|default:'-' }}</td>
-                      <td>{{ host.hostname|default:'-' }}</td>
-                      <td>{{ host.domain|default:'-' }}</td>
                       <td>{{ host.mac_address|default:'-' }}</td>
                       <td>{{ host.serial|default:'-' }}</td>
                       <td>{{ host.teamviewer_id|default:'-' }}</td>
-                      <td>{{ host.snmp_version|default:'-' }}</td>
                       <td>{{ host.verification|default:'-' }}</td>
                     </tr>
 {% endfor %}

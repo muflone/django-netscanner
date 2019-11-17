@@ -28,25 +28,25 @@
                   <tbody>
 {% for address, host in hosts.items %}
                     <tr>
-                      <td>{{ address }}</td>
-                      <td>{{ host.name|default:'-' }}</td>
-                      <td>{{ host.location|default:'-' }}</td>
+                      <td class="host_address">{{ address }}</td>
+                      <td class="host_name">{{ host.name|default:'-' }}</td>
+                      <td class="host_location">{{ host.location|default:'-' }}</td>
                       <td>{{ host.area|default:'-' }}</td>
                       <td>{{ host.position|default:'-' }}</td>
-                      <td>{{ host.device_model.device_type|default:'-' }}</td>
-                      <td>{{ host.brand_thumbnail|default:'-' }}</td>
-                      <td>
+                      <td class="host_type">{{ host.device_model.device_type|default:'-' }}</td>
+                      <td class="host_brand">{{ host.brand_thumbnail|default:'-' }}</td>
+                      <td class="host_model">
   {% if host.device_model.image.name %}
-                        <a class="device_model" href="{{ host.device_model.image.url }}">{{ host.device_model }}</a>
+                        <a class="host_device_model" href="{{ host.device_model.image.url }}">{{ host.device_model }}</a>
   {% else %}
       {{ host.device_model|default:'-' }}
   {% endif %}
                       </td>
-                      <td>{{ host.os|default:'-' }}</td>
-                      <td>{{ host.mac_address|default:'-' }}</td>
-                      <td>{{ host.serial|default:'-' }}</td>
-                      <td>{{ host.teamviewer_id|default:'-' }}</td>
-                      <td>{{ host.verification|default:'-' }}</td>
+                      <td class="host_os">{{ host.os|default:'-' }}</td>
+                      <td class="host_mac_address">{{ host.mac_address|default:'-' }}</td>
+                      <td class="host_serial">{{ host.serial|default:'-' }}</td>
+                      <td class="host_teamviewer_id">{{ host.teamviewer_id|default:'-' }}</td>
+                      <td class="host_verification">{{ host.verification|default:'-' }}</td>
                     </tr>
 {% endfor %}
                   </tbody>
@@ -56,9 +56,28 @@
 
 {% block footer_end %}
     <style>
-      img.device_model {
-          max-width: 300px;
-          max-height: 300px;
+      td.host_address,
+      td.host_name,
+      td.host_type,
+      td.host_brand,
+      td.host_mac_address,
+      td.host_serial,
+      td.host_teamviewer_id {
+        white-space: nowrap;
+      }
+
+      td.host_location,
+      td.host_area,
+      td.host_position,
+      td.host_model,
+      td.host_os,
+      td.host_verification {
+        white-space: normal;
+      }
+
+      img.host_device_model {
+        max-width: 300px;
+        max-height: 300px;
       }
 
       .popover{
@@ -68,7 +87,7 @@
 
     <script language="JavaScript">
       // Add Popover for model images
-      $('a[class=device_model]').popover({
+      $('a[class=host_device_model]').popover({
         html: true,
         trigger: 'hover',
         placement: 'bottom',

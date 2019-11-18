@@ -32,6 +32,7 @@ class HostsMapView(TemplateView):
         context['page_title'] = 'Hosts map'
         subnets = SubnetV4.objects.all()
         if 'subnet' in kwargs:
+            # Show only the hosts for the selected subnet
             subnet = get_object_or_404(subnets, pk=kwargs['subnet'])
             existing_hosts = Host.objects.filter(subnetv4_id=subnet.pk)
             if kwargs.get('show_missing', 0):
@@ -47,6 +48,7 @@ class HostsMapView(TemplateView):
                                   for host
                                   in existing_hosts)
         else:
+            # No data for missing subnet
             subnet = None
             hosts_dict = {}
         context['subnets'] = subnets

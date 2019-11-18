@@ -25,7 +25,7 @@ from netscanner.views.hosts_map import HostsMapView
 urlpatterns = [path(route='hosts_map/',
                     view=HostsMapView.as_view(),
                     name='hosts_map'),
-               path(route='hosts_map/<int:subnet>/',
+               path(route='hosts_map/<int:subnet>/<int:show_missing>/',
                     view=HostsMapView.as_view(),
                     name='hosts_map_detail')
                ]

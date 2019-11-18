@@ -13,6 +13,10 @@
   {% endfor %}
                     </select>
                   </div>
+                  <div class="panel-title col-md-3">
+                    <label for="show_missing">Show missing hosts</label>
+                    <input type="checkbox" id="show_missing" value="1"{% if show_missing %} checked{%endif %}>
+                  </div>
                 </form>
               </div>
               <div class="panel-body">
@@ -141,7 +145,8 @@
           selected_subnet = $('#subnet').children(":selected").attr("id");
           if (selected_subnet) {
             // A subnet was chosen
-            document.location.href = '{% url 'hosts_map' %}' + selected_subnet;
+            show_missing = $('#show_missing').is(":checked") ? 1 : 0;
+            document.location.href = '{% url 'hosts_map' %}' + selected_subnet + '/' + show_missing;
           } else {
             // No subnet was chosen
             document.location.href = '{% url 'hosts_map' %}';
@@ -149,6 +154,10 @@
         };
 
         $('#subnet').on('change', function() {
+          reload();
+        });
+
+        $('#show_missing').on('change', function() {
           reload();
         });
       });

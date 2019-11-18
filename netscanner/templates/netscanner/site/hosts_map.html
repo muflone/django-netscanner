@@ -4,7 +4,16 @@
 {% block content %}
             <div class="row content-box-large">
               <div class="panel-heading">
-                <div class="panel-title">{{ subnet.name }}</div>
+                <form method="get">
+                  <div class="panel-title col-md-3">Subnet:
+                    <select id="subnet">
+                      <option id="">Select a subnet</option>
+  {% for item in subnets %}
+                      <option id="{{ item.pk }}"{% if subnet.pk == item.pk %} selected{% endif %}>{{ item.name }}</option>
+  {% endfor %}
+                    </select>
+                  </div>
+                </form>
               </div>
               <div class="panel-body">
                 <table class="table table-striped table-bordered">
@@ -126,5 +135,23 @@
           return result;
         }
       });
+
+      $(document).ready(function() {
+        function reload() {
+          selected_subnet = $('#subnet').children(":selected").attr("id");
+          if (selected_subnet) {
+            // A subnet was chosen
+            document.location.href = '{% url 'hosts_map' %}' + selected_subnet;
+          } else {
+            // No subnet was chosen
+            document.location.href = '{% url 'hosts_map' %}';
+          }
+        };
+
+        $('#subnet').on('change', function() {
+          reload();
+        });
+      });
+
     </script>
 {% endblock %}

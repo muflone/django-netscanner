@@ -18,6 +18,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
+from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 
 from netscanner.models import SubnetV4, Host
@@ -29,12 +30,17 @@ class HostsMapView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['page_title'] = 'Hosts map'
-        subnet = SubnetV4.objects.get(name='Giammoro')
+        subnets = SubnetV4.objects.all()
+        if 'subnet' in kwargs:
+            subnet = get_object_or_404(subnets, pk=kwargs['subnet'])
+        else:
+            subnet = None
         hosts_dict = dict((address, None)
                           for address in subnet.get_ip_list())
         hosts_dict.update(dict((host.address, host)
                                for host
                                in Host.objects.filter(subnetv4_id=subnet.pk)))
+        context['subnets'] = subnets
         context['subnet'] = subnet
         context['hosts'] = hosts_dict
         return context

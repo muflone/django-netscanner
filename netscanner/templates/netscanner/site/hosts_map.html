@@ -63,7 +63,10 @@
                       <td class="host_mac_address">{{ host.mac_address|default:'-' }}</td>
                       <td class="host_serial">{{ host.serial|default:'-' }}</td>
                       <td class="host_teamviewer_id">{{ host.teamviewer_id|default:'-' }}</td>
-                      <td class="host_verification">{{ host.verification|default:'-' }}</td>
+                      <td class="host_verification">
+                          <img src="{% if host.verified %}{% static 'admin/img/icon-yes.svg' %}
+                                    {% else %}{% static 'admin/img/icon-no.svg' %}{% endif %}" />
+                          {{ host.verification|default:'-' }}</td>
                     </tr>
 {% endfor %}
                   </tbody>

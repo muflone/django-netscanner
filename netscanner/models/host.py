@@ -281,6 +281,8 @@ class HostAdmin(BaseModelAdmin):
             'all': ('admin/css/device_model.css',)
         }
 
+    list_per_page = 300
+
 
 class HostProxy(Host):
     class Meta:
@@ -307,6 +309,7 @@ class HostProxyAdmin(BaseModelAdmin):
                'action_change_snmp_configuration',
                'action_change_subnetv4')
     inlines = [HostCustomFieldInlineAdmin]
+    list_per_page = 300
 
     def action_enable(self, request, queryset):
         enable_disable = EnableDisableRecords(

@@ -9,8 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% block header_css %}
   {% include 'netscanner/site/includes/bootstrap.html' with block='head' type='css' %}
+  {% include 'netscanner/site/includes/ekko_lightbox.html' with block='head' type='css' %}
     <!-- Custom styles -->
-    <link href="{% static 'netscanner/css/bootstrap-admin.css' %}" rel="stylesheet">
+    <link href="{% static 'netscanner/bootstrap-admin-theme-3/css/bootstrap-admin.css' %}" rel="stylesheet">
     <link href="{% static 'netscanner/css/custom.css' %}" rel="stylesheet">
 {% endblock %}
 {% block header_js %}

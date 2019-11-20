@@ -2,10 +2,10 @@
 {% if block == 'head' %}
   {% if type == 'css' %}
     <!-- Bootstrap -->
-    <link href="{% static 'netscanner/css/bootstrap-3.4.1.min.css' %}" rel="stylesheet">
+    <link href="{% static 'netscanner/bootstrap_3.4.1/css/bootstrap.min.css' %}" rel="stylesheet">
   {% endif %}
 {% elif block == 'footer' %}
   {% if type == 'js' %}
-    <script src="{% static 'netscanner/js/bootstrap-3.4.1.min.js' %}"></script>
+    <script src="{% static 'netscanner/bootstrap_3.4.1/js/bootstrap.min.js' %}"></script>
   {% endif %}
 {% endif %}

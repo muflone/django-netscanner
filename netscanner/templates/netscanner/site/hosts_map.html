@@ -38,7 +38,10 @@
                     </tr>
                   </thead>
                   <tbody>
-    {% for address, host in hosts.items %}
+    {% for address, hosts in hosts.items %}
+      {# Process each address #}
+      {% for host in hosts %}
+        {# Process each host in the address group #}
                     <tr>
                       <td class="host_address">{{ address }}</td>
                       <td class="host_name">{{ host.name|default:'-' }}</td>
@@ -52,13 +55,13 @@
                       <td class="host_type">{{ host.device_model.device_type|default:'-' }}</td>
                       <td class="host_brand">{{ host.brand_thumbnail|default:'-' }}</td>
                       <td class="host_model">
-      {% if host.device_model.image.name %}
+        {% if host.device_model.image.name %}
                         <a class="host_device_model"
                            href="{{ host.device_model.image.url }}"
                            target="_blank">{{ host.device_model }}</a>
-      {% else %}
+        {% else %}
                         {{ host.device_model|default:'-' }}
-      {% endif %}
+        {% endif %}
                       </td>
                       <td class="host_os">{{ host.os|default:'-' }}</td>
                       <td class="host_mac_address">{{ host.mac_address|default:'-' }}</td>
@@ -69,6 +72,7 @@
                                     {% else %}{% static 'admin/img/icon-no.svg' %}{% endif %}" />
                           {{ host.verification|default:'-' }}</td>
                     </tr>
+      {% endfor %}
     {% endfor %}
                   </tbody>
                 </table>

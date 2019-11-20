@@ -56,10 +56,12 @@
                       <td class="host_brand">{{ host.brand_thumbnail|default:'-' }}</td>
                       <td class="host_model">
         {% if host.device_model.image.name %}
+          {# Show host model image #}
                         <a class="host_device_model"
                            href="{{ host.device_model.image.url }}"
                            target="_blank">{{ host.device_model }}</a>
         {% else %}
+          {# Show only host model name #}
                         {{ host.device_model|default:'-' }}
         {% endif %}
                       </td>

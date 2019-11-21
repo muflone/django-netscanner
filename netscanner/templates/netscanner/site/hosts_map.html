@@ -59,7 +59,11 @@
           {# Show host model image #}
                         <a class="host_device_model"
                            href="{{ host.device_model.image.url }}"
-                           target="_blank">{{ host.device_model }}</a>
+                           data-toggle="lightbox"
+                           data-title="{{ host.device_model }}"
+                           data-footer="Brand: <strong>{{ host.device_model.brand }}</strong><br />
+                             {% if host.device_model.description %}
+                             {{ host.device_model.description }}{% endif %}">{{ host.device_model }}</a>
         {% else %}
           {# Show only host model name #}
                         {{ host.device_model|default:'-' }}

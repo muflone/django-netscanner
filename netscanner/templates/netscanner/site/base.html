@@ -88,6 +88,8 @@
 {% block footer_js %}
   {% include 'netscanner/site/includes/jquery.html' with block='footer' type='js' %}
   {% include 'netscanner/site/includes/bootstrap.html' with block='footer' type='js' %}
+  {% include 'netscanner/site/includes/ekko_lightbox.html' with block='head' type='js' %}
+  {% include 'netscanner/site/includes/ekko_lightbox.html' with block='footer' type='js' %}
 {% endblock %}
 {% block footer_end %}{% endblock %}
   </body>

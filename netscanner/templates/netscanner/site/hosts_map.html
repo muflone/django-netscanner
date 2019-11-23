@@ -69,7 +69,7 @@
                         {{ host.device_model|default:'-' }}
         {% endif %}
                       </td>
-                      <td class="host_os">{{ host.os|default:'-' }}</td>
+                      <td class="host_os">{{ host.os_thumbnail|default:'' }}{{ host.os|default:'-' }}</td>
                       <td class="host_mac_address">{{ host.mac_address|default:'-' }}</td>
                       <td class="host_serial">{{ host.serial|default:'-' }}</td>
                       <td class="host_teamviewer_id">{{ host.teamviewer_id|default:'-' }}</td>

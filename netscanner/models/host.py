@@ -249,6 +249,26 @@ class Host(BaseModel):
                                                       'Brand Image')
     brand_thumbnail.admin_order_field = 'device_model__brand'
 
+    def os_thumbnail(self) -> SafeText:
+        """
+        Show OperatingSystem image
+        :param instance: Host object containing the image
+        :return: SafeText object with the HTML text
+        """
+        if self.os:
+            # Operating system with image
+            url_image = self.os.image.url
+            return mark_safe('<img class="os_image"'
+                             ' src="{image}" '
+                             ' title="{title}" />'.format(
+                                image=url_image,
+                                title=self.os))
+        else:
+            # Missing operating system image
+            return self.os
+    os_thumbnail.short_description = pgettext_lazy('Host',
+                                                   'OperatingSystem Image')
+
     def device_model_thumbnail(self) -> SafeText:
         """
         Show image

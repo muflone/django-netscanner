@@ -39,6 +39,9 @@ class HostsMapView(TemplateView):
             # Add valid hosts
             for host in Host.objects.filter(
                     subnetv4_id=subnet.pk).order_by('address_numeric'):
+                # Add addresses not in the subnet range
+                if host.address not in hosts_dict:
+                    hosts_dict[host.address] = []
                 hosts_dict[host.address].append(host)
             if kwargs.get('show_missing', 0):
                 # Show also missing hosts (add placeholder None)

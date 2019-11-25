@@ -41,7 +41,8 @@ class FindOUIByMACAddressView(TemplateView, FormMixin):
             mac_address = self.request.GET['mac_address']
         if mac_address:
             # Show only the matching OUIs
-            oui_list = Oui.objects.filter(prefix__startswith=mac_address)
+            oui_list = Oui.objects.filter(
+                prefix__startswith=mac_address.replace(':', '')[:6])
         context['page_title'] = 'Find OUI by MAC Address'
         context['oui_list'] = oui_list
         context['mac_address'] = mac_address

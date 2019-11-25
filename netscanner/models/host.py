@@ -256,16 +256,17 @@ class Host(BaseModel):
         :return: SafeText object with the HTML text
         """
         if self.os:
-            # Operating system with image
-            url_image = self.os.image.url
-            return mark_safe('<img class="os_image"'
-                             ' src="{image}" '
-                             ' title="{title}" />'.format(
-                                image=url_image,
-                                title=self.os))
-        else:
-            # Missing operating system image
-            return self.os
+            if self.os.image.name:
+                # Operating system with image
+                url_image = self.os.image.url
+                return mark_safe('<img class="os_image"'
+                                 ' src="{image}" '
+                                 ' title="{title}" />'.format(
+                                    image=url_image,
+                                    title=self.os))
+            else:
+                # Missing operating system image
+                return self.os
     os_thumbnail.short_description = pgettext_lazy('Host',
                                                    'OperatingSystem Image')
 

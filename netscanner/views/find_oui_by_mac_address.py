@@ -33,14 +33,18 @@ class FindOUIByMACAddressView(TemplateView, FormMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         oui_list = []
+        mac_address = None
         if self.request.POST and self.form.is_valid():
             form_data = self.form.cleaned_data
             mac_address = form_data['mac_address']
-            if mac_address:
-                # Show only the matching OUIs
-                oui_list = Oui.objects.filter(prefix__startswith=mac_address)
+        elif self.request.GET:
+            mac_address = self.request.GET['mac_address']
+        if mac_address:
+            # Show only the matching OUIs
+            oui_list = Oui.objects.filter(prefix__startswith=mac_address)
         context['page_title'] = 'Find OUI by MAC Address'
         context['oui_list'] = oui_list
+        context['mac_address'] = mac_address
         return context
 
     def post(self, request, *args, **kwargs):

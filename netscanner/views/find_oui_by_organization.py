@@ -34,15 +34,19 @@ class FindOUIByOrganizationView(TemplateView, FormMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         oui_list = []
+        organization = None
         if self.request.POST and self.form.is_valid():
             form_data = self.form.cleaned_data
             organization = form_data['organization']
-            if organization:
-                # Show only the matching OUIs
-                oui_list = Oui.objects.filter(
-                    organization__contains=organization)
+        elif self.request.GET:
+            organization = self.request.GET['organization']
+        if organization:
+            # Show only the matching OUIs
+            oui_list = Oui.objects.filter(
+                organization__contains=organization)
         context['page_title'] = 'Find OUI by Organization'
         context['oui_list'] = oui_list
+        context['organization'] = organization
         return context
 
     def post(self, request, *args, **kwargs):

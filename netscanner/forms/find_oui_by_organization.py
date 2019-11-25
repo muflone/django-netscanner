@@ -18,20 +18,15 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
-from django.urls import path
-
-from netscanner.views.find_oui_by_mac_address import FindOUIByMACAddressView
-from netscanner.views.find_oui_by_organization import FindOUIByOrganizationView
-from netscanner.views.hosts_map import HostsMapView
+from django import forms
+from django.utils.translation import pgettext_lazy
 
 
-urlpatterns = [path(route='hosts_map/',
-                    view=HostsMapView.as_view(),
-                    name='hosts_map'),
-               path(route='find_oui_by_mac/',
-                    view=FindOUIByMACAddressView.as_view(),
-                    name='find_oui_by_mac'),
-               path(route='find_oui_by_organization/',
-                    view=FindOUIByOrganizationView.as_view(),
-                    name='find_oui_by_organization')
-               ]
+class FindOUIOrganizationForm(forms.Form):
+    """
+    Form for FindOUIByOrganizationView
+    """
+    organization = forms.CharField(max_length=255,
+                                   min_length=2,
+                                   label=pgettext_lazy('Find OUI',
+                                                       'Organization'))

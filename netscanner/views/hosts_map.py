@@ -18,42 +18,49 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
-from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView
+from django.views.generic.edit import FormMixin
+from django.views.generic.list import ListView
 
+from netscanner.forms.hosts_map import HostsMapForm
 from netscanner.models import SubnetV4, Host
 
 
-class HostsMapView(TemplateView):
+class HostsMapView(ListView, FormMixin):
     template_name = 'netscanner/site/hosts_map.html'
+    form_class = HostsMapForm
+    model = SubnetV4
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        hosts_dict = {}
+        if self.request.POST and self.form.is_valid():
+            form_data = self.form.cleaned_data
+            subnet = form_data['subnet']
+            if subnet:
+                # Show only the hosts for the selected subnet
+                hosts_dict = dict((address, [])
+                                  for address in subnet.get_ip_list())
+                # Add valid hosts
+                for host in Host.objects.filter(
+                        subnetv4_id=subnet.pk).order_by('address_numeric'):
+                    # Add addresses not in the subnet range
+                    if host.address not in hosts_dict:
+                        hosts_dict[host.address] = []
+                    hosts_dict[host.address].append(host)
+                if form_data.get('show_missing', 0):
+                    # Show also missing hosts (add placeholder None)
+                    [hosts_dict[address].append(None)
+                        for address in subnet.get_ip_list()
+                        if not hosts_dict[address]]
         context['page_title'] = 'Hosts map'
-        subnets = SubnetV4.objects.all()
-        if 'subnet' in kwargs:
-            # Show only the hosts for the selected subnet
-            subnet = get_object_or_404(subnets, pk=kwargs['subnet'])
-            hosts_dict = dict((address, [])
-                              for address in subnet.get_ip_list())
-            # Add valid hosts
-            for host in Host.objects.filter(
-                    subnetv4_id=subnet.pk).order_by('address_numeric'):
-                # Add addresses not in the subnet range
-                if host.address not in hosts_dict:
-                    hosts_dict[host.address] = []
-                hosts_dict[host.address].append(host)
-            if kwargs.get('show_missing', 0):
-                # Show also missing hosts (add placeholder None)
-                [hosts_dict[address].append(None)
-                 for address in subnet.get_ip_list()
-                 if not hosts_dict[address]]
-        else:
-            # No data for missing subnet
-            subnet = None
-            hosts_dict = {}
-        context['subnets'] = subnets
-        context['subnet'] = subnet
         context['hosts'] = hosts_dict
-        context['show_missing'] = kwargs.get('show_missing', 0)
         return context
+
+    def post(self, request, *args, **kwargs):
+        # From ProcessFormMixin
+        self.form = self.get_form(self.get_form_class())
+        # From BaseListView
+        self.object_list = self.get_queryset()
+        context = self.get_context_data(object_list=self.object_list,
+                                        form=self.form)
+        return self.render_to_response(context)

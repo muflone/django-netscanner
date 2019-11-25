@@ -4,22 +4,20 @@
 {% block content %}
             <div class="row content-box-large">
               <div class="panel-heading">
-                <form method="get">
-                  <div class="panel-title col-md-3"><label>Subnet</label>
-                    <select id="subnet">
-                      <option id="">Select a subnet</option>
-  {% for item in subnets %}
-                      <option id="{{ item.pk }}"{% if subnet.pk == item.pk %} selected{% endif %}>{{ item.name }}</option>
-  {% endfor %}
-                    </select>
+                <form action="." method="post" id="form">
+                  {% csrf_token %}
+                  <div class="panel-title col-md-3">
+                    {{ form.subnet.label_tag }}
+                    {{ form.subnet }}
                   </div>
                   <div class="panel-title col-md-3">
-                    <label for="show_missing">Show missing hosts</label>
-                    <input type="checkbox" id="show_missing" value="1"{% if show_missing %} checked{%endif %}>
+                    {{ form.show_missing.label_tag }}
+                    {{ form.show_missing }}
+                    <input type="submit" value="Submit">
                   </div>
                 </form>
               </div>
-  {% if subnet %}
+  {% if form.subnet %}
               <div class="panel-body">
                 <table class="table table-striped table-bordered">
                   <thead>
@@ -161,26 +159,18 @@
       });
 
       $(document).ready(function() {
-        function reload() {
-          selected_subnet = $('#subnet').children(":selected").attr("id");
-          if (selected_subnet) {
-            // A subnet was chosen
-            show_missing = $('#show_missing').is(":checked") ? 1 : 0;
-            document.location.href = '{% url 'hosts_map' %}' + selected_subnet + '/' + show_missing;
-          } else {
-            // No subnet was chosen
-            document.location.href = '{% url 'hosts_map' %}';
-          }
+        function submit_form() {
+          form = $('#form');
+          form.submit();
         };
 
-        $('#subnet').on('change', function() {
-          reload();
+        $('#id_subnet').on('change', function() {
+          submit_form();
         });
 
-        $('#show_missing').on('change', function() {
-          reload();
+        $('#id_show_missing').on('change', function() {
+          submit_form();
         });
       });
-
     </script>
 {% endblock %}

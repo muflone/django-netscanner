@@ -18,12 +18,22 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
-from django.urls import path
+from django import forms
+from django.utils.translation import pgettext_lazy
 
-from netscanner.views.hosts_map import HostsMapView
+from netscanner.models import SubnetV4
 
 
-urlpatterns = [path(route='hosts_map/',
-                    view=HostsMapView.as_view(),
-                    name='hosts_map')
-               ]
+class HostsMapForm(forms.Form):
+    """
+    Form for HostsMapView
+    """
+    subnet = forms.ModelChoiceField(queryset=SubnetV4.objects,
+                                    required=False,
+                                    label=pgettext_lazy('Hosts map',
+                                                        'Subnet'))
+    show_missing = forms.BooleanField(required=False,
+                                      initial=False,
+                                      label=pgettext_lazy('Hosts map',
+                                                          'Show missing '
+                                                          'hosts'))

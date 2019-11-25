@@ -4,6 +4,9 @@
 {% block content %}
             <div class="row content-box-large">
               <div class="panel-heading">
+  {% if not form.mac_address.value %}
+              <h2>Please insert a MAC Address</h2>
+  {% endif %}
                 <form action="." method="post" id="form">
                   {% csrf_token %}
                   <div class="panel-title">
@@ -34,11 +37,6 @@
     {% endfor %}
                   </tbody>
                 </table>
-            </div>
-  {% else %}
-            <div class="panel-heading">
-              <hr />
-              <h2>Please insert a MAC Address</h2>
             </div>
   {% endif %}
 {% endblock %}

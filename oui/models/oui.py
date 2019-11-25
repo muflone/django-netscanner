@@ -55,7 +55,7 @@ class OuiAdmin(BaseModelAdmin):
 
 class OuiAdminPrefixInputFilter(AdminTextInputFilter):
     """
-    Filter OID by prefix
+    Filter OUI by prefix
     """
     parameter_name = 'prefix'
     title = pgettext_lazy('Oui', 'prefix')
@@ -67,7 +67,7 @@ class OuiAdminPrefixInputFilter(AdminTextInputFilter):
 
 class OuiAdminOrganizationInputFilter(AdminTextInputFilter):
     """
-    Filter OID by organization
+    Filter OUI by organization
     """
     parameter_name = 'organization'
     title = pgettext_lazy('Oui', 'organization')

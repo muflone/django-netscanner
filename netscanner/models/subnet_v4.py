@@ -51,6 +51,11 @@ class SubnetV4(BaseModel):
     broadcast_ip = models.GenericIPAddressField(
         protocol='IPv4',
         verbose_name=pgettext_lazy('SubnetV4', 'Broadcast IP'))
+    hosts = models.ManyToManyField('Host',
+                                   blank=True,
+                                   related_name='netscanner_subnet_v4_hosts',
+                                   verbose_name=pgettext_lazy(
+                                       'SubnetV4', 'Manual hosts list'))
 
     class Meta:
         # Define the database table
@@ -66,7 +71,10 @@ class SubnetV4(BaseModel):
         """
         Get the whole IP list for a network/CIDR
         """
-        if self.cidr < 32:
+        if self.cidr == 0:
+            # Fixed hosts list
+            return [host.address for host in self.hosts.all()]
+        elif self.cidr < 32:
             # Normal network
             ip_network = ipaddress.ip_network('{}/{}'.format(self.subnet_ip,
                                                              self.cidr))

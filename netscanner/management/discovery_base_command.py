@@ -135,8 +135,11 @@ class DiscoveryBaseCommand(BaseCommand):
             # Process the results in a single operation on the DB side
             with transaction.atomic():
                 # Exclude invalid items from their status
-                results = list(filter(lambda item: item[1]['status'],
-                                      consumers.results_as_list()))
+                # If the failing option was passed, include any response
+                consumers_list = consumers.results_as_list()
+                results = (list(filter(lambda item: item[1]['status'],
+                                      consumers_list))
+                           if not options['failing'] else consumers_list)
                 # Process the results to update the models, if needed
                 self.process_results(discovery=discovery,
                                      options=options,

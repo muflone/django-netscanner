@@ -52,7 +52,8 @@ class Command(DiscoveryBaseCommand):
         :return: None
         """
         super().process_results(discovery, options, results)
-        for item in results:
+        # Process only valid entries
+        for item in filter(lambda item: item[1]['status'], results):
             (address, values) = item
             fqdn = values['fqdn']
             # Print results if verbosity >= 1

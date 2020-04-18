@@ -48,6 +48,12 @@ class Command(BaseCommand):
                             help=pgettext_lazy(
                                 'Scanner Custom',
                                 'Launch also disabled discoveries'))
+        parser.add_argument('--failing',
+                            action='store_true',
+                            default=False,
+                            help=pgettext_lazy(
+                                'Scanner Custom',
+                                'Save results also for failing hosts'))
         parser.add_argument('--destinations',
                             action='store',
                             type=str,

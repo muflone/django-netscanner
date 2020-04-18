@@ -55,7 +55,8 @@ class Command(HostBaseCommand):
         :return: None
         """
         super().process_results(discovery, options, results)
-        for item in results:
+        # Process only valid entries
+        for item in filter(lambda item: item[1]['status'], results):
             (host, values) = item
             # Print results if verbosity >= 1
             if self.verbosity >= 1:

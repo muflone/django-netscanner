@@ -45,12 +45,12 @@ class TCPConnect(object):
             sock.settimeout(self.timeout)
             sock.connect((destination, self.portnr))
             sock.close()
-            result = True
+            status = True
         except (ConnectionRefusedError,
                 OSError,
                 socket.timeout):
-            result = False
+            status = False
         return {
-            'connected': result,
-            'status': result
+            'connected': status,
+            'status': status,
         }

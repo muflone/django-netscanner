@@ -51,7 +51,7 @@ class SNMPFindModel(object):
         """
         Scan an IP address for SNMP values
         """
-        result = {'status': False}
+        results = {'status': False}
         # Print destination for verbosity >= 2
         if self.verbosity >= 2:
             print(destination)
@@ -62,13 +62,13 @@ class SNMPFindModel(object):
             if self.verbosity >= 3:
                 print('Host {DESTINATION} has SNMP disabled, skipping'.format(
                     DESTINATION=destination))
-            return result
+            return results
         # If requested, skip any existing hosts with the device model set
         if self.skip_existing and hosts.exclude(device_model__isnull=True):
             if self.verbosity >= 3:
                 print('Host {DESTINATION} has DeviceModel, skipping'.format(
                     DESTINATION=destination))
-            return result
+            return results
 
         session = easysnmp.session.Session(hostname=destination,
                                            remote_port=self.port,
@@ -108,7 +108,7 @@ class SNMPFindModel(object):
                     print('Host {DESTINATION} does not respond to the SNMP'
                           'initial configuration, skipping'.format(
                               DESTINATION=destination))
-                return result
+                return results
         # Try every model for the best matching
         for configuration in self.configurations:
             try:
@@ -132,11 +132,11 @@ class SNMPFindModel(object):
             # Check if the value is the autodetection value
             if value and value == autodetect_value:
                 # Save status and model
-                result['status'] = True
-                result['model_name'] = configuration.device_model.name
-                result['model_id'] = configuration.device_model.id
+                results['status'] = True
+                results['model_name'] = configuration.device_model.name
+                results['model_id'] = configuration.device_model.id
                 break
         # Add some information to the results
-        if result['status']:
-            result['version'] = self.snmp_version.name
-        return result
+        if results['status']:
+            results['version'] = self.snmp_version.name
+        return results

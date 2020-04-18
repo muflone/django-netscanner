@@ -37,5 +37,5 @@ class Hostname(object):
         result = socket.getfqdn(destination)
         return {
             'fqdn': result,
-            'status': bool(result) and result != destination
+            'status': bool(result) and result != destination,
         }

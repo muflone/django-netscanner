@@ -53,7 +53,7 @@ class SNMPGetInfo(object):
             # Check model SNMP Configurations
             snmp_configurations = SNMPConfiguration.objects.filter(
                 device_model__id=host.device_model.pk)
-        result = {}
+        results = {}
         if snmp_configurations:
             snmp_version = host.snmp_version
             session = easysnmp.session.Session(hostname=host.address,
@@ -93,14 +93,14 @@ class SNMPGetInfo(object):
                                 all(c == '0' for c in result_value)):
                             raise TypeError
                         # Save values
-                        result[result_name] = result_value
+                        results[result_name] = result_value
                         if self.verbosity >= 3:
                             print('\r')
                             print('destination="{}"'.format(host.address),
                                   'requested value="{}"'.format(
                                       snmp_value.name),
                                   'oid="{}"'.format(snmp_value.oid),
-                                  'value="{}"'.format(result[result_name]))
+                                  'value="{}"'.format(results[result_name]))
                         # SNMPConfigurationValue has field to set
                         field = snmp_configuration_value.field
                         if field:
@@ -109,12 +109,12 @@ class SNMPGetInfo(object):
                                 json_values = json.loads(
                                     snmp_configuration_value.text_values)
                                 # Get the field value if result matches
-                                if result[result_name] == json_values['value']:
-                                    result[field] = self.get_field_value(
+                                if results[result_name] == json_values['value']:
+                                    results[field] = self.get_field_value(
                                         field, json_values)
                             else:
                                 # Field set
-                                result[field] = result[result_name]
+                                results[field] = results[result_name]
                     except SystemError:
                         # Handle SystemError bug under Python >= 3.7
                         # https://github.com/kamakazikamikaze/easysnmp/issues/108
@@ -122,8 +122,8 @@ class SNMPGetInfo(object):
                     except TypeError:
                         # Skip invalid response types
                         pass
-        result['status'] = bool(result)
-        return result
+        results['status'] = bool(results)
+        return results
 
     @staticmethod
     def format_snmp_value(value: easysnmp.variables.SNMPVariable,

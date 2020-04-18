@@ -21,7 +21,7 @@
 # Based on inbtscan (https://github.com/iiilin/inbtscan)
 
 import socket
-from datetime import datetime
+import datetime
 
 NetBIOS_ITEM_TYPE = {
     b'\x01\x00': 'netbios_computer_name',
@@ -147,7 +147,7 @@ class NetBIOSSMBInfo(object):
                         timestamp = int.from_bytes(bytes=item_content,
                                                    byteorder='little')
                         EPOCH_AS_FILETIME = 116444736000000000
-                        timestamp = datetime.fromtimestamp(
+                        timestamp = datetime.datetime.fromtimestamp(
                             (timestamp - EPOCH_AS_FILETIME) / 10000000)
                         results['timestamp'] = timestamp
                     elif item_type in NetBIOS_ITEM_TYPE:

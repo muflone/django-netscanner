@@ -18,6 +18,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
+import datetime
 import socket
 
 
@@ -53,4 +54,5 @@ class TCPConnect(object):
         return {
             'connected': status,
             'status': status,
+            'timestamp': datetime.datetime.now().timestamp(),
         }

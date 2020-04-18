@@ -18,6 +18,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
+import datetime
 import socket
 import struct
 
@@ -74,4 +75,6 @@ class ZabbixAgent(object):
                     break
         # Add status
         results['status'] = bool(results)
+        # Add timestamp
+        results['timestamp'] = datetime.datetime.now().timestamp()
         return results

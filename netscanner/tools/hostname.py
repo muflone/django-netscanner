@@ -18,6 +18,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
+import datetime
 import socket
 
 
@@ -38,4 +39,5 @@ class Hostname(object):
         return {
             'fqdn': result,
             'status': bool(result) and result != destination,
+            'timestamp': datetime.datetime.now().timestamp(),
         }

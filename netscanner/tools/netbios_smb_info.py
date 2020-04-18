@@ -163,6 +163,8 @@ class NetBIOSSMBInfo(object):
             pass
         # Add status
         results['status'] = bool(results)
+        # Add timestamp
+        results['timestamp'] = datetime.datetime.now().timestamp()
         return results
 
     def _get_netbios_names(self,

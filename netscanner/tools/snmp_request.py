@@ -18,6 +18,8 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
+import datetime
+
 import easysnmp
 
 from .snmp_get_info import SNMPGetInfo
@@ -72,4 +74,6 @@ class SNMPRequest(object):
                 pass
         # Add status
         results['status'] = bool(results)
+        # Add timestamp
+        results['timestamp'] = datetime.datetime.now().timestamp()
         return results

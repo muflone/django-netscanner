@@ -18,6 +18,8 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
+import datetime
+
 import scapy.all
 
 
@@ -52,6 +54,7 @@ class ARPRequest(object):
         return {
             'mac_address': result,
             'status': bool(result),
+            'timestamp': datetime.datetime.now().timestamp(),
             'start': start_time,
             'end': end_time,
             'duration': duration,

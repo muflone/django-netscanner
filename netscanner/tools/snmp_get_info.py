@@ -123,6 +123,8 @@ class SNMPGetInfo(object):
                         # Skip invalid response types
                         pass
         results['status'] = bool(results)
+        # Add timestamp
+        results['timestamp'] = datetime.datetime.now().timestamp()
         return results
 
     @staticmethod

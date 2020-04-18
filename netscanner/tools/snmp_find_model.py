@@ -18,6 +18,8 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 
+import datetime
+
 import easysnmp
 
 from .snmp_get_info import SNMPGetInfo
@@ -139,4 +141,6 @@ class SNMPFindModel(object):
         # Add some information to the results
         if results['status']:
             results['version'] = self.snmp_version.name
+        # Add timestamp
+        results['timestamp'] = datetime.datetime.now().timestamp()
         return results

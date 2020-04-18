@@ -42,7 +42,17 @@ class ARPRequest(object):
                               timeout=self.timeout,
                               verbose=False)[0]
         result = reply[0][1].hwsrc.upper() if reply else None
+        start_time = reply[0][0].sent_time if reply else 0
+        end_time = reply[0][1].time if reply else 0
+        duration = round((end_time - start_time) * 1000, 2) if reply else 0
+        if duration < 0:
+            # Workaround for negative duration
+            # https://github.com/secdev/scapy/issues/1952
+            duration = 0.00
         return {
             'mac_address': result,
-            'status': bool(result)
+            'status': bool(result),
+            'start': start_time,
+            'end': end_time,
+            'duration': duration,
         }

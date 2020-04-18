@@ -38,11 +38,17 @@ class ICMPReply(object):
             print(destination)
         ip_request = scapy.all.IP(dst=destination)
         ping = scapy.all.ICMP()
-        reply = scapy.all.sr1(ip_request / ping,
-                              timeout=self.timeout,
-                              verbose=False)
+        reply = scapy.all.sr(ip_request / ping,
+                             timeout=self.timeout,
+                             verbose=False)[0]
         result = reply[0][1].code == 0 if reply else False
+        start_time = reply[0][0].sent_time if reply else 0
+        end_time = reply[0][1].time if reply else 0
+        duration = round((end_time - start_time) * 1000, 2) if reply else 0
         return {
             'reply': result,
-            'status': bool(result)
+            'status': bool(result),
+            'start': start_time,
+            'end': end_time,
+            'duration': duration,
         }

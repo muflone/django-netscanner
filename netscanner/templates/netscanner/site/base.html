@@ -8,8 +8,8 @@
 {% endblock %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% block header_css %}
-  {% include 'netscanner/site/includes/bootstrap.html' with block='head' type='css' %}
-  {% include 'netscanner/site/includes/ekko_lightbox.html' with block='head' type='css' %}
+    {% include 'netscanner/site/includes/bootstrap.html' with block='head' type='css' %}
+    {% include 'netscanner/site/includes/ekko_lightbox.html' with block='head' type='css' %}
     <!-- Custom styles -->
     <link href="{% static 'netscanner/bootstrap-admin-theme-3/css/bootstrap-admin.css' %}" rel="stylesheet">
     <link href="{% static 'netscanner/css/custom.css' %}" rel="stylesheet">
@@ -77,13 +77,12 @@
     </div>
 {% block footer %}
     <footer>
-         <div class="container">
-            <div class="copy text-center">
-               Copyright 2019 <a href='https://www.muflone.com/'>Fabio Castelli (Muflone)</a>
-            </div>
-
-         </div>
-      </footer>
+      <div class="container">
+        <div class="copy text-center">
+          Copyright 2019-2020 <a href='https://www.muflone.com/'>Fabio Castelli (Muflone)</a>
+        </div>
+      </div>
+    </footer>
 {% endblock %}
 {% block footer_begin %}{% endblock %}
 {% block footer_css %}{% endblock %}

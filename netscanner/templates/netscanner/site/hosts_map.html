@@ -90,7 +90,8 @@
           </div>
 {% endblock %}
 
-{% block footer_end %}
+{% block footer_css %}
+    {{ block.super }}
     <style>
       td.host_address,
       td.host_name,
@@ -124,7 +125,10 @@
         max-width: 600px;
       }
     </style>
+{% endblock %}
 
+{% block footer_js %}
+    {{ block.super }}
     <script language="JavaScript">
       // Add Popover for model images
       $('a[class=host_device_model]').popover({

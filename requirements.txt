@@ -3,4 +3,4 @@ scapy==2.4.3
 easysnmp==0.2.5
 django-admin-rangefilter==0.5.0
 django-admin-list-filter-dropdown==1.0.3
-pillow==6.2.1
+pillow==9.0.1
